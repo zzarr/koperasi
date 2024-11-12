@@ -21,6 +21,8 @@
     <link href="{{ asset('demo1/assets/css/components/custom-modal.css') }}" rel="stylesheet" type="text/css" />
     <link href="{{ asset('demo1/plugins/apex/apexcharts.css') }}" rel="stylesheet" type="text/css">
     <link href="{{ asset('demo1/assets/css/dashboard/dash_1.css') }}" rel="stylesheet" type="text/css" />
+    <link rel="stylesheet" href="{{ asset('dist/css/icons.min.css') }}">
+
 
     <!-- <link href="{{ asset('demo1/assets/css/elements/alert.css') }}" rel="stylesheet" type="text/css" /> -->
 
@@ -35,7 +37,7 @@
     <link rel="stylesheet" type="text/css" href="{{ asset('demo1/plugins/table/datatable/datatables.css') }}">
     <link rel="stylesheet" type="text/css" href="{{ asset('demo1/plugins/table/datatable/dt-global_style.css') }}">
     <!-- END PAGE LEVEL PLUGINS/CUSTOM STYLES -->
-    @include('admin.style.breadcrumb')
+    @include('layout.breadcrumb')
 </head>
 
 <body class="alt-menu sidebar-noneoverflow">
@@ -48,7 +50,7 @@
     </div>
 
     <!--  BEGIN NAVBAR  -->
-    @include('admin.layouts.navbar')
+    @include('layout.navbar')
     <!--  END NAVBAR  -->
 
     <!--  BEGIN MAIN CONTAINER  -->
@@ -59,7 +61,7 @@
         <div class="search-overlay"></div>
 
         <!--  BEGIN SIDEBAR  -->
-        @include('admin.layouts.sidebar')
+        @include('layout.sidebar')
         <!--  END SIDEBAR  -->
 
         <!--  BEGIN CONTENT AREA  -->
@@ -89,6 +91,9 @@
         });
     </script>
     <script src="{{ asset('demo1/assets/js/custom.js') }}"></script>
+    <script src="{{ asset('libs/feather-icons/feather.min.js') }}"></script>
+    <script src="{{ asset('dist/js/app.js') }}"></script>
+
     <!-- END GLOBAL MANDATORY SCRIPTS -->
 
     <!-- BEGIN PAGE LEVEL PLUGINS/CUSTOM SCRIPTS -->
@@ -106,6 +111,10 @@
     <!-- BEGIN PAGE LEVEL PLUGINS/CUSTOM SCRIPTS -->
     <script src="{{ asset('demo1/plugins/apex/apexcharts.min.js') }}"></script>
     <script src="{{ asset('demo1/assets/js/dashboard/dash_1.js') }}"></script>
+
+    <script>
+        feather.replace();
+    </script>
     @stack('script')
 
 </body>
