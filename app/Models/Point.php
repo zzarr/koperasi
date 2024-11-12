@@ -10,7 +10,7 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Support\Str;
 
-class User extends Authenticatable
+class Point extends Authenticatable
 {
     use HasFactory, Notifiable, SoftDeletes, CascadeSoftDeletes, Uuid;
 
@@ -46,27 +46,33 @@ class User extends Authenticatable
     protected $cascadeDeletes = ['wallet', 'yearlyLog'];
 
 
-    public function roles() {
+    public function roles()
+    {
         return $this->belongsTo(Roles::class, 'role_id');
     }
-    public function wallet(){
+    public function wallet()
+    {
         return $this->hasOne(Wallet::class, 'user_id');
     }
 
 
-    public function mainPayment(){
+    public function mainPayment()
+    {
         return $this->hasMany(MainPayment::class, 'user_id')->orderBy('created_at', 'ASC');
     }
 
-    public function monthlyPayment(){
+    public function monthlyPayment()
+    {
         return $this->hasMany(MonthlyPayment::class, 'user_id')->orderBy('payment_month', 'ASC');
     }
 
-    public function otherPayment(){
+    public function otherPayment()
+    {
         return $this->hasMany(OtherPayment::class, 'user_id')->orderBy('payment_month', 'ASC');
     }
 
-    public function yearlyLog(){
+    public function yearlyLog()
+    {
         return $this->hasMany(YearlyLog::class, 'user_id');
     }
 }
