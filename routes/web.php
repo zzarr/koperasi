@@ -21,3 +21,9 @@ Route::get('/dashboard', function () {
     return view('admin.dashboard');
 });
 
+
+
+//MasL
+Route::get('/dashboard/user', function () {
+    return view('user.dashboard');
+});
