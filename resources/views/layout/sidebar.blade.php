@@ -24,6 +24,15 @@
                     </div>
                 </a>
             </li>
+
+            <li class="menu">
+                <a href="#" aria-expanded="true" class="dropdown-toggle">
+                    <div class="">
+                        <i class="ti ti-activity"></i>
+                        <span> </span>
+                    </div>
+                </a>
+            </li>
         </ul>
     </nav>
 </div>
