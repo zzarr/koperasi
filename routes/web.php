@@ -2,7 +2,7 @@
 
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Admin\PiutangPaymentController;
-
+use App\Http\Controllers\User\AnggotaController;
 use App\Http\Controllers\AuthController;
 /*
 |--------------------------------------------------------------------------
@@ -34,7 +34,8 @@ Route::middleware(['auth', 'verified', 'role:admin'])->group(function () {
 });
 
 Route::middleware(['auth', 'verified', 'role:user'])->group(function () {
-    Route::get('/user/dashboard', function () {
-        return view('user.dashboard');
-    });
+    Route::get('/user/dashboard', [AnggotaController::class, 'dashboard'])->name('dashboard');
+    // Route::get('/user/dashboard', function () {
+    //     return view('user.dashboard');
+    // });
 });
