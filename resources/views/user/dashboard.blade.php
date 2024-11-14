@@ -1,27 +1,66 @@
 @extends('layout.app')
 @section('title', 'Dashboard')
-
 @section('content')
 
 <div class="page-header">
-    <div class="page-title">
-        <h3>Dashboard</h3>
-    </div>
-
-    <nav class="breadcrumb-one" aria-label="breadcrumb">
-        <ol class="breadcrumb">
-            <li class="breadcrumb-item">
-                <a href="javascript:void(0);">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-home">
-                        <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path>
-                        <polyline points="9 22 9 12 15 12 15 22"></polyline>
-                    </svg>
-                </a>
-            </li>
-            <li class="breadcrumb-item active" aria-current="page"><span>Dashboard User</span></li>
-        </ol>
-    </nav>
+    <h3>DASHBOARD</h3>
 </div>
+<div>
+    <div class="layout-px-spacing">
+        <div class="row analytics">
 
-    
-@endsection
+            <div class="col-md-4 col-sm-12 layout-spacing">
+                <div class="widget widget-card-two">
+                    <div class="widget-content">
+                        <div class="card-bottom-section">
+                            <h3>Rp.100.000,00</h3>
+                            <h5>Total Simpanan Pokok</h5>
+                            <a href="javascript:void(0);" class="btn">View Details</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-md-4 col-sm-12 layout-spacing">
+                <div class="widget widget-card-two">
+                    <div class="widget-content">
+                        <div class="card-bottom-section">
+                            <h3>Rp.100.000,00</h3>
+                            <h5>Total Simpanan Wajib</h5>
+                            <a href="javascript:void(0);" class="btn">View Details</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-md-4 col-sm-12 layout-spacing">
+                <div class="widget widget-card-two">
+                    <div class="widget-content">
+                        <div class="card-bottom-section">
+                            <h3>Rp.100.000,00</h3>
+                            <h5>Total Simpanan Sukarela</h5>
+                            <a href="javascript:void(0);" class="btn">View Details</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            
+            <div class="col-md-4 col-sm-12 layout-spacing">
+                <div class="widget widget-card-two">
+                    <div class="widget-content">
+                        <div class="card-bottom-section">
+                            <h3>3</h3>
+                            <h5>Total Anggota</h5>
+                            <a href="javascript:void(0);" class="btn">View Details</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+</div>
+<!--  END CONTENT AREA  -->
+
+    @endsection

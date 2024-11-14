@@ -16,7 +16,7 @@ class CreateUsersTable extends Migration
     {
         Schema::create('users', function (Blueprint $table) {
             $table->uuid('id')->primary();
-            $table->uuid('role_id');
+            
             $table->string('member_id')->nullable();
             $table->string('email')->nullable();
             $table->string('username');
@@ -33,7 +33,7 @@ class CreateUsersTable extends Migration
             $table->softDeletes();
             $table->timestamps();
 
-            $table->foreign('role_id')->references('id')->on('roles');
+           
         });
     }
 

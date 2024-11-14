@@ -1,6 +1,7 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\Admin\PiutangPaymentController;
 
 use App\Http\Controllers\AuthController;
 /*
