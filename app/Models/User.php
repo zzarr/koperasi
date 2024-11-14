@@ -79,4 +79,10 @@ class User extends Authenticatable
     {
         return $this->hasMany(YearlyLog::class, 'user_id');
     }
+
+    // Relasi dengan model Piutang
+    public function piutangs()
+    {
+        return $this->hasMany(Piutang::class);
+    }
 }

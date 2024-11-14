@@ -2,7 +2,7 @@
 
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Admin\PiutangPaymentController;
-use App\Http\Controllers\ManageMetaDataController;
+use App\Http\Controllers\User\AnggotaController;
 use App\Http\Controllers\AuthController;
 /*
 |--------------------------------------------------------------------------
@@ -40,7 +40,8 @@ Route::post('/admin/metadata', [ManageMetaDataController::class, 'store'])->name
 Route::put('/admin/metadata/update/{id}', [ManageMetaDataController::class, 'update'])->name('manage_metadata.update');
 
 Route::middleware(['auth', 'verified', 'role:user'])->group(function () {
-    Route::get('/user/dashboard', function () {
-        return view('user.dashboard');
-    });
+    Route::get('/user/dashboard', [AnggotaController::class, 'dashboard'])->name('dashboard');
+    // Route::get('/user/dashboard', function () {
+    //     return view('user.dashboard');
+    // });
 });

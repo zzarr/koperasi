@@ -36,6 +36,7 @@ class UserSeeder extends Seeder
         $admin = User::create([
             'id' => Str::uuid(), // Set UUID manually
             'name' => 'Admin',
+            'username' => 'admin',
             'email' => 'admin@gmail.com',
             'password' => Hash::make('Admin#123'),
             'username' => 'admin_username',
@@ -50,12 +51,11 @@ class UserSeeder extends Seeder
         $user = User::create([
             'id' => Str::uuid(), // Set UUID manually
             'name' => 'User 1',
+            'username' => 'user1',
             'email' => 'user@gmail.com',
             'password' => Hash::make('User#123'),
-            'username' => 'user1_username',
-            'phone_number' => '081234567891',
-            'address' => 'Jl. User',
-            'registered_at' => now(),
+            'phone_number' => '081234567890',
+            'registered_at' => now()
         ]);
 
         $user->assignRole('user');
