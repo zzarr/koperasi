@@ -42,6 +42,7 @@ class User extends Authenticatable
     // public $incrementing = false;
 
     // In Laravel 6.0+ make sure to also set $keyType
+    public $incrementing = false;
     protected $keyType = 'string';
 
     protected $primaryKey = 'id';
