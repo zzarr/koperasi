@@ -12,7 +12,7 @@
                 <div class="widget widget-card-two">
                     <div class="widget-content">
                         <div class="card-bottom-section">
-                            <h3>Rp.100.000,00</h3>
+                            <h3>Rp. {{number_format($main_payments)}}</h3>
                             <h5>Total Simpanan Pokok</h5>
                             <a href="javascript:void(0);" class="btn">View Details</a>
                         </div>
@@ -24,7 +24,7 @@
                 <div class="widget widget-card-two">
                     <div class="widget-content">
                         <div class="card-bottom-section">
-                            <h3>Rp.100.000,00</h3>
+                            <h3>Rp. {{number_format($monthly_payments)}}</h3>
                             <h5>Total Simpanan Wajib</h5>
                             <a href="javascript:void(0);" class="btn">View Details</a>
                         </div>
@@ -36,7 +36,7 @@
                 <div class="widget widget-card-two">
                     <div class="widget-content">
                         <div class="card-bottom-section">
-                            <h3>Rp.100.000,00</h3>
+                            <h3> Rp. {{number_format($other_payments)}}</h3>
                             <h5>Total Simpanan Hari Raya</h5>
                             <a href="javascript:void(0);" class="btn">View Details</a>
                         </div>
