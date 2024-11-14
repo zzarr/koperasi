@@ -1,6 +1,7 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\Admin\PiutangPaymentController;
 
 /*
 |--------------------------------------------------------------------------
@@ -21,6 +22,10 @@ Route::get('/dashboard', function () {
     return view('admin.dashboard');
 });
 
-Route::get('/managementuser', function () {
+Route::get('/payment/piutang', [PiutangPaymentController::class, 'index'])->name('payment_piutang');
+
+
+
+Route::get('/dashboard/user', function () {
     return view('user.dashboard');
 });
