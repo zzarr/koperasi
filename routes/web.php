@@ -28,13 +28,13 @@ Route::post('/logout', [AuthController::class, 'logout'])->name('logout')->middl
 Route::get('/logout', [AuthController::class, 'logout'])->name('logout')->middleware('auth', 'verified');
 
 Route::middleware(['auth', 'verified', 'role:admin'])->group(function () {
-    Route::get('/dashboard-lucky', function () {
+    Route::get('/dashboard', function () {
         return view('admin.dashboard');
     });
 });
 
 Route::middleware(['auth', 'verified', 'role:user'])->group(function () {
-    Route::get('/user/dashboard-lucky', function () {
+    Route::get('/user/dashboard', function () {
         return view('user.dashboard');
     });
 });
