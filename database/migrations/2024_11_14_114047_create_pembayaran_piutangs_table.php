@@ -17,6 +17,7 @@ return new class extends Migration
             $table->integer('pembayaran ke-');
             $table->integer('jumlah_bayar_pokok');
             $table->integer('jumlah_bayar_bunga');
+            $table->date('tanggal_pembayaran');
             $table->timestamps();
 
             $table->foreign('hutang_id')->references('id')->on('piutangs');

@@ -18,6 +18,7 @@ class PembayaranPiutang extends Model
         'pembayaran ke-',
         'jumlah_bayar_pokok',
         'jumlah_bayar_bunga',
+        'tanggal_pembayaran',
     ];
 
     // Mengonfigurasi relasi dengan model Piutang
