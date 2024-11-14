@@ -1,67 +1,15 @@
 @extends('layout.app')
 @section('title', 'Dashboard')
 @section('content')
-
-<div class="page-header">
-    <h3>DASHBOARD ADMIN</h3>
-</div>
-<div>
-    <div class="layout-px-spacing">
-        <div class="row analytics">
-
-
-            <div class="col-md-4 col-sm-12 layout-spacing">
-                <div class="widget widget-card-two">
-                    <div class="widget-content">
-                        <div class="card-bottom-section">
-                            <h3>Rp.100.000,00</h3>
-                            <h5>Total Simpanan Pokok</h5>
-                            <a href="javascript:void(0);" class="btn">View Details</a>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <div class="col-md-4 col-sm-12 layout-spacing">
-                <div class="widget widget-card-two">
-                    <div class="widget-content">
-                        <div class="card-bottom-section">
-                            <h3>Rp.100.000,00</h3>
-                            <h5>Total Simpanan Wajib</h5>
-                            <a href="javascript:void(0);" class="btn">View Details</a>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <div class="col-md-4 col-sm-12 layout-spacing">
-                <div class="widget widget-card-two">
-                    <div class="widget-content">
-                        <div class="card-bottom-section">
-                            <h3>Rp.100.000,00</h3>
-                            <h5>Total Simpanan Sukarela</h5>
-                            <a href="javascript:void(0);" class="btn">View Details</a>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-
-            <div class="col-md-4 col-sm-12 layout-spacing">
-                <div class="widget widget-card-two">
-                    <div class="widget-content">
-                        <div class="card-bottom-section">
-                            <h3>3</h3>
-                            <h5>Total Anggota</h5>
-                            <a href="javascript:void(0);" class="btn">View Details</a>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
+    <div class="page-header">
+        <div class="page-title">
+            <h3>Dashboard</h3>
         </div>
-    </div>
-</div>
-<!--  END CONTENT AREA  -->
+        <nav class="breadcrumb-one" aria-label="breadcrumb">
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item"><a href="javascript:void(0);"><i data-feather="grid"></i></a></li>
 
-    @endsection
+            </ol>
+        </nav>
+    </div>
+@endsection

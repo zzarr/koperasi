@@ -6,7 +6,7 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="csrf-token" content="{{ csrf_token() }}">
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, shrink-to-fit=no">
-    <title>@yield('title', 'Blank Page')</title>
+    <title>@yield('title', 'Koperasi')</title>
     <link rel="icon" type="image/x-icon" href="assets/img/favicon.ico" />
     <!-- BEGIN GLOBAL MANDATORY STYLES -->
     <link href="https://fonts.googleapis.com/css?family=Nunito:400,600,700" rel="stylesheet">
@@ -21,7 +21,9 @@
     <link href="{{ asset('demo1/assets/css/components/custom-modal.css') }}" rel="stylesheet" type="text/css" />
     <link href="{{ asset('demo1/plugins/apex/apexcharts.css') }}" rel="stylesheet" type="text/css">
     <link href="{{ asset('demo1/assets/css/dashboard/dash_1.css') }}" rel="stylesheet" type="text/css" />
-    <link rel="stylesheet" href="{{ asset('dist/css/icons.min.css') }}">
+    <link rel="stylesheet" href="{{ asset('dist/css/icons.css') }}">
+    <link rel="stylesheet" href="{{ asset('libs/fontawesome-free/css/all.min.css') }}">
+
 
 
     <!-- <link href="{{ asset('demo1/assets/css/elements/alert.css') }}" rel="stylesheet" type="text/css" /> -->
