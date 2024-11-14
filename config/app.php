@@ -187,7 +187,7 @@ return [
          
          * 
          */
-        Yajra\DataTables\DataTablesServiceProvider::class,
+        
         /*
          * Application Service Providers...
          */
