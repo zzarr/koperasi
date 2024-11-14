@@ -10,10 +10,6 @@ use Faker\Factory;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Str;
-<<<<<<< HEAD
-
-=======
->>>>>>> 60d8aa33a197d50fd16b2f4d2cd6efa8514ea947
 
 
 class UserSeeder extends Seeder
