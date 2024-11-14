@@ -1,5 +1,4 @@
 @extends('layout.app')
-@section('title', 'Dashboard')
 @section('content')
 
 <div class="page-header">
@@ -38,7 +37,7 @@
                     <div class="widget-content">
                         <div class="card-bottom-section">
                             <h3>Rp.100.000,00</h3>
-                            <h5>Total Simpanan Sukarela</h5>
+                            <h5>Total Simpanan Hari Raya</h5>
                             <a href="javascript:void(0);" class="btn">View Details</a>
                         </div>
                     </div>
@@ -50,8 +49,20 @@
                 <div class="widget widget-card-two">
                     <div class="widget-content">
                         <div class="card-bottom-section">
-                            <h3>3</h3>
-                            <h5>Total Anggota</h5>
+                            <h3>Rp.100.000,00</h3>
+                            <h5>Total Hutang Rutin</h5>
+                            <a href="javascript:void(0);" class="btn">View Details</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-md-4 col-sm-12 layout-spacing">
+                <div class="widget widget-card-two">
+                    <div class="widget-content">
+                        <div class="card-bottom-section">
+                            <h3>Rp.100.000,00</h3>
+                            <h5>Total Hutang Khusus</h5>
                             <a href="javascript:void(0);" class="btn">View Details</a>
                         </div>
                     </div>
