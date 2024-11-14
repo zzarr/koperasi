@@ -58,10 +58,8 @@ class UserSeeder extends Seeder
             'username' => 'user1',
             'email' => 'user@gmail.com',
             'password' => Hash::make('User#123'),
-            'username' => 'user1_username',
-            'phone_number' => '081234567891',
-            'address' => 'Jl. User',
-            'registered_at' => now(),
+            'phone_number' => '081234567890',
+            'registered_at' => now()
         ]);
 
         $user->assignRole('user');
