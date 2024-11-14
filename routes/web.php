@@ -1,6 +1,7 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\ManageMetaDataController;
 
 /*
 |--------------------------------------------------------------------------
@@ -17,10 +18,14 @@ Route::get('/', function () {
     return view('welcome');
 });
 
+//andin
 Route::get('/dashboard/admin', function () {
     return view('admin.dashboard');
 });
-
+Route::get('admin/metadata/datatables', [ManageMetaDataController::class, 'datatable'])->name('metadata.data');
+Route::get('/admin/metadata', [ManageMetaDataController::class, 'index'])->name('manage_metadata');
+Route::post('/admin/metadata', [ManageMetaDataController::class, 'store'])->name('manage_metadata.store');
+Route::put('/admin/metadata/update/{id}', [ManageMetaDataController::class, 'update'])->name('manage_metadata.update');
 
 
 //MasL
