@@ -18,7 +18,9 @@
         <ul class="list-unstyled menu-categories" id="accordionExample">
 
             <li class="menu">
-                <a href="#" aria-expanded="true" class="dropdown-toggle">
+                <a href="{{ route('metadatadatatables.data') }}"
+                aria-expanded="{{ Request::routeIs('metadatadatatables.data') ? 'true' : 'false' }}"
+                class="dropdown-toggle">
                     <div class="">
                         <i data-feather="grid"></i>
                         <span> Dashboard</span>
@@ -34,7 +36,9 @@
                 </a>
             </li>
             <li class="menu">
-                <a href="#" aria-expanded="false" class="dropdown-toggle">
+                <a href="{{ route('manage_metadata') }}"
+                aria-expanded="{{ Request::routeIs('manage_metadata') ? 'true' : 'false' }}"
+                class="dropdown-toggle">
                     <div class="">
                         <i data-feather="settings"></i>
                         <span> Manage Meta Data</span>
