@@ -2,43 +2,80 @@
 
 namespace App\Models;
 
-// use Illuminate\Contracts\Auth\MustVerifyEmail;
+// use App\Traits\Uuid;
+// use Dyrynda\Database\Support\CascadeSoftDeletes;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
+use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Notifications\Notifiable;
-use Laravel\Sanctum\HasApiTokens;
+use Illuminate\Support\Str;
+
+use Spatie\Permission\Traits\HasRoles;
 
 class User extends Authenticatable
 {
-    use HasApiTokens, HasFactory, Notifiable;
+    use HasRoles, HasFactory, Notifiable;
+    // , SoftDeletes, CascadeSoftDeletes, Uuid
 
     /**
-     * The attributes that are mass assignable.
+     * The attributes that should be hidden for arrays.
      *
-     * @var array<int, string>
-     */
-    protected $fillable = [
-        'name',
-        'email',
-        'password',
-    ];
-
-    /**
-     * The attributes that should be hidden for serialization.
-     *
-     * @var array<int, string>
+     * @var array
      */
     protected $hidden = [
         'password',
-        'remember_token',
     ];
 
     /**
-     * The attributes that should be cast.
+     * The attributes that should be cast to native types.
      *
-     * @var array<string, string>
+     * @var array
      */
+
+
     protected $casts = [
-        'email_verified_at' => 'datetime',
+        'id' => 'string'
     ];
+
+    protected $guarded = [];
+
+    // public $incrementing = false;
+
+    // In Laravel 6.0+ make sure to also set $keyType
+    protected $keyType = 'string';
+
+    protected $primaryKey = 'id';
+
+    protected $cascadeDeletes = ['wallet', 'yearlyLog'];
+
+
+    // public function roles()
+    // {
+    //     return $this->belongsTo(Roles::class, 'role_id');
+    // }
+    public function wallet()
+    {
+        return $this->hasOne(Wallet::class, 'user_id');
+    }
+
+
+    public function mainPayment()
+    {
+        return $this->hasMany(MainPayment::class, 'user_id')->orderBy('created_at', 'ASC');
+    }
+
+    public function monthlyPayment()
+    {
+        return $this->hasMany(MonthlyPayment::class, 'user_id')->orderBy('payment_month', 'ASC');
+    }
+
+    public function otherPayment()
+    {
+        return $this->hasMany(OtherPayment::class, 'user_id')->orderBy('payment_month', 'ASC');
+    }
+
+    public function yearlyLog()
+    {
+        return $this->hasMany(YearlyLog::class, 'user_id');
+    }
 }

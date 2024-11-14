@@ -2,6 +2,7 @@
 
 use Illuminate\Support\Facades\Route;
 
+use App\Http\Controllers\AuthController;
 /*
 |--------------------------------------------------------------------------
 | Web Routes
@@ -17,7 +18,22 @@ Route::get('/', function () {
     return view('welcome');
 });
 
+
+
+
 Route::get('/login', [AuthController::class, 'index'])->name('login')->middleware('guest');
 Route::post('/login', [AuthController::class, 'login'])->middleware('guest');
 Route::post('/logout', [AuthController::class, 'logout'])->name('logout')->middleware('auth', 'verified');
 Route::get('/logout', [AuthController::class, 'logout'])->name('logout')->middleware('auth', 'verified');
+
+Route::middleware(['auth', 'verified', 'role:admin'])->group(function () {
+    Route::get('/dashboard-lucky', function () {
+        return view('admin.dashboard');
+    });
+});
+
+Route::middleware(['auth', 'verified', 'role:user'])->group(function () {
+    Route::get('/user/dashboard-lucky', function () {
+        return view('user.dashboard');
+    });
+});
