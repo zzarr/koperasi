@@ -78,6 +78,17 @@
             </li>
 
 
+            @role('user')
+                <li class="menu">
+                    <a href="#" aria-expanded="true" class="dropdown-toggle">
+                        <div class="">
+                            <i data-feather="grid"></i>
+                            <span> Dashboard</span>
+                        </div>
+                    </a>
+                </li>
+            @endrole
+
         </ul>
     </nav>
 </div>

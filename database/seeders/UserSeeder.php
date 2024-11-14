@@ -9,6 +9,9 @@ use App\Models\User;
 use Faker\Factory;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Str;
+
+
 
 class UserSeeder extends Seeder
 {
@@ -19,34 +22,38 @@ class UserSeeder extends Seeder
      */
     public function run()
     {
-        $main_amount = new ConfigPayment();
-        $main_amount->name = 'main_payment';
-        $main_amount->paid_off_amount = 500000;
-        $main_amount->save();
+        // $main_amount = new ConfigPayment();
+        // $main_amount->name = 'main_payment';
+        // $main_amount->paid_off_amount = 500000;
+        // $main_amount->save();
 
-        $main_amount = new ConfigPayment();
-        $main_amount->name = 'monthly_payment';
-        $main_amount->paid_off_amount = 50000;
-        $main_amount->save();
+        // $main_amount = new ConfigPayment();
+        // $main_amount->name = 'monthly_payment';
+        // $main_amount->paid_off_amount = 50000;
+        // $main_amount->save();
 
-        $roles = ['admin', 'user'];
+        $admin = User::create([
+            'id' => Str::uuid(),
+            'name' => 'Admin',
+            'username' => 'admin',
+            'email' => 'admin@gmail.com',
+            'password' => Hash::make('Admin#123'),
+            'phone_number' => '081234567890',
+            'registered_at' => now()
+        ]);
 
-        foreach($roles as $item) {
-            $dbrole = new Roles();
-            $dbrole->name = $item;
-            $dbrole->save();
-        }
+        $admin->assignRole('admin');
 
-        $role = Roles::where('name', 'admin')->first();
+        $user = User::create([
+            'id' => Str::uuid(),
+            'name' => 'User 1',
+            'username' => 'user1',
+            'email' => 'user@gmail.com',
+            'password' => Hash::make('User#123'),
+            'phone_number' => '081234567890',
+            'registered_at' => now()
+        ]);
 
-        $user = new User();
-        $user->role_id = $role->id;
-        $user->username = 'admin';
-        $user->password = Hash::make('kopkar312');
-        $user->name = 'Superadmin';
-        $user->phone_number = '0895334623006';
-        $user->status = true;
-        $user->registered_at = now();
-        $user->save();
+        $user->assignRole('user');
     }
 }
