@@ -49,7 +49,7 @@
                 <div class="widget widget-card-two">
                     <div class="widget-content">
                         <div class="card-bottom-section">
-                            <h3>Rp.100.000,00</h3>
+                            <h3>Rp. {{number_format($hutang_rutin)}}</h3>
                             <h5>Total Hutang Rutin</h5>
                             <a href="javascript:void(0);" class="btn">View Details</a>
                         </div>
@@ -61,7 +61,7 @@
                 <div class="widget widget-card-two">
                     <div class="widget-content">
                         <div class="card-bottom-section">
-                            <h3>Rp.100.000,00</h3>
+                            <h3>Rp. {{number_format($hutang_khusus)}}</h3>
                             <h5>Total Hutang Khusus</h5>
                             <a href="javascript:void(0);" class="btn">View Details</a>
                         </div>
