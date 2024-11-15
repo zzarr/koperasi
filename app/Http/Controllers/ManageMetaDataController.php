@@ -12,8 +12,8 @@ class ManageMetaDataController extends Controller
     public function index()
     {
         // Mengambil data untuk 'main_payment' dan 'monthly_payment'
-        // $main = MainPayment::first(); // Ambil data pertama dari tabel main_payment
-        // $monthly = MonthlyPayment::first(); // Ambil data pertama dari tabel monthly_payment
+        $main = MainPayment::first(); // Ambil data pertama dari tabel main_payment
+        $monthly = MonthlyPayment::first(); // Ambil data pertama dari tabel monthly_payment
 
         // Kirim data ke view
         return view('admin.managemetadata', compact('main', 'monthly'));

@@ -4,6 +4,8 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Admin\PiutangPaymentController;
 use App\Http\Controllers\User\AnggotaController;
 use App\Http\Controllers\AuthController;
+use App\Http\Controllers\ManageMetaDataController;
+
 /*
 |--------------------------------------------------------------------------
 | Web Routes
