@@ -18,7 +18,7 @@ return new class extends Migration
             $table->integer('jumlah_hutang');
             $table->integer('jumlah_bulan');
             $table->integer('sisa');
-            $table->bool('is_lunas')->default(false);
+            $table->boolean('is_lunas')->default(false);
             $table->timestamps();
             $table->foreign('user_id')->references('id')->on('users');
         });

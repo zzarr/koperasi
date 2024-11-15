@@ -13,14 +13,14 @@ return new class extends Migration
     {
         Schema::create('pembayaran_piutangs', function (Blueprint $table) {
             $table->id();
-            $table->string('hutang_id');
+            $table->unsignedBigInteger('hutang_id');
             $table->integer('pembayaran ke-');
             $table->integer('jumlah_bayar_pokok');
             $table->integer('jumlah_bayar_bunga');
             $table->date('tanggal_pembayaran');
             $table->timestamps();
 
-            $table->foreign('hutang_id')->references('id')->on('piutangs');
+            $table->foreign('hutang_id')->references('id')->on('piutangs')->onDelete('cascade');
         });
     }
 
