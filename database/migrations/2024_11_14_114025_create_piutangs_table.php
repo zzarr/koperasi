@@ -20,7 +20,6 @@ return new class extends Migration
             $table->integer('sisa');
             $table->bool('is_lunas')->default(false);
             $table->timestamps();
-
             $table->foreign('user_id')->references('id')->on('users');
         });
     }
