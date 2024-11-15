@@ -13,7 +13,7 @@
                 <div class="widget widget-card-two">
                     <div class="widget-content">
                         <div class="card-bottom-section">
-                            <h3>Rp.100.000,00</h3>
+                            <h3>Rp. {{number_format($simpananPokok)}}</h3>
                             <h5>Total Simpanan Pokok</h5>
                             <a href="javascript:void(0);" class="btn">View Details</a>
                         </div>
@@ -25,7 +25,7 @@
                 <div class="widget widget-card-two">
                     <div class="widget-content">
                         <div class="card-bottom-section">
-                            <h3>Rp.100.000,00</h3>
+                            <h3>Rp. {{number_format($simpananWajib)}}</h3>
                             <h5>Total Simpanan Wajib</h5>
                             <a href="javascript:void(0);" class="btn">View Details</a>
                         </div>
@@ -37,8 +37,8 @@
                 <div class="widget widget-card-two">
                     <div class="widget-content">
                         <div class="card-bottom-section">
-                            <h3>Rp.100.000,00</h3>
-                            <h5>Total Simpanan Sukarela</h5>
+                            <h3>Rp. {{number_format($simpananSukarela)}}</h3>
+                            <h5>Total Simpanan Hari Raya</h5>
                             <a href="javascript:void(0);" class="btn">View Details</a>
                         </div>
                     </div>
@@ -50,7 +50,7 @@
                 <div class="widget widget-card-two">
                     <div class="widget-content">
                         <div class="card-bottom-section">
-                            <h3>3</h3>
+                            <h3>{{number_format($jumlah_user)}}</h3>
                             <h5>Total Anggota</h5>
                             <a href="javascript:void(0);" class="btn">View Details</a>
                         </div>

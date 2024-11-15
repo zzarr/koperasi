@@ -5,6 +5,7 @@ use App\Http\Controllers\Admin\PiutangPaymentController;
 use App\Http\Controllers\User\AnggotaController;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\ManageMetaDataController;
+use App\Http\Controllers\Admin\DashboardController;
 
 /*
 |--------------------------------------------------------------------------
@@ -30,9 +31,7 @@ Route::post('/logout', [AuthController::class, 'logout'])->name('logout')->middl
 Route::get('/logout', [AuthController::class, 'logout'])->name('logout')->middleware('auth', 'verified');
 
 Route::middleware(['auth', 'verified', 'role:admin'])->group(function () {
-    Route::get('/dashboard', function () {
-        return view('admin.dashboard');
-    });
+    Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
 });
 
 //andin

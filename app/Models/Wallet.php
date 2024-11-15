@@ -2,14 +2,14 @@
 
 namespace App\Models;
 
-use App\Traits\Uuid;
+//use App\Traits\Uuid;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
 class Wallet extends Model
 {
-    use HasFactory, SoftDeletes, Uuid;
+    use HasFactory, SoftDeletes;
 
     // In Laravel 6.0+ make sure to also set $keyType
     public $incrementing = false;
