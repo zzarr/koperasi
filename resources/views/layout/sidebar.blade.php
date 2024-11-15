@@ -18,8 +18,8 @@
         <ul class="list-unstyled menu-categories" id="accordionExample">
             @role('admin')
                 <li class="menu">
-                    <a href="{{ route('manage_metadata') }}"
-                    aria-expanded="{{ Request::routeIs('manage_meta_data') ? 'true' : 'false' }}"
+                    <a href="{{ route('admin.dashboard') }}"
+                    aria-expanded="{{ Request::routeIs('admin.dashboard') ? 'true' : 'false' }}"
                     class="dropdown-toggle">
                         <div class="">
                             <i data-feather="grid"></i>
@@ -82,7 +82,7 @@
                 </li>
                 <li class="menu">
                     <a href="#" aria-expanded="false" class="dropdown-toggle">
-                        <div class=""> 
+                        <div class="">
                             <i data-feather="credit-card"></i>
                             <span> Manage Penarikan Dana</span>
                         </div>

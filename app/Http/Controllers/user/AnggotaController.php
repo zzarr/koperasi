@@ -25,6 +25,7 @@ class AnggotaController extends Controller
 		$other_payments = DB::table('other_payments')->where('user_id', Auth::user()->id)->sum('amount');
 		$main_payments = DB::table('main_payments')->where('user_id', Auth::user()->id)->sum('amount');
 		$monthly_payments = DB::table('monthly_payments')->where('user_id', Auth::user()->id)->sum('amount');
+		
 		// $wallets = DB::table('wallets')->where('user_id', Auth::user()->id)->sum('total');
 
 		// $shu = Wallet::where('user_id', Auth::user()->id)->first()->shu;

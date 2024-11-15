@@ -31,7 +31,7 @@ Route::post('/logout', [AuthController::class, 'logout'])->name('logout')->middl
 Route::get('/logout', [AuthController::class, 'logout'])->name('logout')->middleware('auth', 'verified');
 
 Route::middleware(['auth', 'verified', 'role:admin'])->group(function () {
-    Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
+    Route::get('/admin/dashboard', [DashboardController::class, 'index'])->name('admin.dashboard');
 });
 
 //andin

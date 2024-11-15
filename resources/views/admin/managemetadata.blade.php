@@ -38,6 +38,14 @@
                             <label>Total Angsuran Wajib</label>
                             <input type="text" name="monthly_payment" class="form-control form-control-border" id="monthly_payment" placeholder="" value="{{$monthly->paid_off_amount ?? ''}}">
                         </div>
+                        <div class="form-group">
+                            <label>Hutang Rutin</label>
+                            <input type="text" name="monthly_payment" class="form-control form-control-border" id="monthly_payment" placeholder="" value="{{$monthly->paid_off_amount ?? ''}}">
+                        </div>
+                        <div class="form-group">
+                            <label>Hutang Khusus</label>
+                            <input type="text" name="monthly_payment" class="form-control form-control-border" id="monthly_payment" placeholder="" value="{{$monthly->paid_off_amount ?? ''}}">
+                        </div>
                     </form>
                 </div>
                 <div class="card-footer">
