@@ -58,7 +58,7 @@
                     <ul class="submenu list-unstyled collapse" id="submenu" data-parent="#accordionExample"
                         style="">
                         <li>
-                            <a href="javascript:void(0);"> Simpanan Pokok </a>
+                            <a href="{{ route('payment.main.index') }}"> Simpanan Pokok </a>
                         </li>
                         <li>
                             <a href="javascript:void(0);"> Simpanan Wajib </a>
@@ -78,7 +78,7 @@
                 </li>
                 <li class="menu">
                     <a href="#" aria-expanded="false" class="dropdown-toggle">
-                        <div class=""> 
+                        <div class="">
                             <i data-feather="credit-card"></i>
                             <span> Manage Penarikan Dana</span>
                         </div>

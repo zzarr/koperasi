@@ -1,7 +1,10 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\Admin\PiutangPaymentController;
+use App\Http\Controllers\Admin\{
+    PiutangPaymentController,
+    MainPaymentController,
+};
 use App\Http\Controllers\User\AnggotaController;
 use App\Http\Controllers\AuthController;
 /*
@@ -31,6 +34,19 @@ Route::middleware(['auth', 'verified', 'role:admin'])->group(function () {
     Route::get('/dashboard', function () {
         return view('admin.dashboard');
     });
+
+    Route::group(['prefix' => 'payment', 'as' => 'payment.'], function () {
+        Route::group(['prefix' => 'main', 'as' => 'main.'], function () {
+            Route::get('/', [MainPaymentController::class, 'index'])->name('index');
+            Route::get('/datatables', [MainPaymentController::class, 'datatables'])->name('ajax');
+            Route::get('/show/{id?}', [MainPaymentController::class, 'show'])->name('show');
+            Route::post('/store', [MainPaymentController::class, 'store'])->name('store');
+            Route::post('/destroy/{id?}', [MainPaymentController::class, 'destroy'])->name('destroy');
+
+            Route::post('/import', [MainPaymentController::class, 'import'])->name('import');
+        });
+    });
+
 });
 
 Route::middleware(['auth', 'verified', 'role:user'])->group(function () {
