@@ -7,6 +7,9 @@ use App\Http\Controllers\Admin\{
 };
 use App\Http\Controllers\User\AnggotaController;
 use App\Http\Controllers\AuthController;
+use App\Http\Controllers\ManageMetaDataController;
+use App\Http\Controllers\Admin\DashboardController;
+
 /*
 |--------------------------------------------------------------------------
 | Web Routes
@@ -47,7 +50,14 @@ Route::middleware(['auth', 'verified', 'role:admin'])->group(function () {
         });
     });
 
+    Route::get('/admin/dashboard', [DashboardController::class, 'index'])->name('admin.dashboard');
 });
+
+//andin
+Route::get('admin/metadata/datatables', [ManageMetaDataController::class, 'datatable'])->name('metadatadatatables.data');
+Route::get('/admin/metadata', [ManageMetaDataController::class, 'index'])->name('manage_metadata');
+Route::post('/admin/metadata', [ManageMetaDataController::class, 'store'])->name('manage_metadata.store');
+Route::put('/admin/metadata/update/{id}', [ManageMetaDataController::class, 'update'])->name('manage_metadata.update');
 
 Route::middleware(['auth', 'verified', 'role:user'])->group(function () {
     Route::get('/user/dashboard', [AnggotaController::class, 'dashboard'])->name('dashboard');
