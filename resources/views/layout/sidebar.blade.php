@@ -19,8 +19,8 @@
             @role('admin')
                 <li class="menu">
                     <a href="{{ route('admin.dashboard') }}"
-                    aria-expanded="{{ Request::routeIs('admin.dashboard') ? 'true' : 'false' }}"
-                    class="dropdown-toggle">
+                        aria-expanded="{{ Request::routeIs('admin.dashboard') ? 'true' : 'false' }}"
+                        class="dropdown-toggle">
                         <div class="">
                             <i data-feather="grid"></i>
                             <span> Dashboard</span>
@@ -37,8 +37,8 @@
                 </li>
                 <li class="menu">
                     <a href="{{ route('manage_metadata') }}"
-                    aria-expanded="{{ Request::routeIs('manage_meta_data') ? 'true' : 'false' }}"
-                    class="dropdown-toggle">
+                        aria-expanded="{{ Request::routeIs('manage_meta_data') ? 'true' : 'false' }}"
+                        class="dropdown-toggle">
                         <div class="">
                             <i data-feather="settings"></i>
                             <span> Manage Meta Data</span>
@@ -46,7 +46,9 @@
                     </a>
                 </li>
                 <li class="menu">
-                    <a href="#submenu" data-toggle="collapse" aria-expanded="false" class="dropdown-toggle collapsed ">
+                    <a href="#submenu" data-toggle="collapse"
+                        aria-expanded="{{ Request::routeIs('payment.main.index') ? 'true' : 'false' }}"
+                        class="dropdown-toggle collapsed ">
                         <div class="">
                             <i data-feather="dollar-sign"></i>
                             <span> Pembayaran</span>
