@@ -107,8 +107,6 @@
 @push('js')
     <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.16.9/xlsx.full.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/exceljs/4.2.1/exceljs.min.js"></script>
-
-
     <script src="{{ asset('demo1/assets/js/scrollspyNav.js') }}"></script>
     <script src="{{ asset('demo1/plugins/file-upload/file-upload-with-preview.min.js') }}"></script>
     <script src="{{ asset('demo1/plugins/table/datatable/datatables.js') }}"></script>
