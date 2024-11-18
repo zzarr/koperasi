@@ -59,6 +59,7 @@ Route::middleware(['auth', 'verified', 'role:admin'])->group(function () {
                 Route::post('/import', [MonthlyPaymentController::class, 'import'])->name('import');
             });
         });
+
         Route::group(['prefix' => 'withdraw', 'as' => 'withdraw.'], function () {
             Route::get('/', [WithdrawController::class, 'index'])->name('index');
             Route::get('/datatables', [WithdrawController::class, 'datatables'])->name('ajax');
@@ -75,8 +76,14 @@ Route::middleware(['auth', 'verified', 'role:admin'])->group(function () {
             Route::put('update/{id}', [ManageMetaDataController::class, 'update'])->name('manage_metadata.update');
         });
 
-        Route::get('/admin/dashboard', [DashboardController::class, 'index'])->name('dashboard');
+    //andin
+    Route::group(['prefix' => 'metadata', 'as' => 'metadata.'], function () {
+        Route::get('datatables', [ManageMetaDataController::class, 'datatable'])->name('metadatadatatables.data');
+        Route::get('/', [ManageMetaDataController::class, 'index'])->name('manage_metadata');
+        Route::post('/', [ManageMetaDataController::class, 'store'])->name('manage_metadata.store');
+        Route::put('update/{id}', [ManageMetaDataController::class, 'update'])->name('manage_metadata.update');
     });
+    Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
 });
 
 
