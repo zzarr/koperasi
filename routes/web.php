@@ -36,8 +36,6 @@ Route::post('/logout', [AuthController::class, 'logout'])->name('logout')->middl
 Route::get('/logout', [AuthController::class, 'logout'])->name('logout')->middleware('auth', 'verified');
 
 Route::middleware(['auth', 'verified', 'role:admin', 'as' => 'admin.'])->group(function () {
-
-
     Route::group(['prefix' => 'payment', 'as' => 'payment.'], function () {
         Route::group(['prefix' => 'main', 'as' => 'main.'], function () {
             Route::get('/', [MainPaymentController::class, 'index'])->name('index');
@@ -73,9 +71,8 @@ Route::middleware(['auth', 'verified', 'role:admin', 'as' => 'admin.'])->group(f
         Route::get('/', [ManageMetaDataController::class, 'index'])->name('manage_metadata');
         Route::post('/', [ManageMetaDataController::class, 'store'])->name('manage_metadata.store');
         Route::put('update/{id}', [ManageMetaDataController::class, 'update'])->name('manage_metadata.update');
-
-        Route::get('/admin/dashboard', [DashboardController::class, 'index'])->name('admin.dashboard');
     });
+    Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
 });
 
 
