@@ -14,8 +14,19 @@ use Spatie\Permission\Traits\HasRoles;
 
 class User extends Authenticatable
 {
+
     use HasRoles, HasFactory, Notifiable;
     // , SoftDeletes, CascadeSoftDeletes, Uuid
+    protected $fillable = [
+        'id',
+        'member_id',
+        'email',
+        'username',
+        'password',
+        'name',
+        'phone_number',
+        'address',
+    ];
 
     /**
      * The attributes that should be hidden for arrays.
