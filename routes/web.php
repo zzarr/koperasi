@@ -4,6 +4,7 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Admin\{
     PiutangPaymentController,
     MainPaymentController,
+    MonthlyPaymentController,
 };
 use App\Http\Controllers\User\AnggotaController;
 use App\Http\Controllers\AuthController;
@@ -47,6 +48,16 @@ Route::middleware(['auth', 'verified', 'role:admin'])->group(function () {
             Route::post('/destroy/{id?}', [MainPaymentController::class, 'destroy'])->name('destroy');
 
             Route::post('/import', [MainPaymentController::class, 'import'])->name('import');
+        });
+
+        Route::group(['prefix' => 'monthly', 'as' => 'monthly.'], function () {
+            Route::get('/', [MonthlyPaymentController::class, 'index'])->name('index');
+            Route::get('/datatables', [MonthlyPaymentController::class, 'datatables'])->name('ajax');
+            Route::get('/show/{id?}', [MonthlyPaymentController::class, 'show'])->name('show');
+            Route::post('/store', [MonthlyPaymentController::class, 'store'])->name('store');
+            Route::post('/destroy/{id?}', [MonthlyPaymentController::class, 'destroy'])->name('destroy');
+
+            Route::post('/import', [MonthlyPaymentController::class, 'import'])->name('import');
         });
     });
 

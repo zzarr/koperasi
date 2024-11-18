@@ -67,7 +67,7 @@
                             <a href="{{ route('payment.main.index') }}"> Simpanan Pokok </a>
                         </li>
                         <li>
-                            <a href="javascript:void(0);"> Simpanan Wajib </a>
+                            <a href="{{ route('payment.monthly.index') }}"> Simpanan Wajib </a>
                         </li>
                         <li>
                             <a href="javascript:void(0);"> Simpanan Sukarela </a>
