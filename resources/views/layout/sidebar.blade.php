@@ -36,7 +36,7 @@
                     </a>
                 </li>
                 <li class="menu">
-                    <a href="{{ route('manage_metadata') }}"
+                    <a href="{{ route('admin.metadata.manage_metadata') }}"
                         aria-expanded="{{ Request::routeIs('manage_meta_data') ? 'true' : 'false' }}"
                         class="dropdown-toggle">
                         <div class="">
@@ -47,7 +47,7 @@
                 </li>
                 <li class="menu">
                     <a href="#submenu" data-toggle="collapse"
-                        aria-expanded="{{ Request::routeIs('payment.main.index') ? 'true' : 'false' }}"
+                        aria-expanded="{{ Request::routeIs('admin.payment.main.index') ? 'true' : 'false' }}"
                         class="dropdown-toggle collapsed ">
                         <div class="">
                             <i data-feather="dollar-sign"></i>
@@ -64,10 +64,10 @@
                     <ul class="submenu list-unstyled collapse" id="submenu" data-parent="#accordionExample"
                         style="">
                         <li>
-                            <a href="{{ route('payment.main.index') }}"> Simpanan Pokok </a>
+                            <a href="{{ route('admin.payment.main.index') }}"> Simpanan Pokok </a>
                         </li>
                         <li>
-                            <a href="{{ route('payment.monthly.index') }}"> Simpanan Wajib </a>
+                            <a href="{{ route('admin.payment.monthly.index') }}"> Simpanan Wajib </a>
                         </li>
                         <li>
                             <a href="javascript:void(0);"> Simpanan Sukarela </a>
@@ -83,7 +83,7 @@
                     </a>
                 </li>
                 <li class="menu">
-                    <a href="#" aria-expanded="false" class="dropdown-toggle">
+                    <a href="{{ route('admin.withdraw.index') }}" aria-expanded="false" class="dropdown-toggle">
                         <div class="">
                             <i data-feather="credit-card"></i>
                             <span> Manage Penarikan Dana</span>

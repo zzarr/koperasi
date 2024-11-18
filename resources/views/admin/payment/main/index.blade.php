@@ -140,7 +140,7 @@
             serverSide: true,
             scrollY: "50vh",
             scrollX: true,
-            ajax: "{{ route('payment.main.ajax') }}",
+            ajax: "{{ route('admin.payment.main.ajax') }}",
             // responsive: true,
             // lengthChange: false,
             // autoWidth: true,

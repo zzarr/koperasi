@@ -35,35 +35,46 @@ Route::post('/login', [AuthController::class, 'login'])->middleware('guest');
 Route::post('/logout', [AuthController::class, 'logout'])->name('logout')->middleware('auth', 'verified');
 Route::get('/logout', [AuthController::class, 'logout'])->name('logout')->middleware('auth', 'verified');
 
-Route::middleware(['auth', 'verified', 'role:admin', 'as' => 'admin.'])->group(function () {
-    Route::group(['prefix' => 'payment', 'as' => 'payment.'], function () {
-        Route::group(['prefix' => 'main', 'as' => 'main.'], function () {
-            Route::get('/', [MainPaymentController::class, 'index'])->name('index');
-            Route::get('/datatables', [MainPaymentController::class, 'datatables'])->name('ajax');
-            Route::get('/show/{id?}', [MainPaymentController::class, 'show'])->name('show');
-            Route::post('/store', [MainPaymentController::class, 'store'])->name('store');
-            Route::post('/destroy/{id?}', [MainPaymentController::class, 'destroy'])->name('destroy');
+Route::middleware(['auth', 'verified', 'role:admin'])->group(function () {
+    Route::group(['as' => 'admin.'], function () {
 
-            Route::post('/import', [MainPaymentController::class, 'import'])->name('import');
+        Route::group(['prefix' => 'payment', 'as' => 'payment.'], function () {
+            Route::group(['prefix' => 'main', 'as' => 'main.'], function () {
+                Route::get('/', [MainPaymentController::class, 'index'])->name('index');
+                Route::get('/datatables', [MainPaymentController::class, 'datatables'])->name('ajax');
+                Route::get('/show/{id?}', [MainPaymentController::class, 'show'])->name('show');
+                Route::post('/store', [MainPaymentController::class, 'store'])->name('store');
+                Route::post('/destroy/{id?}', [MainPaymentController::class, 'destroy'])->name('destroy');
+
+                Route::post('/import', [MainPaymentController::class, 'import'])->name('import');
+            });
+
+            Route::group(['prefix' => 'monthly', 'as' => 'monthly.'], function () {
+                Route::get('/', [MonthlyPaymentController::class, 'index'])->name('index');
+                Route::get('/datatables', [MonthlyPaymentController::class, 'datatables'])->name('ajax');
+                Route::get('/show/{id?}', [MonthlyPaymentController::class, 'show'])->name('show');
+                Route::post('/store', [MonthlyPaymentController::class, 'store'])->name('store');
+                Route::post('/destroy/{id?}', [MonthlyPaymentController::class, 'destroy'])->name('destroy');
+
+                Route::post('/import', [MonthlyPaymentController::class, 'import'])->name('import');
+            });
+        });
+        
+        Route::group(['prefix' => 'withdraw', 'as' => 'withdraw.'], function () {
+            Route::get('/', [WithdrawController::class, 'index'])->name('index');
+            Route::get('/datatables', [WithdrawController::class, 'datatables'])->name('ajax');
+            Route::get('/show/{id?}', [WithdrawController::class, 'show'])->name('show');
+            Route::post('/store', [WithdrawController::class, 'store'])->name('store');
+            Route::delete('/destroy/{id?}', [WithdrawController::class, 'destroy'])->name('destroy');
         });
 
-        Route::group(['prefix' => 'monthly', 'as' => 'monthly.'], function () {
-            Route::get('/', [MonthlyPaymentController::class, 'index'])->name('index');
-            Route::get('/datatables', [MonthlyPaymentController::class, 'datatables'])->name('ajax');
-            Route::get('/show/{id?}', [MonthlyPaymentController::class, 'show'])->name('show');
-            Route::post('/store', [MonthlyPaymentController::class, 'store'])->name('store');
-            Route::post('/destroy/{id?}', [MonthlyPaymentController::class, 'destroy'])->name('destroy');
-
-            Route::post('/import', [MonthlyPaymentController::class, 'import'])->name('import');
+        //andin
+        Route::group(['prefix' => 'metadata', 'as' => 'metadata.'], function () {
+            Route::get('datatables', [ManageMetaDataController::class, 'datatable'])->name('metadatadatatables.data');
+            Route::get('/', [ManageMetaDataController::class, 'index'])->name('manage_metadata');
+            Route::post('/store', [ManageMetaDataController::class, 'store'])->name('manage_metadata.store');
+            Route::put('update/{id}', [ManageMetaDataController::class, 'update'])->name('manage_metadata.update');
         });
-    });
-    Route::group(['prefix' => 'withdraw', 'as' => 'withdraw.'], function () {
-        Route::get('/', [WithdrawController::class, 'index'])->name('index');
-        Route::get('/datatables', [WithdrawController::class, 'datatables'])->name('ajax');
-        Route::get('/show/{id?}', [WithdrawController::class, 'show'])->name('show');
-        Route::post('/store', [WithdrawController::class, 'store'])->name('store');
-        Route::delete('/destroy/{id?}', [WithdrawController::class, 'destroy'])->name('destroy');
-    });
 
     //andin
     Route::group(['prefix' => 'metadata', 'as' => 'metadata.'], function () {
@@ -74,6 +85,7 @@ Route::middleware(['auth', 'verified', 'role:admin', 'as' => 'admin.'])->group(f
     });
     Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
 });
+
 
 
 
