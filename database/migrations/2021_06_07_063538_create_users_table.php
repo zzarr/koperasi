@@ -29,7 +29,6 @@ class CreateUsersTable extends Migration
             $table->tinyInteger('main_payment_status')->default(0);
             $table->date('registered_at');
             $table->string('tmt')->nullable();
-
             $table->softDeletes();
             $table->timestamps();
 
