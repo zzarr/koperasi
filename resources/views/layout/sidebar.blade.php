@@ -75,7 +75,7 @@
                     </ul>
                 </li>
                 <li class="menu">
-                    <a href="#" aria-expanded="false" class="dropdown-toggle">
+                    <a href="{{ route('admin.piutang.index') }}" aria-expanded="false" class="dropdown-toggle">
                         <div class="">
                             <i data-feather="clipboard"></i>
                             <span> Piutang</span>
