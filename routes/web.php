@@ -68,7 +68,7 @@ Route::middleware(['auth', 'verified', 'role:admin', 'as' => 'admin.'])->group(f
     });
 
     //andin
-    Route::group(['prefix' => 'withdraw', 'as' => 'withdraw.'], function () {
+    Route::group(['prefix' => 'metadata', 'as' => 'metadata.'], function () {
         Route::get('datatables', [ManageMetaDataController::class, 'datatable'])->name('metadatadatatables.data');
         Route::get('/', [ManageMetaDataController::class, 'index'])->name('manage_metadata');
         Route::post('/', [ManageMetaDataController::class, 'store'])->name('manage_metadata.store');
