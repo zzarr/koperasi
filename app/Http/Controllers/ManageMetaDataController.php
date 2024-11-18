@@ -1,56 +1,95 @@
 <?php
 
-namespace App\Http\Controllers;
 
+namespace App\Http\Controllers\Admin;
+
+use App\Http\Controllers\Controller;
+
+use App\Models\ConfigPayment;
 use App\Models\MainPayment;
-use App\Models\MonthlyPayment;
+use App\Models\User;
 use Illuminate\Http\Request;
-use Yajra\DataTables\Facades\DataTables;
+use Illuminate\Support\Facades\DB;
 
-class ManageMetaDataController extends Controller
+
+class MasterDataController extends Controller
 {
+    private $isSuccess;
+    private $exception;
+
+    public function __construct()
+    {
+        $this->isSuccess = false;
+        $this->exception = null;
+    }
+
     public function index()
     {
-        // Mengambil data untuk 'main_payment' dan 'monthly_payment'
-        $main = MainPayment::first(); // Ambil data pertama dari tabel main_payment
-        $monthly = MonthlyPayment::first(); // Ambil data pertama dari tabel monthly_payment
-
-        // Kirim data ke view
-        return view('admin.managemetadata', compact('main', 'monthly'));
+        $data['main'] = ConfigPayment::where('name', 'main_payment')->first();
+        $data['monthly'] = ConfigPayment::where('name', 'monthly_payment')->first();
+        return view('admin.meta.managemetadata', $data);
     }
 
-    public function datatable(Request $request)
+    public function getData()
     {
-        $data = MetaData::query(); // Ini tetap menggunakan model MetaData untuk DataTables
-        return DataTables::of($data)->make(true);
+        return response()->json(ConfigPayment::where('name', 'monthly_payment')->first());
     }
 
-    public function update(Request $request, $id)
+    public function store(Request $request)
     {
-        \Log::info('Data Received:', $request->all());
+        try {
+            DB::beginTransaction();
+            ConfigPayment::updateOrCreate(
+                ['name' => 'main_payment'],
+                [
+                    'paid_off_amount'   => preg_replace( '/[^0-9]/', '', $request->main_payment ),
+                    'is_active'         => 1
+                ]
+            );
 
-        // Update data untuk main_payment atau monthly_payment berdasarkan id
-        if ($request->has('main_payment')) {
-            $mainPayment = MainPayment::findOrFail($id);
-            $request->validate([
-                'main_payment' => 'required|numeric',
-            ]);
-            $mainPayment->paid_off_amount = $request->main_payment;
-            $mainPayment->save();
-        }
+            ConfigPayment::updateOrCreate(
+                ['name' => 'monthly_payment'],
+                [
+                    'paid_off_amount'   => preg_replace( '/[^0-9]/', '', $request->monthly_payment ),
+                    'is_active'         => 1
+                ]
+            );
 
-        if ($request->has('monthly_payment')) {
-            $monthlyPayment = MonthlyPayment::findOrFail($id);
-            $request->validate([
-                'monthly_payment' => 'required|numeric',
-            ]);
-            $monthlyPayment->paid_off_amount = $request->monthly_payment;
-            $monthlyPayment->save();
+            // Ambil konfigurasi pembayaran utama
+            $configPayment = ConfigPayment::where(['is_active' => 1, 'name' => 'main_payment'])->first();
+
+            // Ambil semua pengguna dari tabel MainPayment secara unik berdasarkan user_id
+            $users = MainPayment::select('user_id')->distinct()->get();
+
+            foreach ($users as $user) {
+                // Hitung total pembayaran utama untuk setiap user
+                $mainTotal = MainPayment::where('user_id', $user->user_id)->sum('amount');
+
+                // Periksa apakah pembayaran sudah mencapai jumlah lunas
+                if ($mainTotal >= $configPayment->paid_off_amount) {
+                    // Update status pembayaran untuk user terkait
+                    User::where('id', $user->user_id)->update([
+                        'main_payment_status' => 1
+                    ]);
+                } else {
+                    // Optional: Update jika status belum lunas
+                    User::where('id', $user->user_id)->update([
+                        'main_payment_status' => 0
+                    ]);
+                }
+            }
+
+            DB::commit();
+            $this->isSuccess = true;
+        } catch (\Exception $e) {
+            DB::rollBack();
+            $this->exception = $e;
         }
 
         return response()->json([
-            'message' => 'Data updated successfully',
-            'code' => 200
-        ]);
+            "status"    => $this->isSuccess ?? false,
+            "code"      => $this->isSuccess ? 200 : 600,
+            "message"   => $this->isSuccess ? "Success!" : ($this->exception ?? "Unknown error(?)"),
+        ], 201);
     }
 }
