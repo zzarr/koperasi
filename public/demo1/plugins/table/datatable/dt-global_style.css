@@ -62,13 +62,14 @@ table.dataTable {
   -webkit-transition: all 0.1s ease;
   transition: all 0.1s ease;
   border-bottom: 1px solid #191e3a;
+  border-top: 1px solid #191e3a;
   background: transparent !important; }
 
 .table > thead > tr > th {
   color: #009688;
   font-weight: 700;
   font-size: 13px;
-  border: none;
+  border: 1px solid rgba(136, 142, 168, 0.313725);;
   letter-spacing: 1px;
   text-transform: uppercase; }
 

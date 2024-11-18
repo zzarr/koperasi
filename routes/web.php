@@ -35,9 +35,7 @@ Route::post('/logout', [AuthController::class, 'logout'])->name('logout')->middl
 Route::get('/logout', [AuthController::class, 'logout'])->name('logout')->middleware('auth', 'verified');
 
 Route::middleware(['auth', 'verified', 'role:admin'])->group(function () {
-    Route::get('/dashboard', function () {
-        return view('admin.dashboard');
-    });
+    
 
     Route::group(['prefix' => 'payment', 'as' => 'payment.'], function () {
         Route::group(['prefix' => 'main', 'as' => 'main.'], function () {

@@ -107,8 +107,6 @@
 @push('js')
     <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.16.9/xlsx.full.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/exceljs/4.2.1/exceljs.min.js"></script>
-
-
     <script src="{{ asset('demo1/assets/js/scrollspyNav.js') }}"></script>
     <script src="{{ asset('demo1/plugins/file-upload/file-upload-with-preview.min.js') }}"></script>
     <script src="{{ asset('demo1/plugins/table/datatable/datatables.js') }}"></script>
@@ -168,7 +166,7 @@
                             return '-';
                         }
                         if (!data) {
-                            return `<button type="button" class="btn btn-primary btn-add" data-id="${full.id}">+</button>`;
+                            return `<button type="button" class="btn btn-outline-primary btn-add" data-id="${full.id}">+</button>`;
                         }
                         // return `<button type="button" class="btn btn-danger">-</button>`+data;
                         return data
@@ -212,7 +210,7 @@
                         sisa = (sum - total)
 
                         return sisa >= 0 && sum > 0 ? '<a class="btn btn-success btn-sm">Lunas</a>' :
-                            '<a class="btn btn-warning btn-sm">Belum lunas</a>';
+                            '<a class="btn btn-outline-warning btn-sm">Belum lunas</a>';
                     },
                 },
                 {
