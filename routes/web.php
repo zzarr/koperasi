@@ -59,7 +59,7 @@ Route::middleware(['auth', 'verified', 'role:admin'])->group(function () {
                 Route::post('/import', [MonthlyPaymentController::class, 'import'])->name('import');
             });
         });
-        
+
         Route::group(['prefix' => 'withdraw', 'as' => 'withdraw.'], function () {
             Route::get('/', [WithdrawController::class, 'index'])->name('index');
             Route::get('/datatables', [WithdrawController::class, 'datatables'])->name('ajax');
