@@ -6,11 +6,11 @@ use App\Http\Controllers\Admin\{
     MainPaymentController,
     MonthlyPaymentController,
     WithdrawController,
-    DashboardController
+    DashboardController,
+    MasterDataController
 };
 use App\Http\Controllers\User\AnggotaController;
 use App\Http\Controllers\AuthController;
-use App\Http\Controllers\ManageMetaDataController;
 
 Route::get('/', function () {
     return view('welcome');
@@ -57,10 +57,10 @@ Route::middleware(['auth', 'verified', 'role:admin'])->group(function () {
 
         // Metadata Routes
         Route::group(['prefix' => 'metadata', 'as' => 'metadata.'], function () {
-            Route::get('/datatables', [ManageMetaDataController::class, 'datatable'])->name('metadatadatatables.data');
-            Route::get('/', [ManageMetaDataController::class, 'index'])->name('manage_metadata');
-            Route::post('/store', [ManageMetaDataController::class, 'store'])->name('manage_metadata.store');
-            Route::put('/update/{id}', [ManageMetaDataController::class, 'update'])->name('manage_metadata.update');
+            Route::get('/datatables', [MasterDataController::class, 'datatable'])->name('metadatadatatables.data');
+            Route::get('/', [MasterDataController::class, 'index'])->name('manage_metadata');
+            Route::post('/store', [MasterDataController::class, 'store'])->name('manage_metadata.store');
+            Route::put('/update/{id}', [MasterDataController::class, 'update'])->name('manage_metadata.update');
         });
 
         // Dashboard Route
