@@ -6,38 +6,30 @@ use App\Http\Controllers\Admin\{
     MainPaymentController,
     MonthlyPaymentController,
     WithdrawController,
-    DashboardController
+    DashboardController,
+    OtherPaymentController
 };
-use App\Http\Controllers\User\AnggotaController;
+use App\Http\Controllers\user\{
+    AnggotaController,
+    PaymentHistoryController,
+    MasterDataController
+};
 use App\Http\Controllers\AuthController;
-use App\Http\Controllers\ManageMetaDataController;
-
-/*
-|--------------------------------------------------------------------------
-| Web Routes
-|--------------------------------------------------------------------------
-|
-| Here is where you can register web routes for your application. These
-| routes are loaded by the RouteServiceProvider and all of them will
-| be assigned to the "web" middleware group. Make something great!
-|
-*/
 
 Route::get('/', function () {
     return view('welcome');
 });
 
-
-
-
+// Authentication Routes
 Route::get('/login', [AuthController::class, 'index'])->name('login')->middleware('guest');
 Route::post('/login', [AuthController::class, 'login'])->middleware('guest');
-Route::post('/logout', [AuthController::class, 'logout'])->name('logout')->middleware('auth', 'verified');
-Route::get('/logout', [AuthController::class, 'logout'])->name('logout')->middleware('auth', 'verified');
+Route::post('/logout', [AuthController::class, 'logout'])->name('logout')->middleware(['auth', 'verified']);
+Route::get('/logout', [AuthController::class, 'logout'])->name('logout')->middleware(['auth', 'verified']);
 
+// Admin Routes
 Route::middleware(['auth', 'verified', 'role:admin'])->group(function () {
-    Route::group(['prefix' => 'admin', 'as' => 'admin.'], function () {
-
+    Route::group(['prefix'=>'admin','as' => 'admin.'], function () {
+        // Payment Routes
         Route::group(['prefix' => 'payment', 'as' => 'payment.'], function () {
             Route::group(['prefix' => 'main', 'as' => 'main.'], function () {
                 Route::get('/', [MainPaymentController::class, 'index'])->name('index');
@@ -45,7 +37,6 @@ Route::middleware(['auth', 'verified', 'role:admin'])->group(function () {
                 Route::get('/show/{id?}', [MainPaymentController::class, 'show'])->name('show');
                 Route::post('/store', [MainPaymentController::class, 'store'])->name('store');
                 Route::post('/destroy/{id?}', [MainPaymentController::class, 'destroy'])->name('destroy');
-
                 Route::post('/import', [MainPaymentController::class, 'import'])->name('import');
             });
 
@@ -55,10 +46,20 @@ Route::middleware(['auth', 'verified', 'role:admin'])->group(function () {
                 Route::get('/show/{id?}', [MonthlyPaymentController::class, 'show'])->name('show');
                 Route::post('/store', [MonthlyPaymentController::class, 'store'])->name('store');
                 Route::post('/destroy/{id?}', [MonthlyPaymentController::class, 'destroy'])->name('destroy');
-
                 Route::post('/import', [MonthlyPaymentController::class, 'import'])->name('import');
             });
+
+            Route::group(['prefix' => 'other', 'as' => 'other.'], function () {
+                Route::get('/', [OtherPaymentController::class, 'index'])->name('index');
+                Route::get('/datatables', [OtherPaymentController::class, 'datatables'])->name('ajax');
+                Route::get('/show/{id?}', [OtherPaymentController::class, 'show'])->name('show');
+                Route::post('/store', [OtherPaymentController::class, 'store'])->name('store');
+                Route::post('/destroy/{id?}', [OtherPaymentController::class, 'destroy'])->name('destroy');
+                Route::post('/import', [OtherPaymentController::class, 'import'])->name('import');
+            });
         });
+
+        // Withdraw Routes
         Route::group(['prefix' => 'withdraw', 'as' => 'withdraw.'], function () {
             Route::get('/', [WithdrawController::class, 'index'])->name('index');
             Route::get('/datatables', [WithdrawController::class, 'datatables'])->name('ajax');
@@ -67,25 +68,33 @@ Route::middleware(['auth', 'verified', 'role:admin'])->group(function () {
             Route::delete('/destroy/{id?}', [WithdrawController::class, 'destroy'])->name('destroy');
         });
 
-        //andin
+        // Metadata Routes
         Route::group(['prefix' => 'metadata', 'as' => 'metadata.'], function () {
-            Route::get('datatables', [ManageMetaDataController::class, 'datatable'])->name('metadatadatatables.data');
-            Route::get('/', [ManageMetaDataController::class, 'index'])->name('manage_metadata');
-            Route::post('/store', [ManageMetaDataController::class, 'store'])->name('manage_metadata.store');
-            Route::put('update/{id}', [ManageMetaDataController::class, 'update'])->name('manage_metadata.update');
+            Route::get('/datatables', [MasterDataController::class, 'datatable'])->name('metadatadatatables.data');
+            Route::get('/', [MasterDataController::class, 'index'])->name('manage_metadata');
+            Route::post('/store', [MasterDataController::class, 'store'])->name('manage_metadata.store');
+            Route::put('/update/{id}', [MasterDataController::class, 'update'])->name('manage_metadata.update');
         });
 
+        // Dashboard Route
         Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
-    });
-});
-
-
-
-
-
 Route::middleware(['auth', 'verified', 'role:user'])->group(function () {
-    Route::get('/user/dashboard', [AnggotaController::class, 'dashboard'])->name('dashboard');
-    // Route::get('/user/dashboard', function () {
-    //     return view('user.dashboard');
-    // });
+
+    Route::get('/user/dashboard', [AnggotaController::class, 'dashboard'])->name('user.dashboard');
+    Route::group(['prefix'=>'user','as'=>'user.'], function () {
+
+
+        //route history pembayaran
+        Route::group(['prefix'=>'history','as'=>'history.'], function () {
+            Route::get('/main', [PaymentHistoryController::class, 'main'])->name('main');
+            Route::get('/main/ajax', [PaymentHistoryController::class, 'mainDatatable'])->name('main.ajax');
+            Route::get('/mothly', [PaymentHistoryController::class, 'mothly'])->name('mothly');
+            Route::get('/mothly/ajax', [PaymentHistoryController::class, 'mothlyDatatable'])->name('mothly.ajax');
+            Route::get('/other', [PaymentHistoryController::class, 'other'])->name('other');
+            Route::get('/other/ajax', [PaymentHistoryController::class, 'otherDatatable'])->name('other.ajax');     
+        });
+        //end route history pembayaran
+
+
+    });
 });
