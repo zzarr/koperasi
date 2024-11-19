@@ -30,6 +30,7 @@
                 </div>
                 <div class="card-body">
                     <form id="meta">
+                        @csrf
                         <div class="form-group">
                             <label>Total Angsuran Pokok</label>
                             <input type="text" name="main_payment" class="form-control form-control-border" id="main_payment" value="{{$main->paid_off_amount ?? ''}}">
@@ -49,7 +50,7 @@
                     </form>
                 </div>
                 <div class="card-footer">
-                    <button type="button" id="btn_form_meta" class="btn btn-primary"><i class="fa fa-save"></i> Save</button>
+                    <button type="submit" id="btn_form_meta" class="btn btn-primary"><i class="fa fa-save"></i> Save</button>
                 </div>
             </div>
             <!-- /.row -->
@@ -65,41 +66,28 @@
 <script>
     $(document).ready(function () {
         var main = $('#main_payment');
-        var monthly = $('#monthly_payment');
-        var isUpdate = false; // Flag untuk cek apakah ini update
-
-        // Format input saat mengetik
         main.on('keyup', function(e){
             main.val(formatRupiah(main.val(), 'Rp. '));
         });
 
+        var monthly = $('#monthly_payment');
         monthly.on('keyup', function(e){
             monthly.val(formatRupiah(monthly.val(), 'Rp. '));
         });
 
-        // Format data saat halaman load
-        main.val(formatRupiah(main.val(), 'Rp. '));
-        monthly.val(formatRupiah(monthly.val(), 'Rp. '));
-
-        // Cek apakah data sudah ada
-        if(main.val() && monthly.val()) {
-            isUpdate = true;
-            $('#btn_form_meta').text('Update'); // Ubah tombol menjadi Update
-        }
+        main.val(formatRupiah(main.val(), 'Rp. '))
+        monthly.val(formatRupiah(monthly.val(), 'Rp. '))
 
         $('#card-meta').on('click', '#btn_form_meta', function() {
-            let data = new FormData($('#meta')[0]);
-            let url = '/admin/metadata/update/' + id,
-            let method = isUpdate ? 'PUT' : 'POST';
-
+            let data = new FormData($('#meta')[0])
             $.ajax({
-                url: url,
-                type: method,
+                url: "{{route('admin.metadata.manage_metadata.store')}}",
+                type: 'POST',
                 data: data,
                 contentType: false,
                 processData: false,
                 beforeSend: function() {
-                    $('#btn_form_meta').attr('disabled', 'disabled');
+                    $('#btn_form_meta').attr('disabled', 'disabled')
                     KTApp.block('#card-meta .card', {
                         overlayColor: '#000000',
                         message: 'Please wait...',
@@ -112,12 +100,6 @@
                         text: data.message,
                         icon: data.code == 600 ? "warning" : "success"
                     });
-
-                    // Jika berhasil, ubah tombol jadi "Update"
-                    if (!isUpdate) {
-                        isUpdate = true;
-                        $('#btn_form_meta').text('Update');
-                    }
                 },
                 error: function(res, exception) {
                     KTApp.unblock('#card-meta .card');

@@ -12,9 +12,9 @@ use App\Http\Controllers\Admin\{
 use App\Http\Controllers\user\{
     AnggotaController,
     PaymentHistoryController
+    MasterDataController
 };
 use App\Http\Controllers\AuthController;
-use App\Http\Controllers\ManageMetaDataController;
 
 Route::get('/', function () {
     return view('welcome');
@@ -70,10 +70,10 @@ Route::middleware(['auth', 'verified', 'role:admin'])->group(function () {
 
         // Metadata Routes
         Route::group(['prefix' => 'metadata', 'as' => 'metadata.'], function () {
-            Route::get('/datatables', [ManageMetaDataController::class, 'datatable'])->name('metadatadatatables.data');
-            Route::get('/', [ManageMetaDataController::class, 'index'])->name('manage_metadata');
-            Route::post('/store', [ManageMetaDataController::class, 'store'])->name('manage_metadata.store');
-            Route::put('/update/{id}', [ManageMetaDataController::class, 'update'])->name('manage_metadata.update');
+            Route::get('/datatables', [MasterDataController::class, 'datatable'])->name('metadatadatatables.data');
+            Route::get('/', [MasterDataController::class, 'index'])->name('manage_metadata');
+            Route::post('/store', [MasterDataController::class, 'store'])->name('manage_metadata.store');
+            Route::put('/update/{id}', [MasterDataController::class, 'update'])->name('manage_metadata.update');
         });
 
         // Dashboard Route
@@ -87,7 +87,7 @@ Route::middleware(['auth', 'verified', 'role:user'])->group(function () {
     Route::get('/user/dashboard', [AnggotaController::class, 'dashboard'])->name('user.dashboard');
     Route::group(['prefix'=>'user','as'=>'user.'], function () {
 
-        
+
         //route history pembayaran
         Route::group(['prefix'=>'history','as'=>'history.'], function () {
             Route::get('/main', [PaymentHistoryController::class, 'main'])->name('main');
