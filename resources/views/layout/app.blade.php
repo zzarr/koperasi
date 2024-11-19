@@ -21,7 +21,7 @@
     <link href="{{ asset('demo1/assets/css/components/custom-modal.css') }}" rel="stylesheet" type="text/css" />
     <link href="{{ asset('demo1/plugins/apex/apexcharts.css') }}" rel="stylesheet" type="text/css">
     <link href="{{ asset('demo1/assets/css/dashboard/dash_1.css') }}" rel="stylesheet" type="text/css" />
-    <link rel="stylesheet" href="{{ asset('dist/css/icons.css') }}">
+    <link rel="stylesheet" href="{{ asset('dist/css/icons.min.css') }}">
     <link rel="stylesheet" href="{{ asset('libs/fontawesome-free/css/all.min.css') }}">
 
 
@@ -118,7 +118,7 @@
         feather.replace();
     </script>
     <script>
-                    function formatRupiah(angka, prefix) {
+        function formatRupiah(angka, prefix) {
             let number_string = angka.replace(/[^,\d]/g, '').toString(),
                 split = number_string.split(','),
                 sisa = split[0].length % 3,

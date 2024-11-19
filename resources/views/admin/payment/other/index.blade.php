@@ -1,9 +1,9 @@
 @extends('layout.app')
-@section('title', 'Pembayaran Pokok')
+@section('title', 'Simpanan Sukarela')
 @section('content')
     <div class="page-header">
         <div class="page-title">
-            <h3>Simpanan Pokok</h3>
+            <h3>Simpanan Sukarela</h3>
         </div>
         <nav class="breadcrumb-one" aria-label="breadcrumb">
             <ol class="breadcrumb">
@@ -14,7 +14,7 @@
                             <polyline points="9 22 9 12 15 12 15 22"></polyline>
                         </svg></a></li>
                 <li class="breadcrumb-item " aria-current="page"><span>Pembayaran</span></li>
-                <li class="breadcrumb-item active" aria-current="page"><span>Pimpanan Pokok</span></li>
+                <li class="breadcrumb-item active" aria-current="page"><span>Pimpanan Sukarela</span></li>
 
             </ol>
         </nav>
@@ -34,10 +34,10 @@
                             <tr>
                                 <th rowspan="3" style="vertical-align: middle">Nama</th>
                                 {{-- <th rowspan="3" width="10%" style="vertical-align: middle">Nomor Anggota</th> --}}
-                                <th colspan="14">Angsuran</th>
-                                <th rowspan="3" style="vertical-align: middle">Sisa</th>
-                                <th rowspan="3" style="vertical-align: middle">Ket</th>
-                                <th rowspan="3" style="vertical-align: middle">Jumlah</th>
+                                <th colspan="24">Bulan</th>
+                                <th rowspan="3" style="vertical-align: middle">Total now</th>
+                                <th rowspan="3" style="vertical-align: middle">Total last</th>
+                                <th rowspan="3" style="vertical-align: middle">Total All</th>
                             </tr>
                             <tr>
                                 <th colspan="2">1</th>
@@ -47,6 +47,11 @@
                                 <th colspan="2">5</th>
                                 <th colspan="2">6</th>
                                 <th colspan="2">7</th>
+                                <th colspan="2">8</th>
+                                <th colspan="2">9</th>
+                                <th colspan="2">10</th>
+                                <th colspan="2">11</th>
+                                <th colspan="2">12</th>
                             </tr>
                             <tr>
                                 <th>TGL</th>
@@ -70,6 +75,20 @@
                                 <th>TGL</th>
                                 <th>JML</th>
 
+                                <th>TGL</th>
+                                <th>JML</th>
+
+                                <th>TGL</th>
+                                <th>JML</th>
+
+                                <th>TGL</th>
+                                <th>JML</th>
+
+                                <th>TGL</th>
+                                <th>JML</th>
+
+                                <th>TGL</th>
+                                <th>JML</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -81,7 +100,7 @@
         </div> <!-- Penutup div.col-12 -->
     </div> <!-- Penutup div.row -->
 
-    @include('admin.payment.main.main_payment_modal')
+
 
 @endsection
 
@@ -142,12 +161,124 @@
             serverSide: true,
             scrollY: "50vh",
             scrollX: true,
-            ajax: "{{ route('admin.payment.main.ajax') }}",
+            ajax: "{{ route('admin.payment.other.ajax') }}",
             // responsive: true,
             // lengthChange: false,
             // autoWidth: true,
+            columns: [{
+                    data: 'name'
+                },
+
+                // 1
+                {
+                    data: 'other_payment.0.paid_at'
+                },
+                {
+                    data: 'other_payment.0.amount'
+                },
+
+                // 2
+                {
+                    data: 'other_payment.1.paid_at'
+                },
+                {
+                    data: 'other_payment.1.amount'
+                },
+
+                // 3
+                {
+                    data: 'other_payment.2.paid_at'
+                },
+                {
+                    data: 'other_payment.2.amount'
+                },
+
+                // 4
+                {
+                    data: 'other_payment.3.paid_at'
+                },
+                {
+                    data: 'other_payment.3.amount'
+                },
+
+                // 5
+                {
+                    data: 'other_payment.4.paid_at'
+                },
+                {
+                    data: 'other_payment.4.amount'
+                },
+
+                // 6
+                {
+                    data: 'other_payment.5.paid_at'
+                },
+                {
+                    data: 'other_payment.5.amount'
+                },
+
+                // 7
+                {
+                    data: 'other_payment.6.paid_at'
+                },
+                {
+                    data: 'other_payment.6.amount'
+                },
+
+                // 8
+                {
+                    data: 'other_payment.7.paid_at'
+                },
+                {
+                    data: 'other_payment.7.amount'
+                },
+
+                // 9
+                {
+                    data: 'other_payment.8.paid_at'
+                },
+                {
+                    data: 'other_payment.8.amount'
+                },
+
+                // 10
+                {
+                    data: 'other_payment.9.paid_at'
+                },
+                {
+                    data: 'other_payment.9.amount'
+                },
+
+                // 11
+                {
+                    data: 'other_payment.10.paid_at'
+                },
+                {
+                    data: 'other_payment.10.amount'
+                },
+
+                // 12
+                {
+                    data: 'other_payment.11.paid_at'
+                },
+                {
+                    data: 'other_payment.11.amount'
+                },
+
+                {
+                    data: 'other_total'
+                },
+                {
+                    data: 'last_year_1'
+                },
+                {
+                    data: 'total_all'
+                },
+            ],
             columnDefs: [{
-                    targets: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14],
+                    targets: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23,
+                        24
+                    ],
                     "defaultContent": "",
                     orderable: false,
                     createdCell: function(td, cellData, rowData, row, col) {
@@ -161,24 +292,27 @@
                     },
                 },
                 {
-                    targets: [1, 3, 5, 7, 9, 11, 13],
+                    targets: [1, 3, 5, 7, 9, 11, 13, 15, 17, 19, 21, 23],
                     "defaultContent": "",
+                    orderable: false,
                     render: function(data, type, full, meta) {
-                        if (!data && full.main_payment_status) {
-                            return '-';
-                        }
+                        col = 0;
+                        array = [1, 3, 5, 7, 9, 11, 13, 15, 17, 19, 21, 23]
+                        col = array.indexOf(meta.col) + 1;
+
                         if (!data) {
-                            return `<button type="button" class="btn btn-outline-primary btn-add" data-id="${full.id}">+</button>`;
+                            return `<button type="button" class="btn btn-primary btn-add" data-id="${full.id}" data-month="${col}">+</button>`;
                         }
                         // return `<button type="button" class="btn btn-danger">-</button>`+data;
                         return data
                     },
                 },
                 {
-                    targets: [2, 4, 6, 8, 10, 12, 14],
+                    targets: [2, 4, 6, 8, 10, 12, 14, 16, 18, 20, 22, 24],
                     "defaultContent": "",
+                    orderable: false,
                     render: function(data, type, full, meta) {
-                        if (!data) {
+                        if (!data || data === 0) {
                             return `-`;
                         }
                         // return `<button type="button" class="btn btn-danger">-</button>`+data;
@@ -186,107 +320,37 @@
                     },
                 },
                 {
-                    targets: 15,
-                    render: function(data, type, full, meta) {
-                        sum = 0;
-                        total = 0;
-                        data.forEach(function(item) {
-                            sum += item.amount;
-                            total = item.config_payment.paid_off_amount;
-                        });
-                        return formatRupiah(String(total - sum), 'Rp. ');
-                    },
-                },
-                {
-                    targets: 16,
+                    targets: 25,
+                    title: 'Total simpanan Sukarela ' + new Date().getFullYear(),
+                    // orderable: false,
                     createdCell: function(td, cellData, rowData, row, col) {
                         $(td).addClass('text-center');
                     },
                     render: function(data, type, full, meta) {
-                        sum = 0;
-                        total = 0;
-                        data.forEach(function(item) {
-                            sum += item.amount;
-                            total = item.config_payment.paid_off_amount;
-                        });
-                        sisa = (sum - total)
-
-                        return sisa >= 0 && sum > 0 ? '<a class="btn btn-success btn-sm">Lunas</a>' :
-                            '<a class="btn btn-outline-warning btn-sm">Belum lunas</a>';
+                        return formatRupiah(String(data), 'Rp. ');
                     },
                 },
                 {
-                    targets: 17,
+                    targets: 26,
+                    title: 'Total simpanan Sukarela ' + ((new Date().getFullYear()) - 1),
+                    // orderable: false,
+                    createdCell: function(td, cellData, rowData, row, col) {
+                        $(td).addClass('text-center');
+                    },
                     render: function(data, type, full, meta) {
-                        sum = 0;
-                        data.forEach(function(item) {
-                            sum += item.amount;
-                        });
-                        return formatRupiah(String(sum), 'Rp. ');
+                        return formatRupiah(String(data), 'Rp. ');
                     },
                 },
-            ],
-            columns: [{
-                    data: 'name'
-                },
-
                 {
-                    data: 'main_payment.0.paid_at'
-                },
-                {
-                    data: 'main_payment.0.amount'
-                },
-
-                {
-                    data: 'main_payment.1.paid_at'
-                },
-                {
-                    data: 'main_payment.1.amount'
-                },
-
-                {
-                    data: 'main_payment.2.paid_at'
-                },
-                {
-                    data: 'main_payment.2.amount'
-                },
-
-                {
-                    data: 'main_payment.3.paid_at'
-                },
-                {
-                    data: 'main_payment.3.amount'
-                },
-
-                {
-                    data: 'main_payment.4.paid_at'
-                },
-                {
-                    data: 'main_payment.4.amount'
-                },
-
-                {
-                    data: 'main_payment.5.paid_at'
-                },
-                {
-                    data: 'main_payment.5.amount'
-                },
-
-                {
-                    data: 'main_payment.6.paid_at'
-                },
-                {
-                    data: 'main_payment.6.amount'
-                },
-
-                {
-                    data: 'main_payment'
-                },
-                {
-                    data: 'main_payment'
-                },
-                {
-                    data: 'main_payment'
+                    targets: 27,
+                    title: 'Total simpanan Sukarela Keseluruhan',
+                    // orderable: false,
+                    createdCell: function(td, cellData, rowData, row, col) {
+                        $(td).addClass('text-center');
+                    },
+                    render: function(data, type, full, meta) {
+                        return formatRupiah(String(data), 'Rp. ');
+                    },
                 },
             ],
             oLanguage: {
