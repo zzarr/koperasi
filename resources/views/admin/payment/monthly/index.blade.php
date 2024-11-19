@@ -1,6 +1,11 @@
 @extends('layout.app')
 @section('title','Simpanan Wajib')
+@push('css')
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
+@endpush
 @section('content')
+
+
 <div class="page-header">
     <div class="page-title">
         <h3>Simpanan Wajib</h3>
@@ -170,7 +175,72 @@
 
 @push('script')
 <script>
-    
+   // Inisialisasi Flatpickr pada saat modal ditampilkan
+$('#user-modal').on('shown.bs.modal', function(event) {
+    // Input untuk tanggal pembayaran
+    flatpickr("#paid_at", {
+        dateFormat: "Y-m-d", // Format: Tahun-Bulan-Hari
+        defaultDate: new Date(), // Tanggal default adalah hari ini
+        allowInput: true, // Pengguna bisa mengetik manual
+    });
+});
+
+// Logika untuk membuka modal dan mengatur ulang form
+$('#user-table').on('click', '.btn-add', function() {
+    var id = $(this).attr("data-id");
+    $('#user-modal').modal('show');
+    $("#user-modal #action-modal").text('Angsuran Baru');
+    $("#user-form")[0].reset();
+    $('#payment_month').val($(this).attr("data-month")); // Set bulan
+    $('#payment_year').val(new Date().getFullYear()); // Set tahun
+    $("#user-form").attr('data-userId', id);
+});
+
+// Proses pengiriman data
+$('#user-modal').on('click', '#btn_form', function() {
+    let data = new FormData($('#user-form')[0]);
+    let id = $('#user-form').attr("data-id") || '';
+    let user_id = $('#user-form').attr("data-userId") || '';
+
+    if (id) data.append("id", id);
+    if (user_id) data.append("user_id", user_id);
+
+    $.ajax({
+        url: "{{ route('admin.payment.monthly.store') }}",
+        type: 'POST',
+        data: data,
+        contentType: false,
+        processData: false,
+        beforeSend: function() {
+            $('#btn_form').attr('disabled', true);
+            Notiflix.Loading.pulse('Processing...');
+        },
+        success: function(data) {
+            $('#user-modal').modal('hide');
+            $('#btn_form').removeAttr('disabled');
+            $('#user-form')[0].reset();
+            $('#user-table').DataTable().ajax.reload();
+            Notiflix.Loading.remove();
+
+            if (data.code === 600) {
+                Notiflix.Report.warning('Warning', data.message, 'OK');
+            } else {
+                Notiflix.Notify.success('Data berhasil disimpan!');
+            }
+        },
+        error: function(res) {
+            $('#btn_form').removeAttr('disabled');
+            Notiflix.Loading.remove();
+
+            if (res.responseJSON && res.responseJSON.errors) {
+                let errorMsg = Object.values(res.responseJSON.errors).flat().join('<br>');
+                Notiflix.Report.failure('Error', errorMsg, 'OK');
+            } else {
+                Notiflix.Report.failure('Error', 'Terjadi kesalahan, silakan coba lagi.', 'OK');
+            }
+        }
+    });
+});
 
 </script>
 
@@ -423,4 +493,5 @@
     });
 </script>
 
+<script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
 @endpush

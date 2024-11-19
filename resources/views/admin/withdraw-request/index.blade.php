@@ -18,16 +18,18 @@
         </ol>
     </nav>
 </div>
+
 <div class="col-lg-12 col-md-12 mt-3 layout-spacing">
     <div class="d-flex justify-content-start mb-3">
-        <a href="#" class="btn btn-outline-primary" data-toggle="modal" data-target="#exampleModal">
+        <a href="#" class="btn btn-outline-primary" data-toggle="modal" data-target="#user-modal">
             <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-plus">
                 <line x1="12" y1="5" x2="12" y2="19"></line>
                 <line x1="5" y1="12" x2="19" y2="12"></line>
             </svg>
             Buat Penarikan
         </a>
-</div>
+    </div>
+
     
 <div class="row" id="cancel-row">
     <div class="col-xl-12 col-lg-12 col-sm-12 layout-spacing">
@@ -56,9 +58,226 @@
     </div>
 </div>
 
+<!-- Modal -->
+<div class="modal fade" id="user-modal" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+    <div class="modal-dialog modal-lg modal-dialog-centered" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLongTitle"><span id="action-modal"></span> Permintaan Penarikan</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <form method="POST" id="user-form" data-id="">
+                    @csrf
+                    <div class="row">
+                        <div class="col-md-6">
+                            <label>Dompet <span id="wallet-type"></span> :</label>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="float-right">
+                                <span id="wallet-amount"></span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-12">
+                            <div class="form-group">
+                                <label>Anggota<span class="text-danger">*</span></label>
+                                <select id="user_id" name="user_id" class="form-control form-control-border">
+                                    <option selected disabled value="">-- Pilih Member --</option>
+                                    @foreach ($user as $item)
+                                        <option value="{{ $item->id }}">{{ $item->name }}</option>
+                                    @endforeach
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label>Jenis Penarikan <span class="text-danger">*</span> </label>
+                                <select name="type" id="type" class="form-control form-control-border after" disabled required>
+                                    <option selected disabled value="">-- Pilih Jenis Penarikan --</option>
+                                    <option value="all">Penarikan Keseluruhan Tabungan</option>
+                                    <option value="shu-cash">Penarikan Dana SHU ke Cash</option>
+                                    <option value="other-cash">Penarikan Dana Sukarela ke Cash</option>
+                                    <option value="shu-monthly">Pindahkan Dana SHU Ke Tabungan Wajib</option>
+                                    <option value="shu-other">Pindahkan Dana SHU Ke Tabungan Sukarela</option>
+                                    <option value="other-monthly">Pindahkan Dana Sukarela Ke Tabungan Wajib</option>
+                                </select>
+                            </div>
+                            <div class="form-group d-none" id="form-value">
+                                <label>Banyaknya <span class="text-danger">*</span> </label>
+                                <input type="number" id="value" name="value" class="form-control form-control-border after" placeholder="" disabled>
+                            </div>
+                            <div class="form-group d-none" id="amount-div">
+                                <label>Nilai Penarikan <span class="text-danger">*</span> </label>
+                                <input type="text" id="amount" name="amount" class="form-control form-control-border after" placeholder="" disabled>
+                            </div>
+                            <div class="form-group">
+                                <label>Catatan </label>
+                                <input type="text" name="note" class="form-control form-control-border after" placeholder="" disabled>
+                            </div>
+                        </div>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer ">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal"><i class="fa fa-times"></i> Close</button>
+                <button type="button" id="btn_form" class="btn btn-primary"><i class="fa fa-save"></i> Save</button>
+            </div>
+        </div>
+    </div>
+</div>
+
 @endsection
 
 @push('script')
+
+<script>
+    $(document).ready(function() {
+    var config_payment = 0;
+    var wallet = {
+        main: 0,
+        monthly: 0,
+        other: 0,
+        shu: 0,
+        total: 0,
+    };
+
+    var type = '';
+
+    // Format Rupiah
+    var rupiah = $('#amount');
+    rupiah.on('keyup', function(e) {
+        rupiah.val(formatRupiah(rupiah.val(), 'Rp. '));
+    });
+
+    // Fetch configuration
+    function getConfig() {
+        let url = `{{ route('admin.metadata.get.data') }}`;
+        $.get(url, function(response) {
+            config_payment = +response.paid_off_amount;
+        });
+    }
+    getConfig();
+
+    // Handle User Selection
+    $(document).on('change', '#user_id', function() {
+        let id = $(this).val();
+        let url = `{{ route('admin.withdraw.info', ':id') }}`.replace(':id', id);
+
+        $.ajax({
+            url: url,
+            type: 'GET',
+            beforeSend: function() {
+                Notiflix.Block.circle('#user-modal .modal-content', 'Loading...');
+            },
+            success: function(response) {
+                wallet.main = response.wallet.main;
+                wallet.monthly = response.wallet.monthly;
+                wallet.other = response.wallet.other;
+                wallet.shu = response.wallet.shu;
+                wallet.total = (+response.wallet.main + +response.wallet.monthly + +response.wallet.other + +response.wallet.shu).toString();
+                Notiflix.Block.remove('#user-modal .modal-content');
+            },
+            error: function() {
+                Notiflix.Block.remove('#user-modal .modal-content');
+                $('#user-modal').modal('hide');
+                Notiflix.Report.failure('Error', 'Terjadi kesalahan, mohon cek kembali!', 'Tutup');
+            }
+        });
+
+        $('.after').prop('disabled', false);
+    });
+
+    // Handle Type Selection
+    $(document).on('change', '#type', function() {
+        type = $(this).val();
+
+        if (type == 'shu-monthly' || type == 'other-monthly') {
+            $('#form-value').removeClass('d-none');
+            $('#amount-div').addClass('d-none');
+        } else {
+            if (type == 'shu-other') $('#amount').val(formatRupiah(wallet.shu, 'Rp. '));
+            else if (type == 'shu-cash') $('#amount').val(formatRupiah(wallet.shu, 'Rp. '));
+            else if (type == 'other-cash') $('#amount').val(formatRupiah(wallet.other, 'Rp. '));
+            else $('#amount').val(formatRupiah('0', 'Rp. '));
+
+            if (type == 'shu-other' || type == 'shu-cash' || type == 'other-cash') $('#amount-div').removeClass('d-none');
+            else $('#amount-div').addClass('d-none');
+
+            $('#form-value').addClass('d-none');
+            $('#value').val('');
+        }
+
+        // Update Wallet Information
+        if (type == 'all') {
+            $('#wallet-type').html('Keseluruhan');
+            $('#wallet-amount').html(formatRupiah(wallet.total, 'Rp. '));
+        } else if (type == 'shu-monthly' || type == 'shu-other' || type == 'shu-cash') {
+            $('#wallet-type').html('SHU');
+            $('#wallet-amount').html(formatRupiah(wallet.shu, 'Rp. '));
+        } else if (type == 'other-monthly' || type == 'other-cash') {
+            $('#wallet-type').html('Sukarela');
+            $('#wallet-amount').html(formatRupiah(wallet.other, 'Rp. '));
+        }
+    });
+
+    // Validate Input Value
+    $(document).on('change input', '#value', function() {
+        let val = $(this).val();
+
+        if (type == 'shu-monthly' && (val * config_payment) > +wallet.shu) {
+            alert('Dompet SHU tidak mencukupi!');
+            $(this).val('');
+        } else if (type == 'other-monthly' && (val * config_payment) > +wallet.other) {
+            alert('Dompet Sukarela tidak mencukupi!');
+            $(this).val('');
+        }
+    });
+
+    // Submit Form
+    $('#user-modal').on('click', '#btn_form', function() {
+        let data = new FormData($('#user-form')[0]);
+        let id = $('#user-form').attr("data-id") || '';
+        if (id) {
+            data.append("id", id);
+        }
+
+        $.ajax({
+            url: "{{ route('admin.withdraw.store') }}",
+            type: 'POST',
+            data: data,
+            contentType: false,
+            processData: false,
+            beforeSend: function() {
+                $('#btn_form').attr('disabled', 'disabled');
+                Notiflix.Block.circle('#user-modal .modal-content', 'Submitting...');
+            },
+            success: function(data) {
+                $('#user-table').DataTable().ajax.reload();
+                Notiflix.Block.remove('#user-modal .modal-content');
+                $('#btn_form').removeAttr('disabled');
+                if (data.code == 200) {
+                    $('#user-modal').modal('hide');
+                    Notiflix.Notify.success(data.message || 'Data berhasil disimpan!');
+                } else {
+                    Notiflix.Notify.warning(data.message || 'Periksa data Anda kembali.');
+                }
+            },
+            error: function(xhr) {
+                Notiflix.Block.remove('#user-modal .modal-content');
+                $('#btn_form').removeAttr('disabled');
+                if (xhr.responseJSON && xhr.responseJSON.error) {
+                    Notiflix.Notify.failure(xhr.responseJSON.error);
+                } else {
+                    Notiflix.Notify.failure('Terjadi kesalahan, mohon coba lagi.');
+                }
+            }
+        });
+    });
+});
+</script>
+
     <script>
         $(document).ready(function() {
     $.ajaxSetup({
@@ -76,28 +295,7 @@
         scrollCollapse: true,
         fixedColumns: true,
         fixedHeader: true,
-        dom: `<"row" <"col-md-2" l> <"col-md-2" B>  <"col-md-8" f>> rt`,
-        buttons: {
-            buttons: [{
-                text: '+ Buat Penarikan',
-                className: 'btn-primary',
-                action: function(e, dt, node, config) {
-                    $('#action-modal').text('Tambah ');
-                    $('#user-modal').modal('show');
-                    $("#user-form")[0].reset();
-                    $('.after').prop('disabled', true);
-                    $("#user-form").attr('data-id', '');
-                },
-            }],
-            dom: {
-                button: {
-                    className: 'btn'
-                },
-                buttonLiner: {
-                    tag: null
-                }
-            }
-        },
+       
         columnDefs: [{
                 targets: 0,
                 createdCell: function(td, cellData, rowData, row, col) {
@@ -123,50 +321,43 @@
                 },
                 render: function(data, type, full, meta) {
                     return `
-                        <a href="javascript:void(0);" data-id="${full.id}" class="btn-edit btn btn-md btn-outline-primary btn-icon" title="Edit details">
-                            <i class="fa fa-edit"></i>
-                        </a>
-                        <a href="javascript:void(0);" data-id="${full.id}" class="btn-delete btn btn-md btn-outline-danger btn-icon" title="Delete">
-                            <i class="fa fa-trash"></i>
-                        </a>`;
+                <div class="action-buttons d-flex justify-content-center ">
+            <a href="javascript:void(0);" data-id="${full.id}" class="btn-edit btn btn-sm btn-outline-primary btn-icon mr-2" title="Edit details">
+                <i class="fa fa-edit"></i>
+            </a>
+            <a href="javascript:void(0);" data-id="${full.id}" class="btn-delete btn btn-sm btn-outline-danger btn-icon" title="Delete">
+                <i class="fa fa-trash"></i>
+            </a>
+        </div>`;
                 }
             }
         ],
         columns: [{
                 data: 'id',
-                title: 'ID'
             },
             {
                 data: 'user.name',
-                title: 'Nama User'
             },
             {
                 data: 'name',
-                title: 'Nama'
             },
             {
                 data: 'value',
-                title: 'Nilai'
             },
             {
                 data: 'amount',
-                title: 'Jumlah'
             },
             {
                 data: 'description',
-                title: 'Deskripsi'
             },
             {
                 data: 'status',
-                title: 'Status'
             },
             {
                 data: 'withdrawn_at',
-                title: 'Tanggal Penarikan'
             },
             {
                 data: 'id',
-                title: 'Aksi'
             }
         ],
         language: {
