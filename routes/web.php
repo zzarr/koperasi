@@ -6,11 +6,11 @@ use App\Http\Controllers\Admin\{
     MainPaymentController,
     MonthlyPaymentController,
     WithdrawController,
+    DashboardController
 };
 use App\Http\Controllers\User\AnggotaController;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\ManageMetaDataController;
-use App\Http\Controllers\Admin\DashboardController;
 
 /*
 |--------------------------------------------------------------------------
@@ -36,7 +36,7 @@ Route::post('/logout', [AuthController::class, 'logout'])->name('logout')->middl
 Route::get('/logout', [AuthController::class, 'logout'])->name('logout')->middleware('auth', 'verified');
 
 Route::middleware(['auth', 'verified', 'role:admin'])->group(function () {
-    Route::group(['as' => 'admin.'], function () {
+    Route::group(['prefix' => 'admin', 'as' => 'admin.'], function () {
 
         Route::group(['prefix' => 'payment', 'as' => 'payment.'], function () {
             Route::group(['prefix' => 'main', 'as' => 'main.'], function () {
@@ -75,7 +75,7 @@ Route::middleware(['auth', 'verified', 'role:admin'])->group(function () {
             Route::put('update/{id}', [ManageMetaDataController::class, 'update'])->name('manage_metadata.update');
         });
 
-        Route::get('/admin/dashboard', [DashboardController::class, 'index'])->name('dashboard');
+        Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
     });
 });
 

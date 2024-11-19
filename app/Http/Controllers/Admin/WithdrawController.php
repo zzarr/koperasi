@@ -4,10 +4,12 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
-use App\Models\User;
 use Yajra\DataTables\Facades\DataTables;
 
 use Spatie\Permission\Models\Role;
+use App\Models\User;
+use App\Models\Withdraw;
+
 
 
 
@@ -20,5 +22,12 @@ class WithdrawController extends Controller
         })->orderBy('name', 'ASC')->get();
 
         return view('admin.withdraw-request.index', $data);
+    }
+
+    public function datatables(Request $request)
+    {
+        $data = Withdraw::with('user')->get();
+
+        return DataTables::of($data)->make();
     }
 }
