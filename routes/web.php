@@ -11,7 +11,7 @@ use App\Http\Controllers\Admin\{
 };
 use App\Http\Controllers\user\{
     AnggotaController,
-    PaymentHistoryController
+    PaymentHistoryController,
     MasterDataController
 };
 use App\Http\Controllers\AuthController;
