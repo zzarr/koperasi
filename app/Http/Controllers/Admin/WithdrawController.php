@@ -7,6 +7,7 @@ use Illuminate\Http\Request;
 use Yajra\DataTables\Facades\DataTables;
 
 use Spatie\Permission\Models\Role;
+use Illuminate\Support\Facades\Log;
 
 use Illuminate\Support\Facades\DB;
 use App\Models\User;
@@ -53,6 +54,9 @@ class WithdrawController extends Controller
 
     public function store(Request $request)
     {
+        $amount = $request->input('amount') ? preg_replace('/[^0-9]/', '', $request->input('amount')) : 0;
+        $value = $request->input('value') ? preg_replace('/[^0-9]/', '', $request->input('value')) : 0;
+
         // dd($request, Carbon::now());
         try {
             DB::beginTransaction();
@@ -170,8 +174,12 @@ class WithdrawController extends Controller
             $this->isSuccess = true;
         } catch (\Exception $e) {
             DB::rollBack();
-
             $this->exception = $e->getMessage();
+
+            Log::error('Error in Store Method', [
+                'error' => $e->getMessage(),
+                'trace' => $e->getTraceAsString(),
+            ]);
         }
 
         return response()->json([

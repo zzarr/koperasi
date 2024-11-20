@@ -97,11 +97,11 @@
                                 <select name="type" id="type" class="form-control form-control-border after" disabled required>
                                     <option selected disabled value="">-- Pilih Jenis Penarikan --</option>
                                     <option value="all">Penarikan Keseluruhan Tabungan</option>
-                                    <option value="shu-cash">Penarikan Dana SHU ke Cash</option>
-                                    <option value="other-cash">Penarikan Dana Sukarela ke Cash</option>
-                                    <option value="shu-monthly">Pindahkan Dana SHU Ke Tabungan Wajib</option>
-                                    <option value="shu-other">Pindahkan Dana SHU Ke Tabungan Sukarela</option>
-                                    <option value="other-monthly">Pindahkan Dana Sukarela Ke Tabungan Wajib</option>
+                                    {{-- <option value="shu-cash">Penarikan Dana SHU ke Cash</option> --}}
+                                    <option value="other-cash">Penarikan Dana Hari Raya ke Cash</option>
+                                    {{-- <option value="shu-monthly">Pindahkan Dana SHU Ke Tabungan Wajib</option> --}}
+                                    {{-- <option value="shu-other">Pindahkan Dana SHU Ke Tabungan Sukarela</option> --}}
+                                    {{-- <option value="other-monthly">Pindahkan Dana Sukarela Ke Tabungan Wajib</option> --}}
                                 </select>
                             </div>
                             <div class="form-group d-none" id="form-value">
@@ -134,22 +134,9 @@
 
 <script>
     $(document).ready(function() {
-    var config_payment = 0;
-    var wallet = {
-        main: 0,
-        monthly: 0,
-        other: 0,
-        shu: 0,
-        total: 0,
-    };
+    var config_payment = ``;
 
-    var type = '';
-
-    // Format Rupiah
-    var rupiah = $('#amount');
-    rupiah.on('keyup', function(e) {
-        rupiah.val(formatRupiah(rupiah.val(), 'Rp. '));
-    });
+    getConfig();
 
     // Fetch configuration
     function getConfig() {
@@ -158,7 +145,23 @@
             config_payment = +response.paid_off_amount;
         });
     }
-    getConfig();
+    
+    var wallet = {
+        main: 0,
+        monthly: 0,
+        other: 0,
+        shu: 0,
+        total: 0,
+    };
+
+    var type = ``;
+
+        // Format Rupiah
+        var rupiah = $('#amount');
+    rupiah.on('keyup', function(e) {
+        rupiah.val(formatRupiah(rupiah.val(), 'Rp. '));
+    });
+
 
     // Handle User Selection
     $(document).on('change', '#user_id', function() {
@@ -217,7 +220,7 @@
             $('#wallet-type').html('SHU');
             $('#wallet-amount').html(formatRupiah(wallet.shu, 'Rp. '));
         } else if (type == 'other-monthly' || type == 'other-cash') {
-            $('#wallet-type').html('Sukarela');
+            $('#wallet-type').html('Hari Raya');
             $('#wallet-amount').html(formatRupiah(wallet.other, 'Rp. '));
         }
     });
