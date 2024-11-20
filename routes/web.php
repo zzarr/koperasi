@@ -60,7 +60,7 @@ Route::middleware(['auth', 'verified', 'role:admin'])->group(function () {
             Route::get('/datatables', [MasterDataController::class, 'datatable'])->name('metadatadatatables.data');
             Route::get('/', [MasterDataController::class, 'index'])->name('manage_metadata');
             Route::post('/store', [MasterDataController::class, 'store'])->name('manage_metadata.store');
-            Route::put('/update/{id}', [MasterDataController::class, 'update'])->name('manage_metadata.update');
+            Route::put('/update/{id?}', [MasterDataController::class, 'update'])->name('manage_metadata.update');
         });
 
         // Dashboard Route

@@ -1,6 +1,5 @@
 <?php
 
-
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
@@ -27,6 +26,8 @@ class MasterDataController extends Controller
     {
         $data['main'] = ConfigPayment::where('name', 'main_payment')->first();
         $data['monthly'] = ConfigPayment::where('name', 'monthly_payment')->first();
+        $data['routine'] = ConfigPayment::where('name', 'dept_routine')->first();
+        $data['special'] = ConfigPayment::where('name', 'dept_special')->first();
         return view('admin.meta.managemetadata', $data);
     }
 
@@ -51,6 +52,22 @@ class MasterDataController extends Controller
                 ['name' => 'monthly_payment'],
                 [
                     'paid_off_amount'   => preg_replace( '/[^0-9]/', '', $request->monthly_payment ),
+                    'is_active'         => 1
+                ]
+            );
+
+            ConfigPayment::updateOrCreate(
+                ['name' => 'dept_routine'],
+                [
+                    'paid_off_amount'   => preg_replace( '/[^0-9]/', '', $request->dept_routine ),
+                    'is_active'         => 1
+                ]
+            );
+
+            ConfigPayment::updateOrCreate(
+                ['name' => 'dept_special'],
+                [
+                    'paid_off_amount'   => preg_replace( '/[^0-9]/', '', $request->dept_special ),
                     'is_active'         => 1
                 ]
             );
@@ -84,8 +101,9 @@ class MasterDataController extends Controller
         } catch (\Exception $e) {
             DB::rollBack();
             $this->exception = $e;
+            dd($e->getMessage());
         }
-
+        return redirect()->back();
         return response()->json([
             "status"    => $this->isSuccess ?? false,
             "code"      => $this->isSuccess ? 200 : 600,
