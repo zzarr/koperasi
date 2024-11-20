@@ -2,7 +2,8 @@
 
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Admin\{
-    PiutangPaymentController,
+    PiutangController,
+    PembayaranPiutangController,
     MainPaymentController,
     MonthlyPaymentController,
     WithdrawController,
@@ -44,6 +45,19 @@ Route::middleware(['auth', 'verified', 'role:admin'])->group(function () {
                 Route::post('/destroy/{id?}', [MonthlyPaymentController::class, 'destroy'])->name('destroy');
                 Route::post('/import', [MonthlyPaymentController::class, 'import'])->name('import');
             });
+        });
+
+        // piutang
+        Route::group(['prefix' => 'piutang', 'as' => 'piutang.'], function () {
+                    Route::get('/', [PiutangController::class, 'index'])->name('index');
+                    Route::get('/datatables', [PiutangController::class, 'datatables'])->name('ajax');
+                    Route::post('/store', [PiutangController::class, 'store'])->name('store');
+                    Route::get('/users', [PiutangController::class, 'getUsers'])->name('users.get'); 
+                    Route::delete('/delete/{id?}', [PiutangController::class, 'destroy'])->name('delete');
+                    Route::group(['prefix' => 'pembayaran', 'as' => 'pembayaran.'], function () {
+                        Route::get('/{id}/detail', [PembayaranPiutangController::class, 'showDetail'])->name('detail');
+                        Route::get('/datatables', [PembayaranPiutangController::class, 'datatables'])->name('ajax');
+                    });
         });
 
         // Withdraw Routes
