@@ -70,7 +70,7 @@
                             <a href="{{ route('admin.payment.monthly.index') }}"> Simpanan Wajib </a>
                         </li>
                         <li>
-                            <a href="javascript:void(0);"> Simpanan Sukarela </a>
+                            <a href="{{ route('admin.payment.other.index') }}"> Simpanan Sukarela </a>
                         </li>
                     </ul>
                 </li>
@@ -101,6 +101,35 @@
                             <span> Dashboard</span>
                         </div>
                     </a>
+                </li>
+                <li class="menu">
+                    <a href="#submenu" data-toggle="collapse"
+                        aria-expanded="{{ Request::routeIs('admin.payment.main.index') ? 'true' : 'false' }}"
+                        class="dropdown-toggle collapsed ">
+                        <div class="">
+                            <i data-feather="dollar-sign"></i>
+                            <span> History Pembayaran</span>
+                        </div>
+                        <div>
+                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
+                                fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                                stroke-linejoin="round" class="feather feather-chevron-right">
+                                <polyline points="9 18 15 12 9 6"></polyline>
+                            </svg>
+                        </div>
+                    </a>
+                    <ul class="submenu list-unstyled collapse" id="submenu" data-parent="#accordionExample"
+                        style="">
+                        <li>
+                            <a href="{{ route('admin.payment.main.index') }}">Pembayaran Simpanan Pokok </a>
+                        </li>
+                        <li>
+                            <a href="{{ route('admin.payment.monthly.index') }}">Pembayaran Simpanan Wajib </a>
+                        </li>
+                        <li>
+                            <a href="{{ route('admin.payment.other.index') }}">Pembayaran Simpanan Sukarela </a>
+                        </li>
+                    </ul>
                 </li>
             @endrole
 
