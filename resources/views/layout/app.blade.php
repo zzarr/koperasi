@@ -21,8 +21,10 @@
     <link href="{{ asset('demo1/assets/css/components/custom-modal.css') }}" rel="stylesheet" type="text/css" />
     <link href="{{ asset('demo1/plugins/apex/apexcharts.css') }}" rel="stylesheet" type="text/css">
     <link href="{{ asset('demo1/assets/css/dashboard/dash_1.css') }}" rel="stylesheet" type="text/css" />
-    <link rel="stylesheet" href="{{ asset('dist/css/icons.css') }}">
+    <link rel="stylesheet" href="{{ asset('dist/css/icons.min.css') }}">
     <link rel="stylesheet" href="{{ asset('libs/fontawesome-free/css/all.min.css') }}">
+    <!-- Daterange picker -->
+    <link rel="stylesheet" href="{{ asset('libs/daterangepicker/daterangepicker.css') }}">
 
 
 
@@ -96,6 +98,10 @@
     <script src="{{ asset('libs/feather-icons/feather.min.js') }}"></script>
     <script src="{{ asset('dist/js/app.js') }}"></script>
 
+    <!-- daterangepicker -->
+    <script src="{{ asset('libs/moment/moment.min.js') }}"></script>
+    <script src="{{ asset('libs/daterangepicker/daterangepicker.js') }}"></script>
+
     <!-- END GLOBAL MANDATORY SCRIPTS -->
 
     <!-- BEGIN PAGE LEVEL PLUGINS/CUSTOM SCRIPTS -->
@@ -118,7 +124,20 @@
         feather.replace();
     </script>
     <script>
-                    function formatRupiah(angka, prefix) {
+        const KTApp = {
+            block: function(content) {
+                let overlay = `
+                                    <div class="overlay" style="background-color: rgba(189, 189, 189, 0.7)">
+                                        <i class="fas fa-2x fa-sync-alt fa-spin"></i>
+                                    </div>`;
+                $(content).append(overlay);
+            },
+            unblock: function(content) {
+                $(content + ' .overlay').remove();
+            },
+        }
+
+        function formatRupiah(angka, prefix) {
             let number_string = angka.replace(/[^,\d]/g, '').toString(),
                 split = number_string.split(','),
                 sisa = split[0].length % 3,
@@ -133,6 +152,8 @@
             rupiah = split[1] != undefined ? rupiah + ',' + split[1] : rupiah;
             return prefix == undefined ? rupiah : (rupiah ? prefix + rupiah : '');
         }
+
+        
     </script>
     @stack('script')
 

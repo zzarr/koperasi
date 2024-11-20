@@ -35,7 +35,6 @@ class MasterDataController extends Controller
     {
         return response()->json(ConfigPayment::where('name', 'monthly_payment')->first());
     }
-
     public function store(Request $request)
     {
         try {
@@ -43,7 +42,7 @@ class MasterDataController extends Controller
             ConfigPayment::updateOrCreate(
                 ['name' => 'main_payment'],
                 [
-                    'paid_off_amount'   => preg_replace( '/[^0-9]/', '', $request->main_payment ),
+                    'paid_off_amount'   => preg_replace('/[^0-9]/', '', $request->main_payment),
                     'is_active'         => 1
                 ]
             );
@@ -51,7 +50,7 @@ class MasterDataController extends Controller
             ConfigPayment::updateOrCreate(
                 ['name' => 'monthly_payment'],
                 [
-                    'paid_off_amount'   => preg_replace( '/[^0-9]/', '', $request->monthly_payment ),
+                    'paid_off_amount'   => preg_replace('/[^0-9]/', '', $request->monthly_payment),
                     'is_active'         => 1
                 ]
             );
