@@ -7,12 +7,13 @@ use App\Http\Controllers\Admin\{
     MonthlyPaymentController,
     WithdrawController,
     DashboardController,
-    OtherPaymentController
+    OtherPaymentController,
+    MasterDataController
 };
 use App\Http\Controllers\user\{
     AnggotaController,
     PaymentHistoryController,
-    MasterDataController
+    // MasterDataController
 };
 use App\Http\Controllers\AuthController;
 
@@ -28,7 +29,7 @@ Route::get('/logout', [AuthController::class, 'logout'])->name('logout')->middle
 
 // Admin Routes
 Route::middleware(['auth', 'verified', 'role:admin'])->group(function () {
-    Route::group(['prefix'=>'admin','as' => 'admin.'], function () {
+    Route::group(['prefix' => 'admin', 'as' => 'admin.'], function () {
         // Payment Routes
         Route::group(['prefix' => 'payment', 'as' => 'payment.'], function () {
             Route::group(['prefix' => 'main', 'as' => 'main.'], function () {
@@ -66,6 +67,8 @@ Route::middleware(['auth', 'verified', 'role:admin'])->group(function () {
             Route::get('/show/{id?}', [WithdrawController::class, 'show'])->name('show');
             Route::post('/store', [WithdrawController::class, 'store'])->name('store');
             Route::delete('/destroy/{id?}', [WithdrawController::class, 'destroy'])->name('destroy');
+
+            Route::get('/user-wallet/{id?}', [WithdrawController::class, 'userWallet'])->name('info');
         });
 
         // Metadata Routes
@@ -74,6 +77,9 @@ Route::middleware(['auth', 'verified', 'role:admin'])->group(function () {
             Route::get('/', [MasterDataController::class, 'index'])->name('manage_metadata');
             Route::post('/store', [MasterDataController::class, 'store'])->name('manage_metadata.store');
             Route::put('/update/{id}', [MasterDataController::class, 'update'])->name('manage_metadata.update');
+
+
+            Route::get('/get-data', [MasterDataController::class, 'getData'])->name('get.data');
         });
 
         // Dashboard Route
@@ -85,17 +91,17 @@ Route::middleware(['auth', 'verified', 'role:admin'])->group(function () {
 Route::middleware(['auth', 'verified', 'role:user'])->group(function () {
 
     Route::get('/user/dashboard', [AnggotaController::class, 'dashboard'])->name('user.dashboard');
-    Route::group(['prefix'=>'user','as'=>'user.'], function () {
+    Route::group(['prefix' => 'user', 'as' => 'user.'], function () {
 
 
         //route history pembayaran
-        Route::group(['prefix'=>'history','as'=>'history.'], function () {
+        Route::group(['prefix' => 'history', 'as' => 'history.'], function () {
             Route::get('/main', [PaymentHistoryController::class, 'main'])->name('main');
             Route::get('/main/ajax', [PaymentHistoryController::class, 'mainDatatable'])->name('main.ajax');
             Route::get('/mothly', [PaymentHistoryController::class, 'mothly'])->name('mothly');
             Route::get('/mothly/ajax', [PaymentHistoryController::class, 'mothlyDatatable'])->name('mothly.ajax');
             Route::get('/other', [PaymentHistoryController::class, 'other'])->name('other');
-            Route::get('/other/ajax', [PaymentHistoryController::class, 'otherDatatable'])->name('other.ajax');     
+            Route::get('/other/ajax', [PaymentHistoryController::class, 'otherDatatable'])->name('other.ajax');
         });
         //end route history pembayaran
 

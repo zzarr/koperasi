@@ -152,6 +152,8 @@
             rupiah = split[1] != undefined ? rupiah + ',' + split[1] : rupiah;
             return prefix == undefined ? rupiah : (rupiah ? prefix + rupiah : '');
         }
+
+        
     </script>
     @stack('script')
 
