@@ -106,7 +106,7 @@
     <link rel="stylesheet" type="text/css" href="{{ asset('demo1/plugins/select2/select2.min.css') }}">
 @endpush
 
-@push('js')
+@push('script')
     <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.16.9/xlsx.full.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/exceljs/4.2.1/exceljs.min.js"></script>
     <script src="{{ asset('demo1/assets/js/scrollspyNav.js') }}"></script>
@@ -119,192 +119,192 @@
     <script src="{{ asset('demo1/plugins/select2/select2.min.js') }}"></script>
     <script src="{{ asset('demo1/plugins/select2/custom-select2.js') }}"></script>
     <script>
-        // Fungsi formatRupiah
-        function formatRupiah(angka, prefix) {
-            let number_string = angka.replace(/[^,\d]/g, '').toString(),
-                split = number_string.split(','),
-                sisa = split[0].length % 3,
-                rupiah = split[0].substr(0, sisa),
-                ribuan = split[0].substr(sisa).match(/\d{3}/gi);
-
-            if (ribuan) {
-                separator = sisa ? '.' : '';
-                rupiah += separator + ribuan.join('.');
-            }
-
-            rupiah = split[1] != undefined ? rupiah + ',' + split[1] : rupiah;
-            return prefix == undefined ? rupiah : (rupiah ? prefix + rupiah : '');
-        }
-
-        var table = $("#user-table").DataTable({
-            paging: true,
-            processing: true,
-            serverSide: true,
-            scrollY: "50vh",
-            scrollX: true,
-            ajax: "{{ route('admin.payment.main.ajax') }}",
-            // responsive: true,
-            // lengthChange: false,
-            // autoWidth: true,
-            columnDefs: [{
-                    targets: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14],
-                    "defaultContent": "",
-                    orderable: false,
-                    createdCell: function(td, cellData, rowData, row, col) {
-                        if (cellData) {
-                            $(td).css('writing-mode', 'sideways-lr');
-                            $(td).css('vertical-align', 'bottom');
-                        } else {
-                            $(td).css('vertical-align', 'middle');
-                        }
-                        $(td).addClass('text-center');
-                    },
-                },
-                {
-                    targets: [1, 3, 5, 7, 9, 11, 13],
-                    "defaultContent": "",
-                    render: function(data, type, full, meta) {
-                        if (!data && full.main_payment_status) {
-                            return '-';
-                        }
-                        if (!data) {
-                            return `<button type="button" class="btn btn-outline-primary btn-add" data-id="${full.id}">+</button>`;
-                        }
-                        // return `<button type="button" class="btn btn-danger">-</button>`+data;
-                        return data
-                    },
-                },
-                {
-                    targets: [2, 4, 6, 8, 10, 12, 14],
-                    "defaultContent": "",
-                    render: function(data, type, full, meta) {
-                        if (!data) {
-                            return `-`;
-                        }
-                        // return `<button type="button" class="btn btn-danger">-</button>`+data;
-                        return formatRupiah(String(data), 'Rp. ');
-                    },
-                },
-                {
-                    targets: 15,
-                    render: function(data, type, full, meta) {
-                        sum = 0;
-                        total = 0;
-                        data.forEach(function(item) {
-                            sum += item.amount;
-                            total = item.config_payment.paid_off_amount;
-                        });
-                        return formatRupiah(String(total - sum), 'Rp. ');
-                    },
-                },
-                {
-                    targets: 16,
-                    createdCell: function(td, cellData, rowData, row, col) {
-                        $(td).addClass('text-center');
-                    },
-                    render: function(data, type, full, meta) {
-                        sum = 0;
-                        total = 0;
-                        data.forEach(function(item) {
-                            sum += item.amount;
-                            total = item.config_payment.paid_off_amount;
-                        });
-                        sisa = (sum - total)
-
-                        return sisa >= 0 && sum > 0 ? '<a class="btn btn-success btn-sm">Lunas</a>' :
-                            '<a class="btn btn-outline-warning btn-sm">Belum lunas</a>';
-                    },
-                },
-                {
-                    targets: 17,
-                    render: function(data, type, full, meta) {
-                        sum = 0;
-                        data.forEach(function(item) {
-                            sum += item.amount;
-                        });
-                        return formatRupiah(String(sum), 'Rp. ');
-                    },
-                },
-            ],
-            columns: [{
-                    data: 'name'
-                },
-
-                {
-                    data: 'main_payment.0.paid_at'
-                },
-                {
-                    data: 'main_payment.0.amount'
-                },
-
-                {
-                    data: 'main_payment.1.paid_at'
-                },
-                {
-                    data: 'main_payment.1.amount'
-                },
-
-                {
-                    data: 'main_payment.2.paid_at'
-                },
-                {
-                    data: 'main_payment.2.amount'
-                },
-
-                {
-                    data: 'main_payment.3.paid_at'
-                },
-                {
-                    data: 'main_payment.3.amount'
-                },
-
-                {
-                    data: 'main_payment.4.paid_at'
-                },
-                {
-                    data: 'main_payment.4.amount'
-                },
-
-                {
-                    data: 'main_payment.5.paid_at'
-                },
-                {
-                    data: 'main_payment.5.amount'
-                },
-
-                {
-                    data: 'main_payment.6.paid_at'
-                },
-                {
-                    data: 'main_payment.6.amount'
-                },
-
-                {
-                    data: 'main_payment'
-                },
-                {
-                    data: 'main_payment'
-                },
-                {
-                    data: 'main_payment'
-                },
-            ],
-            oLanguage: {
-                oPaginate: {
-                    sPrevious: '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-arrow-left"><line x1="19" y1="12" x2="5" y2="12"></line><polyline points="12 19 5 12 12 5"></polyline></svg>',
-                    sNext: '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-arrow-right"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg>'
-                },
-                sInfo: "Showing page _PAGE_ of _PAGES_",
-                sSearch: '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-search"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>',
-                sSearchPlaceholder: "Search...",
-                sLengthMenu: "Results :  _MENU_"
-            },
-            stripeClasses: [],
-            lengthMenu: [5, 10, 20, 50],
-            pageLength: 5
-        });
-
         $(document).ready(function() {
+            var table = $("#user-table").DataTable({
+                paging: true,
+                processing: true,
+                serverSide: true,
+                scrollY: "50vh",
+                scrollX: true,
+                ajax: "{{ route('admin.payment.main.ajax') }}",
+                // responsive: true,
+                // lengthChange: false,
+                // autoWidth: true,
+                columnDefs: [{
+                        targets: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14],
+                        "defaultContent": "",
+                        orderable: false,
+                        createdCell: function(td, cellData, rowData, row, col) {
+                            if (cellData) {
+                                $(td).css('writing-mode', 'sideways-lr');
+                                $(td).css('vertical-align', 'bottom');
+                            } else {
+                                $(td).css('vertical-align', 'middle');
+                            }
+                            $(td).addClass('text-center');
+                        },
+                    },
+                    {
+                        targets: [1, 3, 5, 7, 9, 11, 13],
+                        "defaultContent": "",
+                        render: function(data, type, full, meta) {
+                            if (!data && full.main_payment_status) {
+                                return '-';
+                            }
+                            if (!data) {
+                                return `<button type="button" class="btn btn-outline-primary btn-add" data-id="${full.id}">+</button>`;
+                            }
+                            // return `<button type="button" class="btn btn-danger">-</button>`+data;
+                            return data
+                        },
+                    },
+                    {
+                        targets: [2, 4, 6, 8, 10, 12, 14],
+                        "defaultContent": "",
+                        render: function(data, type, full, meta) {
+                            if (!data) {
+                                return `-`;
+                            }
+                            // return `<button type="button" class="btn btn-danger">-</button>`+data;
+                            return formatRupiah(String(data), 'Rp. ');
+                        },
+                    },
+                    {
+                        targets: 15,
+                        render: function(data, type, full, meta) {
+                            sum = 0;
+                            total = 0;
+                            data.forEach(function(item) {
+                                sum += item.amount;
+                                total = item.config_payment.paid_off_amount;
+                            });
+                            return formatRupiah(String(total - sum), 'Rp. ');
+                        },
+                    },
+                    {
+                        targets: 16,
+                        createdCell: function(td, cellData, rowData, row, col) {
+                            $(td).addClass('text-center');
+                        },
+                        render: function(data, type, full, meta) {
+                            sum = 0;
+                            total = 0;
+                            data.forEach(function(item) {
+                                sum += item.amount;
+                                total = item.config_payment.paid_off_amount;
+                            });
+                            sisa = (sum - total)
+
+                            return sisa >= 0 && sum > 0 ?
+                                '<a class="btn btn-outline-success btn-sm">Lunas</a>' :
+                                '<a class="btn btn-outline-warning btn-sm">Belum lunas</a>';
+                        },
+                    },
+                    {
+                        targets: 17,
+                        render: function(data, type, full, meta) {
+                            sum = 0;
+                            data.forEach(function(item) {
+                                sum += item.amount;
+                            });
+                            return formatRupiah(String(sum), 'Rp. ');
+                        },
+                    },
+                ],
+                columns: [{
+                        data: 'name'
+                    },
+
+                    {
+                        data: 'main_payment.0.paid_at'
+                    },
+                    {
+                        data: 'main_payment.0.amount'
+                    },
+
+                    {
+                        data: 'main_payment.1.paid_at'
+                    },
+                    {
+                        data: 'main_payment.1.amount'
+                    },
+
+                    {
+                        data: 'main_payment.2.paid_at'
+                    },
+                    {
+                        data: 'main_payment.2.amount'
+                    },
+
+                    {
+                        data: 'main_payment.3.paid_at'
+                    },
+                    {
+                        data: 'main_payment.3.amount'
+                    },
+
+                    {
+                        data: 'main_payment.4.paid_at'
+                    },
+                    {
+                        data: 'main_payment.4.amount'
+                    },
+
+                    {
+                        data: 'main_payment.5.paid_at'
+                    },
+                    {
+                        data: 'main_payment.5.amount'
+                    },
+
+                    {
+                        data: 'main_payment.6.paid_at'
+                    },
+                    {
+                        data: 'main_payment.6.amount'
+                    },
+
+                    {
+                        data: 'main_payment'
+                    },
+                    {
+                        data: 'main_payment'
+                    },
+                    {
+                        data: 'main_payment'
+                    },
+                ],
+                oLanguage: {
+                    oPaginate: {
+                        sPrevious: '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-arrow-left"><line x1="19" y1="12" x2="5" y2="12"></line><polyline points="12 19 5 12 12 5"></polyline></svg>',
+                        sNext: '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-arrow-right"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg>'
+                    },
+                    sInfo: "Showing page _PAGE_ of _PAGES_",
+                    sSearch: '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-search"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>',
+                    sSearchPlaceholder: "Search...",
+                    sLengthMenu: "Results :  _MENU_"
+                },
+                stripeClasses: [],
+                lengthMenu: [5, 10, 20, 50],
+                pageLength: 5
+            });
+
+            $('#user-modal').on('shown.bs.modal', function(event) {
+                $('#paid_at').daterangepicker({
+                    singleDatePicker: true,
+                    locale: {
+                        format: 'YYYY-MM-DD',
+                        autoUpdateInput: false,
+                    }
+                })
+                var rupiah = $('#amount');
+                rupiah.on('keyup', function(e) {
+                    rupiah.val(formatRupiah(rupiah.val(), 'Rp. '));
+                });
+            });
+
+
+
             $('#user-table').on('click', '.btn-add', function() {
                 var id = $(this).attr("data-id");
                 $('#user-modal').modal('show');
@@ -313,6 +313,57 @@
                 $("#user-form").attr('data-userId', id);
                 $('#user-modal').on('shown.bs.modal', function(event) {
                     KTApp.unblock('#user-modal .modal-content');
+                });
+            });
+
+
+
+            $('#user-modal').on('click', '#btn_form', function() {
+                let data = new FormData($('#user-form')[0])
+                let id = $('#user-form').attr("data-id") ?? '';
+                let user_id = $('#user-form').attr("data-userId") ?? '';
+
+                if (id != '') data.append("id", id);
+                if (user_id != '') data.append("user_id", user_id);
+
+                $.ajax({
+                    url: "{{ route('admin.payment.main.store') }}",
+                    type: 'POST',
+                    data: data,
+                    contentType: false,
+                    processData: false,
+                    beforeSend: function() {
+                        $('#btn_form').attr('disabled', 'disabled')
+                        KTApp.block('#user-modal .modal-content', {
+                            overlayColor: '#000000',
+                            message: 'Please wait...',
+                        });
+                    },
+                    success: function(data) {
+                        table.ajax.reload();
+                        KTApp.unblock('#user-modal .modal-content');
+                        $("#user-modal").modal('hide');
+                        $('#btn_form').removeAttr('disabled');
+                        swal.fire({
+                            text: data.message,
+                            icon: data.code == 600 ? "warning" : "success"
+                        });
+                    },
+                    error: function(res, exception) {
+                        KTApp.unblock('#user-modal .modal-content');
+                        $('#btn_form').removeAttr('disabled');
+                        if (res.responseJSON.code) {
+                            swal.fire({
+                                text: res.responseJSON.error,
+                                icon: "warning"
+                            });
+                        } else {
+                            swal.fire({
+                                text: "Something Wrong, Please check your connection and try again!",
+                                icon: "error"
+                            });
+                        }
+                    }
                 });
             });
         });
