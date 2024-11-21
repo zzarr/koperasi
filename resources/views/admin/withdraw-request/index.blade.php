@@ -82,7 +82,7 @@
                         </div>
                     </div>
                     <div class="row">
-                        <div class="col-md-12">
+                        <div class="col-md-12 mt-1">
                             <div class="form-group">
                                 <label>Anggota<span class="text-danger">*</span></label>
                                 <select id="user_id" name="user_id" class="form-control form-control-border">
@@ -98,7 +98,7 @@
                                     <option selected disabled value="">-- Pilih Jenis Penarikan --</option>
                                     <option value="all">Penarikan Keseluruhan Tabungan</option>
                                     {{-- <option value="shu-cash">Penarikan Dana SHU ke Cash</option> --}}
-                                    <option value="other-cash">Penarikan Dana Hari Raya ke Cash</option>
+                                    <option value="other-cash">Penarikan Keseluruhan Tabungan Hari Raya</option>
                                     {{-- <option value="shu-monthly">Pindahkan Dana SHU Ke Tabungan Wajib</option> --}}
                                     {{-- <option value="shu-other">Pindahkan Dana SHU Ke Tabungan Sukarela</option> --}}
                                     {{-- <option value="other-monthly">Pindahkan Dana Sukarela Ke Tabungan Wajib</option> --}}
@@ -202,23 +202,20 @@
         } else {
             if (type == 'shu-other') $('#amount').val(formatRupiah(wallet.shu, 'Rp. '));
             else if (type == 'shu-cash') $('#amount').val(formatRupiah(wallet.shu, 'Rp. '));
-            else if (type == 'other-cash') $('#amount').val(formatRupiah(wallet.other, 'Rp. '));
+            // else if (type == 'other-cash') $('#amount').val(formatRupiah(wallet.other, 'Rp. ')); 
             else $('#amount').val(formatRupiah('0', 'Rp. '));
 
-            if (type == 'shu-other' || type == 'shu-cash' || type == 'other-cash') $('#amount-div').removeClass('d-none');
+            if (type == 'shu-other' || type == 'shu-cash' ) $('#amount-div').removeClass('d-none');
             else $('#amount-div').addClass('d-none');
 
             $('#form-value').addClass('d-none');
             $('#value').val('');
         }
 
-        // Update Wallet Information
+        // Update Wallet Information (bener)
         if (type == 'all') {
             $('#wallet-type').html('Keseluruhan');
             $('#wallet-amount').html(formatRupiah(wallet.total, 'Rp. '));
-        } else if (type == 'shu-monthly' || type == 'shu-other' || type == 'shu-cash') {
-            $('#wallet-type').html('SHU');
-            $('#wallet-amount').html(formatRupiah(wallet.shu, 'Rp. '));
         } else if (type == 'other-monthly' || type == 'other-cash') {
             $('#wallet-type').html('Hari Raya');
             $('#wallet-amount').html(formatRupiah(wallet.other, 'Rp. '));
@@ -310,8 +307,8 @@
                 targets: -3,
                 render: function(data, type, full, meta) {
                     let state = ``;
-                    if (data) state = `<a class="btn btn-success btn-sm">Selesai</a>`;
-                    else state = `<a class="btn btn-warning btn-sm">Pending</a>`;
+                    if (data) state = `<a class="btn btn-outline-success btn-sm">Selesai</a>`;
+                    else state = `<a class="btn btn-outline-warning btn-sm">Pending</a>`;
                     return state;
                 }
             },
@@ -326,10 +323,7 @@
                     return `
                 <div class="action-buttons d-flex justify-content-center ">
             <a href="javascript:void(0);" data-id="${full.id}" class="btn-edit btn btn-sm btn-outline-primary btn-icon mr-2" title="Edit details">
-                <i class="fa fa-edit"></i>
-            </a>
-            <a href="javascript:void(0);" data-id="${full.id}" class="btn-delete btn btn-sm btn-outline-danger btn-icon" title="Delete">
-                <i class="fa fa-trash"></i>
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-printer"><polyline points="6 9 6 2 18 2 18 9"></polyline><path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"></path><rect x="6" y="14" width="12" height="8"></rect></svg>
             </a>
         </div>`;
                 }
