@@ -14,7 +14,7 @@
                             <polyline points="9 22 9 12 15 12 15 22"></polyline>
                         </svg></a></li>
                 <li class="breadcrumb-item " aria-current="page"><span>Pembayaran</span></li>
-                <li class="breadcrumb-item active" aria-current="page"><span>Pimpanan Pokok</span></li>
+                <li class="breadcrumb-item active" aria-current="page"><span>Simpanan Pokok</span></li>
 
             </ol>
         </nav>
@@ -38,6 +38,7 @@
                                 <th rowspan="3" style="vertical-align: middle">Sisa</th>
                                 <th rowspan="3" style="vertical-align: middle">Ket</th>
                                 <th rowspan="3" style="vertical-align: middle">Jumlah</th>
+                                <th rowspan="3" style="vertical-align: middle">Aksi</th>
                             </tr>
                             <tr>
                                 <th colspan="2">1</th>
@@ -127,9 +128,6 @@
                 scrollY: "50vh",
                 scrollX: true,
                 ajax: "{{ route('admin.payment.main.ajax') }}",
-                // responsive: true,
-                // lengthChange: false,
-                // autoWidth: true,
                 columnDefs: [{
                         targets: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14],
                         "defaultContent": "",
@@ -154,8 +152,7 @@
                             if (!data) {
                                 return `<button type="button" class="btn btn-outline-primary btn-add" data-id="${full.id}">+</button>`;
                             }
-                            // return `<button type="button" class="btn btn-danger">-</button>`+data;
-                            return data
+                            return data;
                         },
                     },
                     {
@@ -165,15 +162,14 @@
                             if (!data) {
                                 return `-`;
                             }
-                            // return `<button type="button" class="btn btn-danger">-</button>`+data;
                             return formatRupiah(String(data), 'Rp. ');
                         },
                     },
                     {
                         targets: 15,
                         render: function(data, type, full, meta) {
-                            sum = 0;
-                            total = 0;
+                            let sum = 0;
+                            let total = 0;
                             data.forEach(function(item) {
                                 sum += item.amount;
                                 total = item.config_payment.paid_off_amount;
@@ -187,14 +183,13 @@
                             $(td).addClass('text-center');
                         },
                         render: function(data, type, full, meta) {
-                            sum = 0;
-                            total = 0;
+                            let sum = 0;
+                            let total = 0;
                             data.forEach(function(item) {
                                 sum += item.amount;
                                 total = item.config_payment.paid_off_amount;
                             });
-                            sisa = (sum - total)
-
+                            const sisa = sum - total;
                             return sisa >= 0 && sum > 0 ?
                                 '<a class="btn btn-outline-success btn-sm">Lunas</a>' :
                                 '<a class="btn btn-outline-warning btn-sm">Belum lunas</a>';
@@ -203,67 +198,72 @@
                     {
                         targets: 17,
                         render: function(data, type, full, meta) {
-                            sum = 0;
+                            let sum = 0;
                             data.forEach(function(item) {
                                 sum += item.amount;
                             });
                             return formatRupiah(String(sum), 'Rp. ');
                         },
                     },
+                    // Tambahan kolom "Aksi"
+                    {
+                        targets: 18,
+                        orderable: false,
+                        searchable: false,
+                        render: function(data, type, full, meta) {
+                            return `
+                    <button type="button" class="btn btn-outline-primary btn-sm btn-view" data-id="${full.id}">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-eye"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path><circle cx="12" cy="12" r="3"></circle></svg>
+                    </button>
+                `;
+                        },
+                    },
                 ],
                 columns: [{
                         data: 'name'
                     },
-
                     {
                         data: 'main_payment.0.paid_at'
                     },
                     {
                         data: 'main_payment.0.amount'
                     },
-
                     {
                         data: 'main_payment.1.paid_at'
                     },
                     {
                         data: 'main_payment.1.amount'
                     },
-
                     {
                         data: 'main_payment.2.paid_at'
                     },
                     {
                         data: 'main_payment.2.amount'
                     },
-
                     {
                         data: 'main_payment.3.paid_at'
                     },
                     {
                         data: 'main_payment.3.amount'
                     },
-
                     {
                         data: 'main_payment.4.paid_at'
                     },
                     {
                         data: 'main_payment.4.amount'
                     },
-
                     {
                         data: 'main_payment.5.paid_at'
                     },
                     {
                         data: 'main_payment.5.amount'
                     },
-
                     {
                         data: 'main_payment.6.paid_at'
                     },
                     {
                         data: 'main_payment.6.amount'
                     },
-
                     {
                         data: 'main_payment'
                     },
@@ -273,11 +273,14 @@
                     {
                         data: 'main_payment'
                     },
+                    {
+                        data: null
+                    }, // Kolom "Aksi"
                 ],
                 oLanguage: {
                     oPaginate: {
                         sPrevious: '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-arrow-left"><line x1="19" y1="12" x2="5" y2="12"></line><polyline points="12 19 5 12 12 5"></polyline></svg>',
-                        sNext: '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-arrow-right"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg>'
+                        sNext: '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-arrow-right"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg>',
                     },
                     sInfo: "Showing page _PAGE_ of _PAGES_",
                     sSearch: '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-search"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>',
