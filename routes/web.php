@@ -67,7 +67,7 @@ Route::middleware(['auth', 'verified', 'role:admin'])->group(function () {
                     Route::get('/', [PiutangController::class, 'index'])->name('index');
                     Route::get('/datatables', [PiutangController::class, 'datatables'])->name('ajax');
                     Route::post('/store', [PiutangController::class, 'store'])->name('store');
-                    Route::get('/users', [PiutangController::class, 'getUsers'])->name('users.get'); 
+                    Route::get('/users', [PiutangController::class, 'getUsers'])->name('users.get');
                     Route::delete('/delete/{id?}', [PiutangController::class, 'destroy'])->name('delete');
                     Route::group(['prefix' => 'pembayaran', 'as' => 'pembayaran.'], function () {
                         Route::get('/{id}', [PembayaranPiutangController::class, 'getPiutang'])->name('get');
