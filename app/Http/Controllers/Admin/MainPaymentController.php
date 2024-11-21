@@ -99,5 +99,12 @@ class MainPaymentController extends Controller
         ], 201);
     }
 
+    public function dataTanggal($id){
+        $data = MainPayment::where('user_id', $id)->get();
+
+        return response()->json($data);
+        
+    }
+
 
 }

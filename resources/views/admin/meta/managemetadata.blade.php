@@ -28,30 +28,32 @@
                 <div class="card-header">
                     <h3 class="card-title">Meta Angsuran</h3>
                 </div>
-                <div class="card-body">
-                    <form id="meta">
-                        @csrf
+                <form id="meta" action="{{route('admin.metadata.manage_metadata.store')}}" method="POST">
+                    @csrf
+                    <input type="hidden" id="metaId" name="id">
+                    <div class="modal-body">
                         <div class="form-group">
-                            <label>Total Angsuran Pokok</label>
-                            <input type="text" name="main_payment" class="form-control form-control-border" id="main_payment" value="{{$main->paid_off_amount ?? ''}}">
+                            <label >Total Angsuran Pokok</label>
+                            <input type="text" class="form-control" id="main_payment" name="main_payment" value="{{$main->paid_off_amount ?? ''}}" required>
                         </div>
                         <div class="form-group">
                             <label>Total Angsuran Wajib</label>
-                            <input type="text" name="monthly_payment" class="form-control form-control-border" id="monthly_payment" placeholder="" value="{{$monthly->paid_off_amount ?? ''}}">
+                            <input type="text" class="form-control" id="monthly_payment" name="monthly_payment" placeholder="" value="{{$monthly->paid_off_amount ?? ''}}" required>
                         </div>
                         <div class="form-group">
                             <label>Hutang Rutin</label>
-                            <input type="text" name="monthly_payment" class="form-control form-control-border" id="monthly_payment" placeholder="" value="{{$monthly->paid_off_amount ?? ''}}">
+                            <input type="text" class="form-control" id="dept_routine" name="dept_routine" value="{{$routine->paid_off_amount ?? ''}}" required>
                         </div>
                         <div class="form-group">
                             <label>Hutang Khusus</label>
-                            <input type="text" name="monthly_payment" class="form-control form-control-border" id="monthly_payment" placeholder="" value="{{$monthly->paid_off_amount ?? ''}}">
+                            <input type="text" class="form-control" id="dept_special" name="dept_special" value="{{$special->paid_off_amount ?? ''}}" required>
                         </div>
-                    </form>
-                </div>
-                <div class="card-footer">
-                    <button type="submit" id="btn_form_meta" class="btn btn-primary"><i class="fa fa-save"></i> Save</button>
-                </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Batal</button>
+                        <button type="submit" class="btn btn-primary">Simpan Perubahan</button>
+                    </div>
+                </form>
             </div>
             <!-- /.row -->
         </div><!-- /.container-fluid -->
