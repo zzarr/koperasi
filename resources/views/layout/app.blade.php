@@ -26,6 +26,9 @@
     <!-- Daterange picker -->
     <link rel="stylesheet" href="{{ asset('libs/daterangepicker/daterangepicker.css') }}">
 
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.9.3/html2pdf.bundle.min.js"></script>
+
+
 
 
     <!-- <link href="{{ asset('demo1/assets/css/elements/alert.css') }}" rel="stylesheet" type="text/css" /> -->
@@ -152,8 +155,6 @@
             rupiah = split[1] != undefined ? rupiah + ',' + split[1] : rupiah;
             return prefix == undefined ? rupiah : (rupiah ? prefix + rupiah : '');
         }
-
-        
     </script>
     @stack('script')
 

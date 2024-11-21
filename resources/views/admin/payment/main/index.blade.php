@@ -83,6 +83,7 @@
     </div> <!-- Penutup div.row -->
 
     @include('admin.payment.main.main_payment_modal')
+    @include('admin.payment.main.exportInvoice')
 
 @endsection
 
@@ -121,6 +122,10 @@
     <script src="{{ asset('demo1/plugins/select2/custom-select2.js') }}"></script>
     <script>
         $(document).ready(function() {
+            var ss = $(".basic").select2({
+                tags: true,
+            });
+
             var table = $("#user-table").DataTable({
                 paging: true,
                 processing: true,
@@ -212,7 +217,7 @@
                         searchable: false,
                         render: function(data, type, full, meta) {
                             return `
-                    <button type="button" class="btn btn-outline-primary btn-sm btn-view" data-id="${full.id}">
+                    <button type="button" class="btn btn-outline-primary btn-sm btn-view" data-id="${full.id}" id="btn-view">
                         <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-eye"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path><circle cx="12" cy="12" r="3"></circle></svg>
                     </button>
                 `;
@@ -291,6 +296,39 @@
                 lengthMenu: [5, 10, 20, 50],
                 pageLength: 5
             });
+
+            $(document).on('click', '.btn-view', function() {
+                // Ambil data-id dari tombol yang ditekan
+                const dataId = $(this).data('id');
+
+                // Tampilkan modal
+                $('#modal-invoice').modal('show'); // Gunakan modal Bootstrap untuk menampilkan modal
+
+                // Ambil data dari backend untuk mengisi select
+                $.ajax({
+                    url: `/admin/payment/main/data_tanggal/${dataId}`, // Endpoint untuk mengambil data pembayaran
+                    type: 'GET',
+                    success: function(data) {
+                        const select = $('#payment-id');
+                        select.empty(); // Hapus opsi sebelumnya
+
+                        // Tambahkan opsi baru berdasarkan data dari backend
+                        data.forEach(payment => {
+                            select.append(
+                                `<option value="${payment.id}">${payment.paid_at}</option>`
+                            );
+                        });
+
+                        // Set opsi default
+                        select.prepend(
+                            '<option value="" disabled selected>Pilih Pembayaran</option>');
+                    },
+                    error: function() {
+                        alert('Gagal mengambil data pembayaran.');
+                    }
+                });
+            });
+
 
             $('#user-modal').on('shown.bs.modal', function(event) {
                 $('#paid_at').daterangepicker({

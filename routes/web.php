@@ -41,6 +41,8 @@ Route::middleware(['auth', 'verified', 'role:admin'])->group(function () {
                 Route::post('/store', [MainPaymentController::class, 'store'])->name('store');
                 Route::post('/destroy/{id?}', [MainPaymentController::class, 'destroy'])->name('destroy');
                 Route::post('/import', [MainPaymentController::class, 'import'])->name('import');
+
+                Route::get('/data_tanggal/{id}', [MainPaymentController::class, 'dataTanggal'])->name('dataTanggal');
             });
 
             Route::group(['prefix' => 'monthly', 'as' => 'monthly.'], function () {
