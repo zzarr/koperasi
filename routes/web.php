@@ -17,6 +17,7 @@ use App\Http\Controllers\user\{
     // MasterDataController
 };
 use App\Http\Controllers\AuthController;
+use App\Models\PembayaranPiutang;
 
 Route::get('/', function () {
     return view('welcome');
@@ -69,8 +70,16 @@ Route::middleware(['auth', 'verified', 'role:admin'])->group(function () {
                     Route::get('/users', [PiutangController::class, 'getUsers'])->name('users.get'); 
                     Route::delete('/delete/{id?}', [PiutangController::class, 'destroy'])->name('delete');
                     Route::group(['prefix' => 'pembayaran', 'as' => 'pembayaran.'], function () {
-                        Route::get('/{id}/detail', [PembayaranPiutangController::class, 'showDetail'])->name('detail');
-                        Route::get('/datatables', [PembayaranPiutangController::class, 'datatables'])->name('ajax');
+                        Route::get('/{id}', [PembayaranPiutangController::class, 'getPiutang'])->name('get');
+                        Route::group(['prefix' => 'rutin', 'as' => 'rutin.'], function () {
+                            Route::get('/datatables', [PembayaranPiutangController::class, 'datatables'])->name('ajax');
+                            Route::get('/{id}/detail', [PembayaranPiutangController::class, 'showRutinDetail'])->name('detail');
+                        });
+                        Route::group(['prefix' => 'khusus', 'as' => 'khusus.'], function () {
+                            Route::post('/store', [PembayaranPiutangController::class, 'storeKhusus'])->name('store');
+                            Route::get('/datatables', [PembayaranPiutangController::class, 'datatables'])->name('ajax');
+                            Route::get('/{id}/detail', [PembayaranPiutangController::class, 'showKhususDetail'])->name('detail');
+                        });
                     });
         });
 
