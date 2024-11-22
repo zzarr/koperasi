@@ -17,6 +17,7 @@ use App\Models\ConfigPayment;
 use App\Models\MonthlyPayment;
 use App\Models\OtherPayment;
 use Carbon\Carbon;
+use Barryvdh\DomPDF\Facade\Pdf;
 
 
 
@@ -128,24 +129,21 @@ class WithdrawController extends Controller
         ], 201);
     }
 
-    public function destroy($id)
+    public function previewInvoice($id)
     {
-        DB::beginTransaction();
-        try {
+        // Ambil data withdraw berdasarkan ID
+        $withdraw = Withdraw::findOrFail($id);
 
-
-            DB::commit();
-            $this->isSuccess = true;
-        } catch (\Exception $e) {
-            DB::rollBack();
-            $this->exception = $e->getMessage();
+        // Validasi data
+        if (!$withdraw) {
+            return redirect()->back()->withErrors(['error' => 'Data withdraw tidak ditemukan.']);
         }
 
-        return response()->json([
-            "status"    => $this->isSuccess ?? false,
-            "code"      => $this->isSuccess ? 200 : 600,
-            "message"   => $this->isSuccess ? "Success!" : ($this->exception ?? "Unknown error(?)"),
-            // "data"      => $this->isSuccess ? $data : [],
-        ], 201);
+        // Generate PDF
+        $pdf = Pdf::loadView('admin.withdraw-request.invoices', compact('withdraw'))
+            ->setPaper('a4', 'landscape');
+
+        // Stream PDF ke browser untuk preview
+        return $pdf->stream('Invoice_Withdraw_' . $withdraw->id . '.pdf');
     }
 }

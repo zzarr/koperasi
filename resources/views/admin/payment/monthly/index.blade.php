@@ -49,6 +49,7 @@
                                     <th rowspan="3" style="vertical-align: middle">Jumlah</th>
                                     <th rowspan="3" style="vertical-align: middle">Jumlah</th>
                                     <th rowspan="3" style="vertical-align: middle">Jumlah</th>
+                                    <th rowspan="3" style="vertical-align: middle">Aksi</th>
                                 </tr>
                                 <tr>
                                     <th colspan="2">1</th>
@@ -134,39 +135,37 @@
             </div>
         </div>
     </div>
-{{-- 
-    <div class="modal fade" id="import-modal" tabindex="-1" role="dialog" aria-labelledby="importModalTitle" aria-hidden="true">
-        <div class="modal-dialog modal-md modal-dialog-centered" role="document">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title text-white" id="importModalTitle">
-                        <span id="action-modal">Import Pembayaran</span>
-                    </h5>
-                    <button type="button" class="close text-white" data-dismiss="modal" aria-label="Close">
-                        <span aria-hidden="true">&times;</span>
-                    </button>
-                </div>
-                <form method="POST" action="{{ route('admin.payment.monthly.import') }}" id="import-form" enctype="multipart/form-data">
-                    <div class="modal-body">
-                        @csrf
-                        <div class="form-group">
-                            <label for="year">Tahun Data Pembayaran<span class="text-danger">*</span></label>
-                            <input type="number" name="year" value="{{ date('Y') }}" class="form-control" id="year" placeholder="" required>
-                        </div>
-                        <div class="form-group">
-                            <label for="file">File Excel <span class="text-danger">*</span></label>
-                            <input type="file" name="file" class="form-control" id="file">
-                        </div>
-                    </div>
-                    <div class="modal-footer">
-                        <button type="button" class="btn btn-light" data-dismiss="modal"><i class="fa fa-times"></i> Close</button>
-                        <button type="submit" class="btn btn-primary"><i class="fa fa-save"></i> Import</button>
-                    </div>
+
+<!-- Modal Invoice -->
+{{-- <div class="modal fade" id="modal-invoice" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle"
+    aria-hidden="true">
+    <div class="modal-dialog modal-md modal-dialog-centered" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLongTitle"><span id="action-modal"></span></h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <form id="invoice-form">
+                    @csrf
+                    <label for="payment-id">Pilih Pembayaran:</label>
+                    <select id="payment-id" name="payment_id" required class="form-control">
+                        <option value="" disabled selected>Loading...</option>
+                    </select>
+                    <button type="submit">Cetak Invoice</button>
                 </form>
+                <div id="invoice-container" style="display: none;"></div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal"><i class="fa fa-times"></i> Close</button>
+                <button type="button" id="btn_form" class="btn btn-primary"><i class="fa fa-save"></i> Save</button>
             </div>
         </div>
     </div>
-     --}}
+</div> --}}
+
     
         
 
@@ -196,7 +195,6 @@ $('#user-table').on('click', '.btn-add', function() {
     $("#user-form").attr('data-userId', id);
 });
 
-// Proses pengiriman data
 $('#user-modal').on('click', '#btn_form', function() {
     let data = new FormData($('#user-form')[0]);
     let id = $('#user-form').attr("data-id") || '';
@@ -226,6 +224,8 @@ $('#user-modal').on('click', '#btn_form', function() {
                 Notiflix.Report.warning('Warning', data.message, 'OK');
             } else {
                 Notiflix.Notify.success('Data berhasil disimpan!');
+
+                window.location.href = data.pdf_url;
             }
         },
         error: function(res) {
@@ -242,9 +242,16 @@ $('#user-modal').on('click', '#btn_form', function() {
     });
 });
 
+
 </script>
 
 <script>
+    // Logika untuk form submission jika diperlukan
+    $('#invoice-form').on('submit', function(e) {
+        e.preventDefault();
+        // Logika untuk mengirim form atau cetak invoice
+        // Jika menggunakan Ajax, bisa di sini
+    });
 
 
     $(document).ready(function() {
@@ -362,6 +369,33 @@ $('#user-modal').on('click', '#btn_form', function() {
                         return formatRupiah(String(data), 'Rp. ');
                     },
                 },
+                {
+                    targets: 30,
+                    title: 'Aksi',
+                    orderable: false,
+                createdCell: function(td, cellData, rowData, row, col) {
+                    $(td).addClass('tmbl-usr text-center');
+                },
+                render: function(data, type, full, meta) {
+                    return `
+     <div class="action-buttons d-flex justify-content-center">
+    <a href="javascript:void(0)" 
+       class="btn btn-sm btn-outline-primary btn-icon mr-2 btn-invoice" 
+       id="btn-invoice" 
+       data-id=""  
+       title="Cetak Invoice">
+        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" 
+             viewBox="0 0 24 24" fill="none" stroke="currentColor" 
+             stroke-width="2" stroke-linecap="round" 
+             stroke-linejoin="round" class="feather feather-printer">
+            <polyline points="6 9 6 2 18 2 18 9"></polyline>
+            <path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"></path>
+            <rect x="6" y="14" width="12" height="8"></rect>
+        </svg>
+    </a>
+</div>`;
+                }
+            }
             ],
 
             columns: [{
@@ -479,6 +513,9 @@ $('#user-modal').on('click', '#btn_form', function() {
                 {
                     data: 'total_all'
                 },
+                {
+                data: 'id',
+                }
             ],
             language: {
                 searchPlaceholder: 'Cari...',
