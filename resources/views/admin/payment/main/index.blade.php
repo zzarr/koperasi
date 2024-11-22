@@ -120,6 +120,8 @@
     <script src="{{ asset('demo1/assets/js/scrollspyNav.js') }}"></script>
     <script src="{{ asset('demo1/plugins/select2/select2.min.js') }}"></script>
     <script src="{{ asset('demo1/plugins/select2/custom-select2.js') }}"></script>
+    <script src="https://cdn.jsdelivr.net/npm/html2pdf.js"></script>
+
     <script>
         $(document).ready(function() {
             var ss = $(".basic").select2({
@@ -302,32 +304,124 @@
                 const dataId = $(this).data('id');
 
                 // Tampilkan modal
-                $('#modal-invoice').modal('show'); // Gunakan modal Bootstrap untuk menampilkan modal
+                $('#modal-invoice').modal('show');
 
                 // Ambil data dari backend untuk mengisi select
                 $.ajax({
                     url: `/admin/payment/main/data_tanggal/${dataId}`, // Endpoint untuk mengambil data pembayaran
                     type: 'GET',
                     success: function(data) {
-                        const select = $('#payment-id');
+                        const select = $('#payment-tanggal');
                         select.empty(); // Hapus opsi sebelumnya
 
-                        // Tambahkan opsi baru berdasarkan data dari backend
-                        data.forEach(payment => {
-                            select.append(
-                                `<option value="${payment.id}">${payment.paid_at}</option>`
-                            );
-                        });
+                        // Tambahkan opsi baru berdasarkan properti "paid_at" dari data
+                        if (Array.isArray(data)) {
+                            data.forEach(payment => {
+                                select.append(
+                                    `<option value="${payment.paid_at}">${payment.paid_at}</option>`
+                                );
+                            });
+                        } else {
+                            alert('Data yang diterima tidak valid.');
+                        }
 
                         // Set opsi default
                         select.prepend(
-                            '<option value="" disabled selected>Pilih Pembayaran</option>');
+                            '<option value="" disabled selected>Pilih Pembayaran</option>'
+                        );
                     },
                     error: function() {
                         alert('Gagal mengambil data pembayaran.');
                     }
                 });
             });
+
+            $('#invoice-form').on('submit', function(e) {
+                e.preventDefault();
+
+                const paymentTanggal = $('#payment-tanggal').val();
+
+                if (!paymentTanggal) {
+                    alert('Harap pilih tanggal pembayaran!');
+                    return;
+                }
+
+                // Ambil template invoice
+                $.get('/templates/invoice.html', function(template) {
+                    // Buat elemen DOM dari template yang diambil
+                    const $template = $(template);
+
+                    // Ambil data dari backend
+                    $.ajax({
+                        url: `/admin/payment/main/exportInvoice/${paymentTanggal}`,
+                        type: 'GET',
+                        success: function(data) {
+                            // Isi elemen di template dengan data dari backend
+                            $template.find('#nama').text(data.user.name || '');
+                            $template.find('#alamat').text(data.user.address || '');
+                            $template.find('#email').text(data.user.email || '');
+
+                            // Bangun isi tabel items
+                            const itemsHTML = `
+                    <tr>
+                        <td>${data.paid_at}</td>
+                        <td>${data.amount.toLocaleString('id-ID', {
+                            style: 'currency',
+                            currency: 'IDR'
+                        })}</td>
+                    </tr>
+                    <tr>
+                        <td class="border-0 font-14 text-dark"><b>Sub Total</b></td>
+                        <td class="border-0 font-14 text-dark"><b>${data.amount.toLocaleString('id-ID', {
+                            style: 'currency',
+                            currency: 'IDR'
+                        })}</b></td>
+                    </tr>
+                    <tr class="bg-black text-white">
+                        <th colspan="1" class="border-0"></th>
+                        <td class="border-0 font-14"><b>Total</b></td>
+                        <td class="border-0 font-14"><b>${data.amount.toLocaleString('id-ID', {
+                            style: 'currency',
+                            currency: 'IDR'
+                        })}</b></td>
+                    </tr>
+                `;
+
+                            $template.find('#items').html(itemsHTML);
+
+                            // Konversi template ke PDF menggunakan html2pdf
+                            html2pdf()
+                                .set({
+                                    filename: `invoice_${data.id}.pdf`,
+                                    html2canvas: {
+                                        scale: 2
+                                    },
+                                    jsPDF: {
+                                        unit: 'in',
+                                        format: 'letter',
+                                        orientation: 'portrait'
+                                    }
+                                })
+                                .from($template[
+                                    0]) // Gunakan elemen DOM sebagai sumber PDF
+                                .save();
+                        },
+                        error: function() {
+                            alert('Gagal mengambil data invoice.');
+                        }
+                    });
+                }).fail(function() {
+                    alert('Gagal memuat template invoice.');
+                });
+            });
+
+
+
+
+
+
+
+
 
 
             $('#user-modal').on('shown.bs.modal', function(event) {

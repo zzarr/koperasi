@@ -106,5 +106,12 @@ class MainPaymentController extends Controller
         
     }
 
+    public function exportInvoince($tanggal)  {
+        $data = MainPayment::with('user')->where('paid_at', $tanggal)->first();
+
+         return response()->json($data);
+        
+    }
+
 
 }

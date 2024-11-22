@@ -43,6 +43,7 @@ Route::middleware(['auth', 'verified', 'role:admin'])->group(function () {
                 Route::post('/import', [MainPaymentController::class, 'import'])->name('import');
 
                 Route::get('/data_tanggal/{id}', [MainPaymentController::class, 'dataTanggal'])->name('dataTanggal');
+                Route::get('/exportInvoice/{tanggal}', [MainPaymentController::class, 'exportInvoince'])->name('export');
             });
 
             Route::group(['prefix' => 'monthly', 'as' => 'monthly.'], function () {
@@ -123,7 +124,7 @@ Route::middleware(['auth', 'verified', 'role:user'])->group(function () {
         Route::group(['prefix' => 'history', 'as' => 'history.'], function () {
             Route::get('/main', [PaymentHistoryController::class, 'main'])->name('main');
             Route::get('/main/ajax', [PaymentHistoryController::class, 'mainDatatable'])->name('main.ajax');
-            Route::get('/mothly', [PaymentHistoryController::class, 'mothly'])->name('mothly');
+            Route::get('/monthly', [PaymentHistoryController::class, 'monthly'])->name('monthly');
             Route::get('/mothly/ajax', [PaymentHistoryController::class, 'mothlyDatatable'])->name('mothly.ajax');
             Route::get('/other', [PaymentHistoryController::class, 'other'])->name('other');
             Route::get('/other/ajax', [PaymentHistoryController::class, 'otherDatatable'])->name('other.ajax');
