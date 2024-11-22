@@ -9,7 +9,8 @@ use App\Http\Controllers\Admin\{
     WithdrawController,
     DashboardController,
     OtherPaymentController,
-    MasterDataController
+    MasterDataController,
+    UserController
 };
 use App\Http\Controllers\user\{
     AnggotaController,
@@ -139,3 +140,9 @@ Route::middleware(['auth', 'verified', 'role:user'])->group(function () {
 
     });
 });
+
+
+// Route::middleware(['auth', 'verified', 'role:admin'])->resource('manage-user', UserController::class);
+Route::resource('manage-user', UserController::class);
+Route::get('manage-user/data', [UserController::class, 'data'])->name('manage-user.data');
+Route::get('/manage-user/export/pdf', [UserController::class, 'exportPDF'])->name('manage-user.export.pdf');

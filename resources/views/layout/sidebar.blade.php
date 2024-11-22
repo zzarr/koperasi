@@ -28,13 +28,14 @@
                     </a>
                 </li>
                 <li class="menu">
-                    <a href="#" aria-expanded="false" class="dropdown-toggle">
+                    <a href="{{ route('manage-user.index') }}" aria-expanded="false" class="dropdown-toggle">
                         <div class="">
                             <i data-feather="users"></i>
                             <span> Manage User</span>
                         </div>
                     </a>
                 </li>
+                
                 <li class="menu">
                     <a href="{{ route('admin.metadata.manage_metadata') }}"
                         aria-expanded="{{ Request::routeIs('manage_meta_data') ? 'true' : 'false' }}"
