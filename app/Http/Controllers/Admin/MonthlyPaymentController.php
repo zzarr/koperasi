@@ -6,13 +6,22 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Yajra\DataTables\Facades\DataTables;
 
+use Illuminate\Support\Facades\DB;
+
+
 use App\Models\User;
 use App\Models\MonthlyPayment;
+use App\Models\Wallet;
+use App\Models\YearlyLog;
+use App\Models\ConfigPayment;
+
 
 
 
 class MonthlyPaymentController extends Controller
 {
+    private $isSuccess;
+    private $exception;
 
     public function index(Request $request)
     {
@@ -51,5 +60,96 @@ class MonthlyPaymentController extends Controller
                 return $user->monthlyPayment->sum('amount') ?? 0;
             })
             ->make();
+    }
+
+    public function store(Request $request)
+    {
+        try {
+            DB::beginTransaction();
+            $configPayment['monthly'] = ConfigPayment::where(['is_active' => 1, 'name' => 'monthly_payment'])->first();
+            $request->amount = $configPayment['monthly']->paid_off_amount;
+
+            $isCreated = MonthlyPayment::where([
+                'user_id' => $request->user_id,
+                'payment_year' => $request->payment_year,
+                'payment_month' => 1,
+                'payment_month' => 2,
+                'payment_month' => 3,
+                'payment_month' => 4,
+                'payment_month' => 5,
+                'payment_month' => 6,
+                'payment_month' => 7,
+                'payment_month' => 8,
+                'payment_month' => 9,
+                'payment_month' => 10,
+                'payment_month' => 11,
+                'payment_month' => 12,
+            ])->count();
+
+            if ($isCreated == 0) {
+                for ($i = 0; $i < 12; $i++) {
+                    MonthlyPayment::updateOrCreate(
+                        [
+                            'user_id'           => $request->user_id,
+                            'payment_month'     => ($i + 1),
+                            'payment_year'      => $request->payment_year,
+                        ],
+                        [
+                            'config_payment_id' => $configPayment['monthly']->id,
+                            'amount'            => 0,
+                        ]
+                    );
+                }
+            }
+
+            $monthlyPayment = MonthlyPayment::updateOrCreate(
+                [
+                    'user_id'           => $request->user_id,
+                    'payment_month'     => $request->payment_month,
+                    'payment_year'     => $request->payment_year,
+                ],
+                [
+                    'config_payment_id' => $configPayment['monthly']->id,
+                    'amount'            => $request->amount,
+                    'paid_at'           => $request->paid_at,
+                ]
+            );
+
+            $monthlyTotal = MonthlyPayment::where('user_id', $request->user_id)->sum('amount');
+
+            $logYear = YearlyLog::where(['user_id'   => $request->user_id, 'year'   => $request->payment_year])->first();
+            YearlyLog::updateOrCreate(
+                [
+                    'user_id'   => $request->user_id,
+                    'year'      => $request->payment_year
+                ],
+                [
+                    'total_monthly'    => ($logYear->total_monthly ?? 0) + $request->amount,
+                ]
+            );
+
+            $wallet = Wallet::where('user_id', $request->user_id)->first();
+            Wallet::updateOrCreate(
+                [
+                    'user_id'   => $request->user_id,
+                ],
+                [
+                    'monthly'      => $monthlyTotal,
+                    'total'     => $wallet ? ($monthlyTotal + $wallet->main + $wallet->other) : $monthlyTotal
+                ]
+            );
+
+            DB::commit();
+            $this->isSuccess = true;
+        } catch (\Exception $e) {
+            DB::rollBack();
+            $this->exception = $e;
+        }
+
+        return response()->json([
+            "status"    => $this->isSuccess ?? false,
+            "code"      => $this->isSuccess ? 200 : 600,
+            "message"   => $this->isSuccess ? "Success!" : ($this->exception ?? "Unknown error(?)"),
+        ], 201);
     }
 }
