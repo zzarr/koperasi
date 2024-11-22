@@ -11,6 +11,7 @@ use App\Http\Controllers\Admin\{
 use App\Http\Controllers\User\AnggotaController;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\ManageMetaDataController;
+use App\Http\Controllers\Admin\UserController;
 
 Route::get('/', function () {
     return view('welcome');
@@ -77,3 +78,4 @@ Route::middleware(['auth', 'verified', 'role:user'])->group(function () {
 // Route::middleware(['auth', 'verified', 'role:admin'])->resource('manage-user', UserController::class);
 Route::resource('manage-user', UserController::class);
 Route::get('manage-user/data', [UserController::class, 'data'])->name('manage-user.data');
+Route::get('/manage-user/export/pdf', [UserController::class, 'exportPDF'])->name('manage-user.export.pdf');

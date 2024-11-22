@@ -2,74 +2,53 @@
 
 namespace App\Models;
 
-// use App\Traits\Uuid;
-// use Dyrynda\Database\Support\CascadeSoftDeletes;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
-use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Support\Str;
-
 use Spatie\Permission\Traits\HasRoles;
 
 class User extends Authenticatable
 {
-
     use HasRoles, HasFactory, Notifiable;
-    // , SoftDeletes, CascadeSoftDeletes, Uuid
+
     protected $fillable = [
-        'id',
-        'member_id',
         'email',
         'username',
         'password',
         'name',
         'phone_number',
         'address',
+        'registered_at',
     ];
 
-    /**
-     * The attributes that should be hidden for arrays.
-     *
-     * @var array
-     */
     protected $hidden = [
         'password',
     ];
 
-    /**
-     * The attributes that should be cast to native types.
-     *
-     * @var array
-     */
-
-
     protected $casts = [
-        'id' => 'string'
+        'id' => 'string',
     ];
 
-    protected $guarded = [];
-
-    // public $incrementing = false;
-
-    // In Laravel 6.0+ make sure to also set $keyType
+    // Set primary key and type to UUID
     public $incrementing = false;
     protected $keyType = 'string';
-
     protected $primaryKey = 'id';
 
-    protected $cascadeDeletes = ['wallet', 'yearlyLog'];
+    // Set UUID before creating the user
+    protected static function booted()
+    {
+        static::creating(function ($user) {
+            if (empty($user->id)) {
+                $user->id = (string) Str::uuid(); // Automatically generate UUID if id is not provided
+            }
+        });
+    }
 
-
-    // public function roles()
-    // {
-    //     return $this->belongsTo(Roles::class, 'role_id');
-    // }
     public function wallet()
     {
         return $this->hasOne(Wallet::class, 'user_id');
     }
-
 
     public function mainPayment()
     {
@@ -91,7 +70,6 @@ class User extends Authenticatable
         return $this->hasMany(YearlyLog::class, 'user_id');
     }
 
-    // Relasi dengan model Piutang
     public function piutangs()
     {
         return $this->hasMany(Piutang::class);
