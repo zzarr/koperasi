@@ -134,6 +134,7 @@
                 serverSide: true,
                 scrollY: "50vh",
                 scrollX: true,
+                autoWidth: false,
                 ajax: "{{ route('admin.payment.main.ajax') }}",
                 columnDefs: [{
                         targets: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14],
@@ -336,84 +337,7 @@
                 });
             });
 
-            $('#invoice-form').on('submit', function(e) {
-                e.preventDefault();
 
-                const paymentTanggal = $('#payment-tanggal').val();
-
-                if (!paymentTanggal) {
-                    alert('Harap pilih tanggal pembayaran!');
-                    return;
-                }
-
-                // Ambil template invoice
-                $.get('/templates/invoice.html', function(template) {
-                    // Buat elemen DOM dari template yang diambil
-                    const $template = $(template);
-
-                    // Ambil data dari backend
-                    $.ajax({
-                        url: `/admin/payment/main/exportInvoice/${paymentTanggal}`,
-                        type: 'GET',
-                        success: function(data) {
-                            // Isi elemen di template dengan data dari backend
-                            $template.find('#nama').text(data.user.name || '');
-                            $template.find('#alamat').text(data.user.address || '');
-                            $template.find('#email').text(data.user.email || '');
-
-                            // Bangun isi tabel items
-                            const itemsHTML = `
-                    <tr>
-                        <td>${data.paid_at}</td>
-                        <td>${data.amount.toLocaleString('id-ID', {
-                            style: 'currency',
-                            currency: 'IDR'
-                        })}</td>
-                    </tr>
-                    <tr>
-                        <td class="border-0 font-14 text-dark"><b>Sub Total</b></td>
-                        <td class="border-0 font-14 text-dark"><b>${data.amount.toLocaleString('id-ID', {
-                            style: 'currency',
-                            currency: 'IDR'
-                        })}</b></td>
-                    </tr>
-                    <tr class="bg-black text-white">
-                        <th colspan="1" class="border-0"></th>
-                        <td class="border-0 font-14"><b>Total</b></td>
-                        <td class="border-0 font-14"><b>${data.amount.toLocaleString('id-ID', {
-                            style: 'currency',
-                            currency: 'IDR'
-                        })}</b></td>
-                    </tr>
-                `;
-
-                            $template.find('#items').html(itemsHTML);
-
-                            // Konversi template ke PDF menggunakan html2pdf
-                            html2pdf()
-                                .set({
-                                    filename: `invoice_${data.id}.pdf`,
-                                    html2canvas: {
-                                        scale: 2
-                                    },
-                                    jsPDF: {
-                                        unit: 'in',
-                                        format: 'letter',
-                                        orientation: 'portrait'
-                                    }
-                                })
-                                .from($template[
-                                    0]) // Gunakan elemen DOM sebagai sumber PDF
-                                .save();
-                        },
-                        error: function() {
-                            alert('Gagal mengambil data invoice.');
-                        }
-                    });
-                }).fail(function() {
-                    alert('Gagal memuat template invoice.');
-                });
-            });
 
 
 

@@ -44,7 +44,7 @@ Route::middleware(['auth', 'verified', 'role:admin'])->group(function () {
                 Route::post('/import', [MainPaymentController::class, 'import'])->name('import');
 
                 Route::get('/data_tanggal/{id}', [MainPaymentController::class, 'dataTanggal'])->name('dataTanggal');
-                Route::get('/exportInvoice/{tanggal}', [MainPaymentController::class, 'exportInvoince'])->name('export');
+                Route::post('/exportInvoice', [MainPaymentController::class, 'exportInvoice'])->name('export');
             });
 
             Route::group(['prefix' => 'monthly', 'as' => 'monthly.'], function () {

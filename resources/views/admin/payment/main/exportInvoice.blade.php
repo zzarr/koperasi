@@ -8,13 +8,13 @@
                     <span aria-hidden="true">&times;</span>
                 </button>
             </div>
-            <form id="invoice-form">
+            <form id="invoice-form" method="POST" action="{{ route('admin.payment.main.export') }}">
                 @csrf
                 <div class="modal-body">
 
 
                     <label for="payment-tanggal">Pilih tanggal Pembayaran:</label>
-                    <select id="payment-tanggal" name="payment_tanggal" required class="form-control ">
+                    <select id="payment-tanggal" name="tanggal" required class="form-control ">
                         <option value="" disabled selected>Loading...</option>
                     </select>
 

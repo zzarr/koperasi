@@ -14,6 +14,8 @@ use App\Imports\MainPaymentImport;
 use Illuminate\Support\Facades\DB;
 use App\Http\Controllers\Controller;
 use Maatwebsite\Excel\Facades\Excel;
+use Carbon\Carbon;
+use Barryvdh\DomPDF\Facade\Pdf;
 
 class MainPaymentController extends Controller
 {
@@ -106,12 +108,22 @@ class MainPaymentController extends Controller
         
     }
 
-    public function exportInvoince($tanggal)  {
-        $data = MainPayment::with('user')->where('paid_at', $tanggal)->first();
-
-         return response()->json($data);
-        
+    public function exportInvoice(Request $request)
+    {
+        $data = MainPayment::with('user')->where('paid_at', $request->tanggal)->first();
+    
+        if (!$data) {
+            return back()->with('error', 'Data tidak ditemukan untuk tanggal yang dipilih.');
+        }
+    
+        // Generate PDF
+        $pdf = Pdf::loadView('admin.payment.main.invoice', compact('data'))
+            ->setPaper('a4', 'landscape');
+    
+        // Stream PDF ke browser untuk preview
+        return $pdf->stream('Invoice_' . $data->id . '.pdf');
     }
+    
 
 
 }
