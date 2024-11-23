@@ -9,10 +9,12 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 
 class ConfigPayment extends Model
 {
-    use HasFactory, SoftDeletes;
+    use HasFactory, SoftDeletes, Uuid;
     // uuid
 
     // In Laravel 6.0+ make sure to also set $keyType
+    public $incrementing = false;
+
     protected $keyType = 'string';
 
     protected $primaryKey = 'id';
