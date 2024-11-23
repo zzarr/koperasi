@@ -99,5 +99,19 @@ class MainPaymentController extends Controller
         ], 201);
     }
 
+    public function dataTanggal($id){
+        $data = MainPayment::where('user_id', $id)->get();
+
+        return response()->json($data);
+        
+    }
+
+    public function exportInvoince($tanggal)  {
+        $data = MainPayment::with('user')->where('paid_at', $tanggal)->first();
+
+         return response()->json($data);
+        
+    }
+
 
 }

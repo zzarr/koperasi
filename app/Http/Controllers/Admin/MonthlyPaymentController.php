@@ -14,6 +14,8 @@ use App\Models\MonthlyPayment;
 use App\Models\Wallet;
 use App\Models\YearlyLog;
 use App\Models\ConfigPayment;
+use Barryvdh\DomPDF\Facade\Pdf;
+
 
 
 
@@ -150,6 +152,52 @@ class MonthlyPaymentController extends Controller
             "status"    => $this->isSuccess ?? false,
             "code"      => $this->isSuccess ? 200 : 600,
             "message"   => $this->isSuccess ? "Success!" : ($this->exception ?? "Unknown error(?)"),
+            "pdf_url"   => $this->isSuccess ? route('admin.payment.monthly.download', ['id' => $monthlyPayment->id]) : null,
         ], 201);
+    }
+
+    // public function dataTanggal($id){
+    //     $data = MonthlyPayment::where('user_id', $id)->get();
+
+    //     return response()->json($data);
+
+    // }
+    // public function previewInvoice($id)
+    // {
+    //     // Ambil data monthly berdasarkan ID
+    //     $user = User::with('monthlyPayment')->findOrFail($id);
+
+    //     // Validasi data
+    //     if (!$user) {
+    //         return redirect()->back()->withErrors(['error' => 'Data monthly tidak ditemukan.']);
+    //     }
+
+    //     // Generate PDF
+    //     $pdf = Pdf::loadView('admin.payment.monthly.invoices', compact('user'))
+    //         ->setPaper('a4', 'portrait');
+
+    //     // Stream PDF ke browser untuk preview
+    //     return $pdf->stream('Invoice_Monthly_' . $user . '.pdf');
+    // }
+    public function downloadInvoice($id)
+    {
+        try {
+            // Cari data pembayaran berdasarkan ID
+            $payment = MonthlyPayment::findOrFail($id);
+
+            // Dapatkan informasi pengguna
+            $user = $payment->user;
+
+            // Generate PDF
+            $pdf = PDF::loadView('admin.payment.monthly.invoice', [
+                'user' => $user,
+                'payment' => $payment,
+            ]);
+
+            // Download PDF
+            return $pdf->download('invoice-' . $user->id . '-' . $payment->payment_month . '-' . $payment->payment_year . '.pdf');
+        } catch (\Exception $e) {
+            return redirect()->back()->with('error', 'Terjadi kesalahan: ' . $e->getMessage());
+        }
     }
 }

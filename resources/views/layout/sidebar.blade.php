@@ -28,13 +28,14 @@
                     </a>
                 </li>
                 <li class="menu">
-                    <a href="#" aria-expanded="false" class="dropdown-toggle">
+                    <a href="{{ route('manage-user.index') }}" aria-expanded="false" class="dropdown-toggle">
                         <div class="">
                             <i data-feather="users"></i>
                             <span> Manage User</span>
                         </div>
                     </a>
                 </li>
+                
                 <li class="menu">
                     <a href="{{ route('admin.metadata.manage_metadata') }}"
                         aria-expanded="{{ Request::routeIs('manage_meta_data') ? 'true' : 'false' }}"
@@ -121,13 +122,13 @@
                     <ul class="submenu list-unstyled collapse" id="submenu" data-parent="#accordionExample"
                         style="">
                         <li>
-                            <a href="{{ route('admin.payment.main.index') }}">Pembayaran Simpanan Pokok </a>
+                            <a href="{{ route('user.history.main') }}"> Simpanan Pokok </a>
                         </li>
                         <li>
-                            <a href="{{ route('admin.payment.monthly.index') }}">Pembayaran Simpanan Wajib </a>
+                            <a href="{{ route('user.history.monthly') }}"> Simpanan Wajib </a>
                         </li>
                         <li>
-                            <a href="{{ route('admin.payment.other.index') }}">Pembayaran Simpanan Sukarela </a>
+                            <a href="{{ route('user.history.other') }}"> Simpanan Sukarela </a>
                         </li>
                     </ul>
                 </li>

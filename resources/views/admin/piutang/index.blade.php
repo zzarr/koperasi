@@ -266,9 +266,34 @@
 
     $(document).on('click', '.btn-detail', function () {
     const id = $(this).data('id'); // Ambil ID dari tombol
-    // Arahkan ke halaman baru untuk melihat detail
-    window.location.href = `/admin/piutang/pembayaran/${id}/detail`;
+
+    // Lakukan permintaan AJAX untuk mendapatkan detail data
+    $.ajax({
+        url: `/admin/piutang/pembayaran/${id}`, // Endpoint untuk mengambil data berdasarkan ID
+        method: 'GET',
+        success: function (data) {
+            const jenisHutang = data.jenis_hutang; // Ambil jenis_hutang dari respons data
+
+            // Tentukan URL berdasarkan jenis_hutang
+            let url;
+            if (jenisHutang === 'rutin') {
+                url = `/admin/piutang/pembayaran/rutin/${id}/detail`;
+            } else if (jenisHutang === 'khusus') {
+                url = `/admin/piutang/pembayaran/khusus/${id}/detail`;
+            } else {
+                Notiflix.Notify.failure('Jenis hutang tidak valid.'); // Jika jenis_hutang tidak valid
+                return;
+            }
+
+            // Arahkan ke halaman baru
+            window.location.href = url;
+        },
+        error: function () {
+            Notiflix.Notify.failure('Gagal mengambil data. Silakan coba lagi.');
+        }
+    });
 });
+
 
     });
 </script>
