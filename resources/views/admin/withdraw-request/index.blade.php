@@ -312,6 +312,19 @@
                     return state;
                 }
             },
+                        {
+                targets: 4, // Kolom amount
+                createdCell: function(td, cellData, rowData, row, col) {
+                    $(td).addClass('text-center');
+                },
+                render: function(data, type, full, meta) {
+                    // Pastikan data ada dan valid sebelum memformat
+                    if (!data) return 'Rp 0';
+
+                    // Gunakan formatRupiah untuk memformat angka
+                    return formatRupiah(String(data), 'Rp. ');
+                }
+            },
             {
                 targets: -1,
                 title: 'Aksi',
