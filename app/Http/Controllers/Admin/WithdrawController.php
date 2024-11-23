@@ -62,6 +62,7 @@ class WithdrawController extends Controller
 
             if ($request->type == 'all') {
                 // Penarikan keseluruhan tabungan
+                $amount = $wallet->total;
                 $wallet->update([
                     'main'      => 0,
                     'monthly'   => 0,
@@ -71,26 +72,14 @@ class WithdrawController extends Controller
             } elseif ($request->type == 'other-cash') {
                 // Penarikan dana Hari Raya (dari saldo 'other')
                 if ($wallet->other - filterNumber($request->amount) >= 0) {
+                    $amount = $wallet->other;
                     $wallet->update([
                         'other' => 0,
                         // $wallet->other - filterNumber($request->amount)
                     ]);
+                } else {
+                    $amount = 0; // Default untuk tipe lainnya
                 }
-
-                // Update untuk pembayaran bulanan yang belum dibayar (tidak diubah, tetap menggunakan 'monthly')
-                // $monthlyUnpaid = MonthlyPayment::where('user_id', $request->user_id)
-                //     ->where('payment_year', date('Y'))
-                //     ->where('amount', 0)
-                //     ->orderBy('payment_month', 'ASC')
-                //     ->limit($request->value)
-                //     ->pluck('id');
-
-                // foreach ($monthlyUnpaid as $item) {
-                //     MonthlyPayment::find($item)->update([
-                //         'amount'    => $monthly->paid_off_amount,
-                //         'paid_at'   => date('Y-m-d')
-                //     ]);
-                // }
             }
 
             // Buat histori penarikan
@@ -99,7 +88,7 @@ class WithdrawController extends Controller
                 'name'          => $request->type,
                 'description'   => $request->note,
                 'value'         => $request->value ?: 0,
-                'amount'        => $request->value ? 0 : filterNumber($request->amount),
+                'amount'        => filterNumber($amount),
                 'withdrawn_at'  => Carbon::now(),
                 'status'        => 1,
             ]);
