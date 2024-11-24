@@ -21,7 +21,7 @@ use App\Http\Controllers\AuthController;
 use App\Models\PembayaranPiutang;
 
 Route::get('/', function () {
-    return view('welcome');
+    return redirect()->route('login');
 });
 
 // Authentication Routes
@@ -68,6 +68,9 @@ Route::middleware(['auth', 'verified', 'role:admin'])->group(function () {
                 Route::post('/store', [OtherPaymentController::class, 'store'])->name('store');
                 Route::post('/destroy/{id?}', [OtherPaymentController::class, 'destroy'])->name('destroy');
                 Route::post('/import', [OtherPaymentController::class, 'import'])->name('import');
+
+                Route::get('/data_tanggal/{id}', [OtherPaymentController::class, 'dataTanggal'])->name('dataTanggal');
+                Route::post('/exportInvoice', [OtherPaymentController::class, 'exportInvoice'])->name('export');
             });
         });
 
