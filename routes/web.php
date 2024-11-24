@@ -135,7 +135,7 @@ Route::middleware(['auth', 'verified', 'role:user'])->group(function () {
             Route::get('/main', [PaymentHistoryController::class, 'main'])->name('main');
             Route::get('/main/ajax', [PaymentHistoryController::class, 'mainDatatable'])->name('main.ajax');
             Route::get('/monthly', [PaymentHistoryController::class, 'monthly'])->name('monthly');
-            Route::get('/mothly/ajax', [PaymentHistoryController::class, 'mothlyDatatable'])->name('mothly.ajax');
+            Route::get('/monthly/ajax', [PaymentHistoryController::class, 'monthlyDatatable'])->name('monthly.ajax');
             Route::get('/other', [PaymentHistoryController::class, 'other'])->name('other');
             Route::get('/other/ajax', [PaymentHistoryController::class, 'otherDatatable'])->name('other.ajax');
         });
