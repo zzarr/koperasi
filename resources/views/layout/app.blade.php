@@ -26,7 +26,7 @@
     <!-- Daterange picker -->
     <link rel="stylesheet" href="{{ asset('libs/daterangepicker/daterangepicker.css') }}">
 
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.9.3/html2pdf.bundle.min.js"></script>
+
 
 
 
@@ -100,6 +100,7 @@
     <script src="{{ asset('demo1/assets/js/custom.js') }}"></script>
     <script src="{{ asset('libs/feather-icons/feather.min.js') }}"></script>
     <script src="{{ asset('dist/js/app.js') }}"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.9.3/html2pdf.bundle.min.js"></script>
 
     <!-- daterangepicker -->
     <script src="{{ asset('libs/moment/moment.min.js') }}"></script>

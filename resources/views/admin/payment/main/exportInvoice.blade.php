@@ -8,22 +8,26 @@
                     <span aria-hidden="true">&times;</span>
                 </button>
             </div>
-            <div class="modal-body">
-                <form id="invoice-form">
-                    @csrf
-                    <label for="payment-id">Pilih Pembayaran:</label>
-                    <select id="payment-id" name="payment_id" required class="form-control ">
+            <form id="invoice-form" method="POST" action="{{ route('admin.payment.main.export') }}">
+                @csrf
+                <div class="modal-body">
+
+
+                    <label for="payment-tanggal">Pilih tanggal Pembayaran:</label>
+                    <select id="payment-tanggal" name="tanggal" required class="form-control ">
                         <option value="" disabled selected>Loading...</option>
                     </select>
-                    <button type="submit">Cetak Invoice</button>
-                </form>
-                <div id="invoice-container" style="display: none;"></div>
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-dismiss="modal"><i class="fa fa-times"></i>
-                    Close</button>
-                <button type="button" id="btn_form" class="btn btn-primary"><i class="fa fa-save"></i> Save</button>
-            </div>
+
+
+                    <div id="invoice-container" style="display: none;"></div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal"><i class="fa fa-times"></i>
+                        Close</button>
+                    <button type="submit" id="btn_form" class="btn btn-primary"><i class="fa fa-save"></i>
+                        Cetak</button>
+                </div>
+            </form>
         </div>
     </div>
 </div>

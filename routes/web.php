@@ -45,6 +45,7 @@ Route::middleware(['auth', 'verified', 'role:admin'])->group(function () {
                 Route::post('/import', [MainPaymentController::class, 'import'])->name('import');
 
                 Route::get('/data_tanggal/{id}', [MainPaymentController::class, 'dataTanggal'])->name('dataTanggal');
+                Route::post('/exportInvoice', [MainPaymentController::class, 'exportInvoice'])->name('export');
             });
 
             Route::group(['prefix' => 'monthly', 'as' => 'monthly.'], function () {
@@ -54,6 +55,11 @@ Route::middleware(['auth', 'verified', 'role:admin'])->group(function () {
                 Route::post('/store', [MonthlyPaymentController::class, 'store'])->name('store');
                 Route::post('/destroy/{id?}', [MonthlyPaymentController::class, 'destroy'])->name('destroy');
                 Route::post('/import', [MonthlyPaymentController::class, 'import'])->name('import');
+                Route::get('/download/{id}', [MonthlyPaymentController::class, 'downloadInvoice'])->name('download');
+
+                // Route::get('/data_tanggal/{id}', [MonthlyPaymentController::class, 'dataTanggal']);
+
+                // Route::get('/invoice/preview/{id}', [MonthlyPaymentController::class, 'previewInvoice'])->name('invoice');
             });
 
             Route::group(['prefix' => 'other', 'as' => 'other.'], function () {
@@ -68,23 +74,23 @@ Route::middleware(['auth', 'verified', 'role:admin'])->group(function () {
 
         // piutang
         Route::group(['prefix' => 'piutang', 'as' => 'piutang.'], function () {
-                    Route::get('/', [PiutangController::class, 'index'])->name('index');
-                    Route::get('/datatables', [PiutangController::class, 'datatables'])->name('ajax');
-                    Route::post('/store', [PiutangController::class, 'store'])->name('store');
-                    Route::get('/users', [PiutangController::class, 'getUsers'])->name('users.get');
-                    Route::delete('/delete/{id?}', [PiutangController::class, 'destroy'])->name('delete');
-                    Route::group(['prefix' => 'pembayaran', 'as' => 'pembayaran.'], function () {
-                        Route::get('/{id}', [PembayaranPiutangController::class, 'getPiutang'])->name('get');
-                        Route::group(['prefix' => 'rutin', 'as' => 'rutin.'], function () {
-                            Route::get('/datatables', [PembayaranPiutangController::class, 'datatables'])->name('ajax');
-                            Route::get('/{id}/detail', [PembayaranPiutangController::class, 'showRutinDetail'])->name('detail');
-                        });
-                        Route::group(['prefix' => 'khusus', 'as' => 'khusus.'], function () {
-                            Route::post('/store', [PembayaranPiutangController::class, 'storeKhusus'])->name('store');
-                            Route::get('/datatables', [PembayaranPiutangController::class, 'datatables'])->name('ajax');
-                            Route::get('/{id}/detail', [PembayaranPiutangController::class, 'showKhususDetail'])->name('detail');
-                        });
-                    });
+            Route::get('/', [PiutangController::class, 'index'])->name('index');
+            Route::get('/datatables', [PiutangController::class, 'datatables'])->name('ajax');
+            Route::post('/store', [PiutangController::class, 'store'])->name('store');
+            Route::get('/users', [PiutangController::class, 'getUsers'])->name('users.get');
+            Route::delete('/delete/{id?}', [PiutangController::class, 'destroy'])->name('delete');
+            Route::group(['prefix' => 'pembayaran', 'as' => 'pembayaran.'], function () {
+                Route::get('/{id}', [PembayaranPiutangController::class, 'getPiutang'])->name('get');
+                Route::group(['prefix' => 'rutin', 'as' => 'rutin.'], function () {
+                    Route::get('/datatables', [PembayaranPiutangController::class, 'datatables'])->name('ajax');
+                    Route::get('/{id}/detail', [PembayaranPiutangController::class, 'showRutinDetail'])->name('detail');
+                });
+                Route::group(['prefix' => 'khusus', 'as' => 'khusus.'], function () {
+                    Route::post('/store', [PembayaranPiutangController::class, 'storeKhusus'])->name('store');
+                    Route::get('/datatables', [PembayaranPiutangController::class, 'datatables'])->name('ajax');
+                    Route::get('/{id}/detail', [PembayaranPiutangController::class, 'showKhususDetail'])->name('detail');
+                });
+            });
         });
 
         // Withdraw Routes
@@ -96,6 +102,7 @@ Route::middleware(['auth', 'verified', 'role:admin'])->group(function () {
             Route::delete('/destroy/{id?}', [WithdrawController::class, 'destroy'])->name('destroy');
 
             Route::get('/user-wallet/{id?}', [WithdrawController::class, 'userWallet'])->name('info');
+            Route::get('/invoice/preview/{id}', [WithdrawController::class, 'previewInvoice'])->name('invoice.preview');
         });
 
         // Metadata Routes
@@ -125,7 +132,7 @@ Route::middleware(['auth', 'verified', 'role:user'])->group(function () {
         Route::group(['prefix' => 'history', 'as' => 'history.'], function () {
             Route::get('/main', [PaymentHistoryController::class, 'main'])->name('main');
             Route::get('/main/ajax', [PaymentHistoryController::class, 'mainDatatable'])->name('main.ajax');
-            Route::get('/mothly', [PaymentHistoryController::class, 'mothly'])->name('mothly');
+            Route::get('/monthly', [PaymentHistoryController::class, 'monthly'])->name('monthly');
             Route::get('/mothly/ajax', [PaymentHistoryController::class, 'mothlyDatatable'])->name('mothly.ajax');
             Route::get('/other', [PaymentHistoryController::class, 'other'])->name('other');
             Route::get('/other/ajax', [PaymentHistoryController::class, 'otherDatatable'])->name('other.ajax');

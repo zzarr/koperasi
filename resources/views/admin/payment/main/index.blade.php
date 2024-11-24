@@ -120,6 +120,8 @@
     <script src="{{ asset('demo1/assets/js/scrollspyNav.js') }}"></script>
     <script src="{{ asset('demo1/plugins/select2/select2.min.js') }}"></script>
     <script src="{{ asset('demo1/plugins/select2/custom-select2.js') }}"></script>
+    <script src="https://cdn.jsdelivr.net/npm/html2pdf.js"></script>
+
     <script>
         $(document).ready(function() {
             var ss = $(".basic").select2({
@@ -132,6 +134,7 @@
                 serverSide: true,
                 scrollY: "50vh",
                 scrollX: true,
+                autoWidth: false,
                 ajax: "{{ route('admin.payment.main.ajax') }}",
                 columnDefs: [{
                         targets: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14],
@@ -302,32 +305,47 @@
                 const dataId = $(this).data('id');
 
                 // Tampilkan modal
-                $('#modal-invoice').modal('show'); // Gunakan modal Bootstrap untuk menampilkan modal
+                $('#modal-invoice').modal('show');
 
                 // Ambil data dari backend untuk mengisi select
                 $.ajax({
                     url: `/admin/payment/main/data_tanggal/${dataId}`, // Endpoint untuk mengambil data pembayaran
                     type: 'GET',
                     success: function(data) {
-                        const select = $('#payment-id');
+                        const select = $('#payment-tanggal');
                         select.empty(); // Hapus opsi sebelumnya
 
-                        // Tambahkan opsi baru berdasarkan data dari backend
-                        data.forEach(payment => {
-                            select.append(
-                                `<option value="${payment.id}">${payment.paid_at}</option>`
-                            );
-                        });
+                        // Tambahkan opsi baru berdasarkan properti "paid_at" dari data
+                        if (Array.isArray(data)) {
+                            data.forEach(payment => {
+                                select.append(
+                                    `<option value="${payment.paid_at}">${payment.paid_at}</option>`
+                                );
+                            });
+                        } else {
+                            alert('Data yang diterima tidak valid.');
+                        }
 
                         // Set opsi default
                         select.prepend(
-                            '<option value="" disabled selected>Pilih Pembayaran</option>');
+                            '<option value="" disabled selected>Pilih Pembayaran</option>'
+                        );
                     },
                     error: function() {
                         alert('Gagal mengambil data pembayaran.');
                     }
                 });
             });
+
+
+
+
+
+
+
+
+
+
 
 
             $('#user-modal').on('shown.bs.modal', function(event) {
