@@ -15,6 +15,7 @@ use App\Http\Controllers\Admin\{
 use App\Http\Controllers\user\{
     AnggotaController,
     PaymentHistoryController,
+    HistoryPiutangController
     // MasterDataController
 };
 use App\Http\Controllers\AuthController;
@@ -140,3 +141,9 @@ Route::middleware(['auth', 'verified', 'role:user'])->group(function () {
 Route::resource('manage-user', UserController::class);
 Route::get('manage-user/data', [UserController::class, 'data'])->name('manage-user.data');
 Route::get('/manage-user/export/pdf', [UserController::class, 'exportPDF'])->name('manage-user.export.pdf');
+
+
+Route::middleware('auth')->group(function () {
+    Route::get('/history-piutang/{id?}', [HistoryPiutangController::class, 'index'])->name('user.history-piutang');
+});
+
