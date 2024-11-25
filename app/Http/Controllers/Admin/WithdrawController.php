@@ -16,7 +16,6 @@ use App\Models\Wallet;
 use App\Models\ConfigPayment;
 use App\Models\MonthlyPayment;
 use App\Models\OtherPayment;
-use Carbon\Carbon;
 use Barryvdh\DomPDF\Facade\Pdf;
 
 
@@ -89,7 +88,7 @@ class WithdrawController extends Controller
                 'description'   => $request->note,
                 'value'         => $request->value ?: 0,
                 'amount'        => filterNumber($amount),
-                'withdrawn_at'  => Carbon::now(),
+                'withdrawn_at'  => now(),
                 'status'        => 1,
             ]);
 

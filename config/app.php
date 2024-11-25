@@ -69,7 +69,7 @@ return [
     |
     */
 
-    'timezone' => 'UTC',
+    'timezone' => 'Asia/Jakarta',
 
     /*
     |--------------------------------------------------------------------------
@@ -187,7 +187,7 @@ return [
          
          * 
          */
-        
+
         /*
          * Application Service Providers...
          */

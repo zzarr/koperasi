@@ -56,7 +56,8 @@ Route::middleware(['auth', 'verified', 'role:admin'])->group(function () {
                 Route::post('/import', [MonthlyPaymentController::class, 'import'])->name('import');
                 Route::get('/download/{id}', [MonthlyPaymentController::class, 'downloadInvoice'])->name('download');
 
-                // Route::get('/data_tanggal/{id}', [MonthlyPaymentController::class, 'dataTanggal']);
+                Route::get('/data_tanggal/{id}', [MonthlyPaymentController::class, 'dataTanggal']);
+                Route::post('/exportInvoice', [MonthlyPaymentController::class, 'exportInvoice'])->name('export');
 
                 // Route::get('/invoice/preview/{id}', [MonthlyPaymentController::class, 'previewInvoice'])->name('invoice');
             });
