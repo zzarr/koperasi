@@ -101,26 +101,30 @@
                             <div class="col-lg-12">
                                 <div class="table-responsive project-invoice">
                                     <table class="table table-bordered mb-0">
-                                        <thead class="thead-light">
-                                            <tr>
-                                                <th>Tanggal</th>
-                                                <th>Pembayaran</th>
-                                            </tr>
-                                        </thead>
-                                        <tbody>
-                                            <tr>
+                                        <table class="table table-bordered">
+                                            <thead class="thead-light">
+                                                <tr>
+                                                    <th>Bulan ke</th>
+                                                    <th>Tanggal</th>
+                                                    <th class="text-end">Pembayaran</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                <tr>
+                                                    <td>{{ $data->payment_month }}</td>
+                                                    <td>{{ $data->paid_at }}</td>
+                                                    <td class="text-end">{{ formatRupiah($data->amount) }}</td>
+                                                </tr>
+                                                <tr class="bg-black text-white">
+                                                    <td colspan="2" class="border-0 font-14 text-end"><b>Total</b>
+                                                    </td>
+                                                    <td class="border-0 font-14 text-end">
+                                                        <b>{{ formatRupiah($data->amount) }}</b>
+                                                    </td>
+                                                </tr>
+                                            </tbody>
+                                        </table>
 
-                                                <td> {{ $data->paid_at }}</td>
-                                                <td>{{ formatRupiah($data->amount) }}</td>
-                                            </tr>
-                                            <tr class="bg-black text-white">
-                                                <td class="border-0 font-14"><b>Total</b></td>
-                                                <td class="border-0 font-14">
-                                                    <b>{{ formatRupiah($data->amount) }}</b>
-                                                </td>
-                                            </tr>
-                                        </tbody>
-                                    </table>
                                 </div>
                             </div>
                         </div>

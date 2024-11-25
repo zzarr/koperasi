@@ -31,23 +31,23 @@ class PaymentHistoryController extends Controller
     }
 
     public function monthly() {
-        
+        return view('user.history.monthlyPayment');
         
     }
 
     public function monthlyDatatable(){
-        $data = MonthlyPayment::where('id_user', Auth::user()->id)->get();
+        $data = MonthlyPayment::where('user_id', Auth::user()->id)->get();
 
         return Datatables::of($data)->make();
     }
 
     public function other() {
-        
+        return view('user.history.otherPayment');
         
     }
 
     public function otherDatatable(){
-        $data = OtherPayment::where('id_user', Auth::user()->id)->get();
+        $data = OtherPayment::where('user_id', Auth::user()->id)->get();
 
         return Datatables::of($data)->make();
     }

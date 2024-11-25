@@ -21,7 +21,7 @@ use App\Http\Controllers\AuthController;
 use App\Models\PembayaranPiutang;
 
 Route::get('/', function () {
-    return view('welcome');
+    return redirect()->route('login');
 });
 
 // Authentication Routes
@@ -69,6 +69,9 @@ Route::middleware(['auth', 'verified', 'role:admin'])->group(function () {
                 Route::post('/store', [OtherPaymentController::class, 'store'])->name('store');
                 Route::post('/destroy/{id?}', [OtherPaymentController::class, 'destroy'])->name('destroy');
                 Route::post('/import', [OtherPaymentController::class, 'import'])->name('import');
+
+                Route::get('/data_tanggal/{id}', [OtherPaymentController::class, 'dataTanggal'])->name('dataTanggal');
+                Route::post('/exportInvoice', [OtherPaymentController::class, 'exportInvoice'])->name('export');
             });
         });
 
@@ -133,7 +136,7 @@ Route::middleware(['auth', 'verified', 'role:user'])->group(function () {
             Route::get('/main', [PaymentHistoryController::class, 'main'])->name('main');
             Route::get('/main/ajax', [PaymentHistoryController::class, 'mainDatatable'])->name('main.ajax');
             Route::get('/monthly', [PaymentHistoryController::class, 'monthly'])->name('monthly');
-            Route::get('/mothly/ajax', [PaymentHistoryController::class, 'mothlyDatatable'])->name('mothly.ajax');
+            Route::get('/monthly/ajax', [PaymentHistoryController::class, 'monthlyDatatable'])->name('monthly.ajax');
             Route::get('/other', [PaymentHistoryController::class, 'other'])->name('other');
             Route::get('/other/ajax', [PaymentHistoryController::class, 'otherDatatable'])->name('other.ajax');
         });

@@ -8,22 +8,25 @@
                     <span aria-hidden="true">&times;</span>
                 </button>
             </div>
-            <form id="invoice-form" method="POST" action="{{ route('admin.payment.main.export') }}">
+            <form id="invoice-form" method="POST" action="{{ route('admin.payment.other.export') }}">
                 @csrf
                 <div class="modal-body">
                     <label for="payment-tanggal">Pilih tanggal Pembayaran:</label>
-                    <select id="payment-tanggal" name="tanggal" required class="form-control ">
+                    <select id="payment-tanggal" name="month" required class="form-control">
                         <option value="" disabled selected>Loading...</option>
                     </select>
                     <div id="invoice-container" style="display: none;"></div>
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-dismiss="modal"><i class="fa fa-times"></i>
-                        Close</button>
-                    <button type="submit" id="btn_form" class="btn btn-primary"><i class="fa fa-save"></i>
-                        Cetak</button>
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">
+                        <i class="fa fa-times"></i> Close
+                    </button>
+                    <button type="submit" id="btn_form" class="btn btn-primary">
+                        <i class="fa fa-save"></i> Cetak
+                    </button>
                 </div>
             </form>
+
         </div>
     </div>
 </div>
