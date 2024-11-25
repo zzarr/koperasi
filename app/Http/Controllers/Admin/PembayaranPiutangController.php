@@ -59,23 +59,23 @@ class PembayaranPiutangController extends Controller
 // }
 
 
-public function datatablesKhusus(Request $request)
-{
-    // Ambil hutang_id dari request jika ada
-    $hutangId = $request->input('hutang_id'); // Pastikan 'hutang_id' ada di URL/parameter request
+    public function datatablesKhusus(Request $request)
+    {
+        // Ambil hutang_id dari request jika ada
+        $hutangId = $request->input('hutang_id'); // Pastikan 'hutang_id' ada di URL/parameter request
 
-    // Filter berdasarkan hutang_id dan jenis_hutang 'khusus'
-    $data = PembayaranPiutang::when($hutangId, function ($query, $hutangId) {
-        return $query->where('hutang_id', $hutangId); // Filter berdasarkan hutang_id
-    })
-    ->whereHas('piutang', function ($query) {
-        $query->where('jenis_hutang', 'khusus'); // Filter jenis_hutang 'khusus'
-    })
-    ->get();
+        // Filter berdasarkan hutang_id dan jenis_hutang 'khusus'
+        $data = PembayaranPiutang::when($hutangId, function ($query, $hutangId) {
+            return $query->where('hutang_id', $hutangId); // Filter berdasarkan hutang_id
+        })
+        ->whereHas('piutang', function ($query) {
+            $query->where('jenis_hutang', 'khusus'); // Filter jenis_hutang 'khusus'
+        })
+        ->get();
 
-    // Mengembalikan data dalam format DataTables
-    return DataTables::of($data)->make(true);
-}
+        // Mengembalikan data dalam format DataTables
+        return DataTables::of($data)->make(true);
+    }
 
 
 
