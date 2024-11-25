@@ -102,6 +102,40 @@
         </div>
     </div>
 
+    {{-- modal --}}
+    <div class="modal fade" id="user-modal" tabindex="-1" role="dialog" aria-labelledby="userModalTitle" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title text-white" id="userModalTitle">
+                        <span id="action-modal"></span>
+                    </h5>
+                    <button type="button" class="close text-white" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <form method="POST" id="user-form" data-id="" data-userId="">
+                        @csrf
+                        <div class="form-group">
+                            <label for="paid_at">Tanggal Bayar<span class="text-danger">*</span></label>
+                            <input type="text" name="paid_at" class="form-control" id="paid_at" placeholder="">
+                        </div>
+                        <div class="form-group">
+                            <label for="payment_month">Bulan Ke-<span class="text-danger">*</span></label>
+                            <input type="text" name="payment_month" class="form-control" id="payment_month" placeholder="" readonly>
+                        </div>
+                        <input type="hidden" name="payment_year" class="form-control" id="payment_year" placeholder="">
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-light" data-dismiss="modal"><i class="fa fa-times"></i> Close</button>
+                    <button type="button" id="btn_form" class="btn btn-primary"><i class="fa fa-save"></i> Save</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <div class="modal fade" id="modal-invoice" tabindex="-1" role="dialog" aria-labelledby="modalInvoiceLabel" aria-hidden="true">
         <div class="modal-dialog modal-md modal-dialog-centered" role="document">
             <div class="modal-content">
@@ -218,19 +252,21 @@ $('#user-modal').on('click', '#btn_form', function() {
                     url: `/admin/payment/monthly/data_tanggal/${dataId}`, // Endpoint untuk mengambil data pembayaran
                     type: 'GET',
                     success: function(data) {
-                        const select = $('#payment-tanggal');
-                        select.empty(); // Hapus opsi sebelumnya
+                    const select = $('#payment-tanggal');
+                    select.empty(); // Hapus opsi sebelumnya
 
-                        // Tambahkan opsi baru berdasarkan properti "paid_at" dari data
-                        if (Array.isArray(data)) {
-                            data.forEach(payment => {
+                    // Tambahkan opsi baru berdasarkan properti "paid_at" dari data
+                    if (Array.isArray(data)) {
+                        data.forEach(payment => {
+                            if (payment.paid_at !== null) { // Pastikan nilai paid_at tidak null
                                 select.append(
                                     `<option value="${payment.paid_at}">${payment.paid_at}</option>`
                                 );
-                            });
-                        } else {
-                            alert('Data yang diterima tidak valid.');
-                        }
+                            }
+                        });
+                    } else {
+                        alert('Data yang diterima tidak valid.');
+                    }
 
                         // Set opsi default
                         select.prepend(
@@ -381,7 +417,14 @@ $('#user-modal').on('click', '#btn_form', function() {
                         render: function(data, type, full, meta) {
                             return `
                     <button type="button" class="btn btn-outline-primary btn-sm btn-view" data-id="${full.id}" id="btn-view">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-eye"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path><circle cx="12" cy="12" r="3"></circle></svg>
+                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" 
+                     viewBox="0 0 24 24" fill="none" stroke="currentColor" 
+                     stroke-width="2" stroke-linecap="round" 
+                     stroke-linejoin="round" class="feather feather-printer">
+                     <polyline points="6 9 6 2 18 2 18 9"></polyline>
+                     <path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"></path>
+                     <rect x="6" y="14" width="12" height="8"></rect>
+                    </svg>
                     </button>
                 `;
                         },
