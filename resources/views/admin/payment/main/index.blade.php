@@ -83,6 +83,7 @@
     </div> <!-- Penutup div.row -->
 
     @include('admin.payment.main.main_payment_modal')
+    @include('admin.payment.main.exportInvoice')
 
 @endsection
 
@@ -119,14 +120,21 @@
     <script src="{{ asset('demo1/assets/js/scrollspyNav.js') }}"></script>
     <script src="{{ asset('demo1/plugins/select2/select2.min.js') }}"></script>
     <script src="{{ asset('demo1/plugins/select2/custom-select2.js') }}"></script>
+    <script src="https://cdn.jsdelivr.net/npm/html2pdf.js"></script>
+
     <script>
         $(document).ready(function() {
+            var ss = $(".basic").select2({
+                tags: true,
+            });
+
             var table = $("#user-table").DataTable({
                 paging: true,
                 processing: true,
                 serverSide: true,
                 scrollY: "50vh",
                 scrollX: true,
+                autoWidth: false,
                 ajax: "{{ route('admin.payment.main.ajax') }}",
                 columnDefs: [{
                         targets: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14],
@@ -212,7 +220,7 @@
                         searchable: false,
                         render: function(data, type, full, meta) {
                             return `
-                    <button type="button" class="btn btn-outline-primary btn-sm btn-view" data-id="${full.id}">
+                    <button type="button" class="btn btn-outline-primary btn-sm btn-view" data-id="${full.id}" id="btn-view">
                         <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-eye"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path><circle cx="12" cy="12" r="3"></circle></svg>
                     </button>
                 `;
@@ -291,6 +299,54 @@
                 lengthMenu: [5, 10, 20, 50],
                 pageLength: 5
             });
+
+            $(document).on('click', '.btn-view', function() {
+                // Ambil data-id dari tombol yang ditekan
+                const dataId = $(this).data('id');
+
+                // Tampilkan modal
+                $('#modal-invoice').modal('show');
+
+                // Ambil data dari backend untuk mengisi select
+                $.ajax({
+                    url: `/admin/payment/main/data_tanggal/${dataId}`, // Endpoint untuk mengambil data pembayaran
+                    type: 'GET',
+                    success: function(data) {
+                        const select = $('#payment-tanggal');
+                        select.empty(); // Hapus opsi sebelumnya
+
+                        // Tambahkan opsi baru berdasarkan properti "paid_at" dari data
+                        if (Array.isArray(data)) {
+                            data.forEach(payment => {
+                                select.append(
+                                    `<option value="${payment.paid_at}">${payment.paid_at}</option>`
+                                );
+                            });
+                        } else {
+                            alert('Data yang diterima tidak valid.');
+                        }
+
+                        // Set opsi default
+                        select.prepend(
+                            '<option value="" disabled selected>Pilih Pembayaran</option>'
+                        );
+                    },
+                    error: function() {
+                        alert('Gagal mengambil data pembayaran.');
+                    }
+                });
+            });
+
+
+
+
+
+
+
+
+
+
+
 
             $('#user-modal').on('shown.bs.modal', function(event) {
                 $('#paid_at').daterangepicker({

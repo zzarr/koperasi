@@ -38,6 +38,7 @@
                                 <th rowspan="3" style="vertical-align: middle">Total now</th>
                                 <th rowspan="3" style="vertical-align: middle">Total last</th>
                                 <th rowspan="3" style="vertical-align: middle">Total All</th>
+                                <th rowspan="3" style="vertical-align: middle">Aksi</th>
                             </tr>
                             <tr>
                                 <th colspan="2">1</th>
@@ -141,6 +142,8 @@
             </div>
         </div>
     </div>
+
+    @include('admin.payment.other.exportInvoice')
 
 
 @endsection
@@ -327,6 +330,11 @@
                     {
                         data: 'total_all'
                     },
+                    {
+                        data: null, // Kolom Aksi tidak memerlukan data, karena kita render tombol secara manual
+                        orderable: false, // Tidak bisa diurutkan
+                        className: 'text-center', // Pusatkan kolom aksi
+                    },
                 ],
                 columnDefs: [{
                         targets: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20,
@@ -405,6 +413,30 @@
                             return formatRupiah(String(data), 'Rp. ');
                         },
                     },
+                    {
+                        targets: 28, // Indeks kolom "Aksi" yang baru
+                        title: 'Aksi',
+                        orderable: false, // Tidak bisa diurutkan
+                        createdCell: function(td, cellData, rowData, row, col) {
+                            $(td).addClass('text-center'); // Pusatkan konten dalam kolom
+                        },
+                        render: function(data, type, full, meta) {
+                            // Menghasilkan tombol dengan ikon cetak
+                            return `
+            <button type="button" class="btn btn-sm btn-outline-primary btn-print" data-id="${full.id}">
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" 
+                     viewBox="0 0 24 24" fill="none" stroke="currentColor" 
+                     stroke-width="2" stroke-linecap="round" 
+                     stroke-linejoin="round" class="feather feather-printer">
+                     <polyline points="6 9 6 2 18 2 18 9"></polyline>
+                     <path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"></path>
+                     <rect x="6" y="14" width="12" height="8"></rect>
+                </svg>
+            </button>
+        `;
+                        }
+                    },
+
                 ],
                 oLanguage: {
                     oPaginate: {
@@ -434,14 +466,56 @@
                 });
             });
 
-            $('#btn-import').on('click', function() {
-                $('#import-modal').modal('show');
-                $("#import-form")[0].reset();
+            $(document).on('click', '.btn-print', function() {
+                // Ambil data-id dari tombol yang ditekan
+                const dataId = $(this).data('id');
 
-                $('#import-modal').on('shown.bs.modal', function(event) {
-                    KTApp.unblock('#import-modal .modal-content');
+                // Tampilkan modal
+                $('#modal-invoice').modal('show');
+
+                // Ambil data dari backend untuk mengisi select
+                $.ajax({
+                    url: `/admin/payment/other/data_tanggal/${dataId}`, // Endpoint untuk mengambil data pembayaran
+                    type: 'GET',
+                    success: function(data) {
+                        const select = $('#payment-tanggal');
+                        select.empty(); // Hapus opsi sebelumnya
+
+                        // Tambahkan opsi baru berdasarkan properti "paid_at" dari data
+                        if (Array.isArray(data) && data.length > 0) {
+                            // Ambil user_id dari elemen pertama dalam array
+                            const userId = data[0].user_id;
+
+                            // Tambahkan opsi berdasarkan properti paid_at
+                            data.forEach(payment => {
+                                if (payment.paid_at) {
+                                    select.append(
+                                        `<option value="${payment.payment_month}">Bulan ke-${payment.payment_month}</option>`
+                                    );
+                                }
+                            });
+
+                            // Tambahkan input hidden untuk user_id setelah select
+                            select.after(
+                                `<input type="hidden" name="user_id" value="${userId}">`
+                            );
+                        } else {
+                            alert('Data yang diterima tidak valid.');
+                        }
+
+
+                        // Set opsi default
+                        select.prepend(
+                            '<option value="" disabled selected>Pilih Pembayaran</option>'
+                        );
+                    },
+                    error: function() {
+                        alert('Gagal mengambil data pembayaran.');
+                    }
                 });
             });
+
+
 
             $('#user-modal').on('click', '#btn_form', function() {
                 let data = new FormData($('#user-form')[0])
@@ -491,22 +565,7 @@
                     }
                 });
             });
-            setInterval(function() {
-                getpoin()
-            }, 2000);
 
-            function getpoin() {
-                console.log('test');
-                const fomrdt = new FormData();
-                fomrdt.append('_token', '{{ csrf_token() }}');
-                fetch("{{ url('point/simpan-poin') }}", {
-                    method: 'POST',
-                    body: fomrdt
-                }).then(res => res.json()).then(data => {
-
-                });
-
-            }
         });
     </script>
 @endpush

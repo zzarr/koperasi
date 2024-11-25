@@ -28,6 +28,9 @@
 
 
 
+
+
+
     <!-- <link href="{{ asset('demo1/assets/css/elements/alert.css') }}" rel="stylesheet" type="text/css" /> -->
 
 
@@ -97,6 +100,7 @@
     <script src="{{ asset('demo1/assets/js/custom.js') }}"></script>
     <script src="{{ asset('libs/feather-icons/feather.min.js') }}"></script>
     <script src="{{ asset('dist/js/app.js') }}"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.9.3/html2pdf.bundle.min.js"></script>
 
     <!-- daterangepicker -->
     <script src="{{ asset('libs/moment/moment.min.js') }}"></script>
@@ -152,8 +156,6 @@
             rupiah = split[1] != undefined ? rupiah + ',' + split[1] : rupiah;
             return prefix == undefined ? rupiah : (rupiah ? prefix + rupiah : '');
         }
-
-        
     </script>
     @stack('script')
 
