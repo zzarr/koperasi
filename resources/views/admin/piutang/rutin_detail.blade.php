@@ -42,25 +42,17 @@
 
                     <form id="createForm">
                         @csrf
+                        <input type="hidden" name="hutang_id" value="{{ $piutang->id }}">
                         <div class="modal-body">
-                            <!-- Form input -->
+                            <!-- Form input lainnya -->
                             <div class="form-group">
-                                <label for="pembayaran ke-">Pembayaran Ke-</label>
-                                <input type="text" class="form-control" id="pembayaran ke-" name="pembayaran ke-" required>
+                                <label for="tanggal_pembayaran">Tanggal Pembayaran</label>
+                                <input type="date" name="tanggal_pembayaran" id="tanggal_pembayaran" class="form-control" required>
                             </div>
-
-                            <div class="form-group">
-                                <label for="tanggal_pembayaran">Tanggal Bayar</label>
-                                <input type="text" class="form-control" id="tanggal_pembayaran" name="tanggal_pembayaran" required>
-                            </div>
-
                             <div class="form-group">
                                 <label for="jumlah_bayar_pokok">Nominal Pokok</label>
-                                <input type="text" class="form-control" id="jumlah_bayar_pokok" name="jumlah_bayar_pokok" required>
+                                <input type="text" name="jumlah_bayar_pokok" id="jumlah_bayar_pokok" class="form-control" required>
                             </div>
-
-                            
-
                         </div>
                         <div class="modal-footer">
                             <button type="button" class="btn btn-secondary" data-dismiss="modal">Batal</button>
@@ -166,7 +158,7 @@ $(document).ready(function() {
             ],
             columns: [
                 { data: 'id' },           
-                { data: 'pembayaran ke-' },     
+                { data: 'pembayaran_ke' },     
                 { data: 'tanggal_pembayaran' },  
                 { data: 'jumlah_bayar_pokok' },   
                 { data: 'id' },            // Kolom aksi
@@ -221,25 +213,54 @@ $(document).ready(function() {
 
 
 <script>
-    $('#createForm').on('submit', function(e) {
-        e.preventDefault();
+    $(document).ready(function () {
+        $('#createForm').on('submit', function (event) {
+            event.preventDefault(); // Mencegah form untuk submit secara default
 
-        $.ajax({
-            url: "{{ route('admin.piutang.store') }}", // Route untuk menyimpan data
-            method: 'POST',
-            data: $(this).serialize(), // Ambil data dari form
-            success: function(response) {
-                $('#exampleModal').modal('hide'); // Tutup modal
-                $('#createForm')[0].reset(); // Reset form
-                $('#datatable').DataTable().ajax.reload(); // Reload data di datatable
-                Notiflix.Notify.success('Data berhasil ditambahkan!'); // Notifikasi sukses
-            },
-            error: function(xhr) {
-                const errors = xhr.responseJSON.errors;
-                for (const key in errors) {
-                    Notiflix.Notify.failure(errors[key][0]); // Tampilkan error pada setiap field
-                }
+            const hutangId = $("input[name='hutang_id']").val(); // Mengambil ID hutang dari form
+
+            // Validasi input form sebelum mengirimkan data
+            if (!$('#tanggal_pembayaran').val() || !$('#jumlah_bayar_pokok').val()) {
+                Notiflix.Notify.failure('Semua field harus diisi');
+                return; // Menghentikan eksekusi jika ada field yang kosong
             }
+
+            // Ambil data dari form
+            const formData = {
+                hutang_id: hutangId,
+                tanggal_pembayaran: $('#tanggal_pembayaran').val(),
+                jumlah_bayar_pokok: $('#jumlah_bayar_pokok').val(),
+            };
+
+            // Kirim data ke backend
+            $.ajax({
+                url: '/admin/piutang/pembayaran/rutin/store', // Ganti dengan URL yang sesuai
+                method: 'POST',
+                data: formData,
+                success: function (response) {
+                    if (response.message) {
+                        Notiflix.Notify.success(response.message); // Tampilkan notifikasi sukses
+                        $('#createForm')[0].reset(); // Reset form setelah berhasil
+                        $('#exampleModal').modal('hide'); // Menutup modal setelah berhasil
+                        // Refresh DataTable
+                        $('#datatable').DataTable().ajax.reload();
+                    }
+                },
+                error: function (xhr, status, error) {
+                    console.error('Error:', error);
+                    if (xhr.status === 422) {
+                        // Jika ada validasi gagal di server, tampilkan pesan kesalahan
+                        const errors = xhr.responseJSON.errors;
+                        let errorMessage = 'Gagal menyimpan pembayaran. ';
+                        for (const key in errors) {
+                            errorMessage += `${errors[key].join(', ')} `;
+                        }
+                        Notiflix.Notify.failure(errorMessage.trim());
+                    } else {
+                        Notiflix.Notify.failure('Terjadi kesalahan pada server');
+                    }
+                }
+            });
         });
     });
 </script>

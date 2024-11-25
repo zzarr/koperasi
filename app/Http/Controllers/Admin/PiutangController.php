@@ -46,23 +46,68 @@ class PiutangController extends Controller
     /**
      * Store a newly created resource in storage.
      */
+    // public function store(Request $request)
+    // {
+    //     $validatedData = $request->validate([
+    //         'nama' => 'required|exists:users,id', // Validasi harus sesuai ID user
+    //         'jenis_hutang' => 'required|string',
+    //         'jumlah_bulan' => 'required|integer|min:1|max:12',
+    //         'jumlah_hutang' => 'required|numeric|min:0',
+    //     ]);
+    
+    //     try {
+    //         // Simpan data ke database
+    //         Piutang::create([
+    //             'user_id' => $validatedData['nama'],
+    //             'jenis_hutang' => $validatedData['jenis_hutang'],
+    //             'jumlah_bulan' => $validatedData['jumlah_bulan'],
+    //             'jumlah_hutang' => $validatedData['jumlah_hutang'],
+    //             'sisa' => $validatedData['jumlah_hutang'], // Misalnya, sisa sama dengan jumlah awal
+    //             'is_lunas' => 0, // Default belum lunas
+    //         ]);
+    
+    //         return response()->json(['message' => 'Data berhasil disimpan'], 200);
+    //     } catch (\Exception $e) {
+    //         return response()->json(['message' => 'Terjadi kesalahan saat menyimpan data'], 500);
+    //     }
+    // }
+    
     public function store(Request $request)
     {
         $validatedData = $request->validate([
             'nama' => 'required|exists:users,id', // Validasi harus sesuai ID user
-            'jenis_hutang' => 'required|string',
+            'jenis_hutang' => 'required|string', // Validasi jenis hutang, rutin atau khusus
             'jumlah_bulan' => 'required|integer|min:1|max:12',
             'jumlah_hutang' => 'required|numeric|min:0',
         ]);
     
         try {
+            // Tentukan nama yang akan digunakan untuk mencari di tabel config_payment berdasarkan jenis_hutang
+            $paymentType = '';
+    
+            if ($validatedData['jenis_hutang'] == 'rutin') {
+                $paymentType = 'dept_routine'; // Cari dengan dept_routine untuk jenis hutang rutin
+            } elseif ($validatedData['jenis_hutang'] == 'khusus') {
+                $paymentType = 'dept_special'; // Cari dengan dept_special untuk jenis hutang khusus
+            }
+    
+            // Ambil nilai 'amount' dari tabel config_payment berdasarkan nama yang sesuai
+            $configPayment = \App\Models\ConfigPayment::where('name', $paymentType)->first();
+    
+            if (!$configPayment) {
+                return response()->json(['message' => 'Jenis hutang tidak ditemukan dalam konfigurasi pembayaran'], 400);
+            }
+    
+            // Hitung sisa (jumlah_hutang dikali dengan amount dari konfigurasi)
+            $sisa = $validatedData['jumlah_hutang'] * ($configPayment->paid_off_amount / 100);
+    
             // Simpan data ke database
             Piutang::create([
-                'user_id' => $validatedData['nama'],
+                'user_id' => $validatedData['nama'], 
                 'jenis_hutang' => $validatedData['jenis_hutang'],
                 'jumlah_bulan' => $validatedData['jumlah_bulan'],
                 'jumlah_hutang' => $validatedData['jumlah_hutang'],
-                'sisa' => $validatedData['jumlah_hutang'], // Misalnya, sisa sama dengan jumlah awal
+                'sisa' => $sisa, // Sisa dihitung berdasarkan jumlah_hutang * amount
                 'is_lunas' => 0, // Default belum lunas
             ]);
     
@@ -72,7 +117,7 @@ class PiutangController extends Controller
         }
     }
     
-    
+
 
     /**
      * Display the specified resource.
