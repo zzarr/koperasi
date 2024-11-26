@@ -87,11 +87,13 @@ Route::middleware(['auth', 'verified', 'role:admin'])->group(function () {
                             Route::post('/store', [PembayaranPiutangController::class, 'storeRutin'])->name('store');
                             Route::get('/datatables', [PembayaranPiutangController::class, 'datatablesRutin'])->name('ajax');
                             Route::get('/{id}/detail', [PembayaranPiutangController::class, 'showRutinDetail'])->name('detail');
+                            Route::get('/print/{paymentId}', [PembayaranPiutangController::class, 'printPaymentRutin'])->name('printPayment');
                         });
                         Route::group(['prefix' => 'khusus', 'as' => 'khusus.'], function () {
                             Route::post('/store', [PembayaranPiutangController::class, 'storeKhusus'])->name('store');
                             Route::get('/datatables', [PembayaranPiutangController::class, 'datatablesKhusus'])->name('ajax');
                             Route::get('/{id}/detail', [PembayaranPiutangController::class, 'showKhususDetail'])->name('detail');
+                            Route::get('/print/{paymentId}', [PembayaranPiutangController::class, 'printPaymentKhusus'])->name('printPayment');
                         });
                     });
         });

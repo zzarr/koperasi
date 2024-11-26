@@ -27,55 +27,42 @@ class PembayaranPiutangController extends Controller
             abort(404); // Jika jenis hutang bukan rutin, kembalikan 404
         }
 
-        return view('admin.piutang.rutin_detail', compact('piutang')); // Tampilkan view untuk rutin
+        return view('admin.piutang.rutin_detail', [
+            'piutang' => $piutang,
+            'hutang_id' => $piutang->id // Kirim hutang_id ke view
+        ]);// Tampilkan view untuk rutin
     }
 
     public function showKhususDetail($id)
-    {
-        $piutang = Piutang::findOrFail($id); // Ambil data piutang berdasarkan ID
-        if ($piutang->jenis_hutang !== 'khusus') {
-            abort(404); // Jika jenis hutang bukan khusus, kembalikan 404
-        }
-
-        return view('admin.piutang.khusus_detail', compact('piutang')); // Tampilkan view untuk khusus
+{
+    $piutang = Piutang::findOrFail($id); // Ambil data piutang berdasarkan ID
+    if ($piutang->jenis_hutang !== 'khusus') {
+        abort(404); // Jika jenis hutang bukan khusus, kembalikan 404
     }
 
-
-//     public function datatablesKhusus(Request $request)
-// {
-//     // Ambil parameter hutang_id dari request
-//     $hutangId = $request->input('hutang_id');
-
-//     // Filter data berdasarkan hutang_id dan jenis_hutang = 'khusus'
-//     $data = PembayaranPiutang::whereHas('piutang', function ($query) {
-//             $query->where('jenis_hutang', 'khusus'); // Filter jenis_hutang "khusus"
-//         })
-//         ->when($hutangId, function ($query, $hutangId) {
-//             return $query->where('hutang_id', $hutangId); // Filter berdasarkan hutang_id
-//         })->get();
-
-//     // Mengembalikan data dalam format DataTables
-//     return DataTables::of($data)->make(true);
-// }
+    // Kirim juga 'id' sebagai 'hutang_id' ke view
+    return view('admin.piutang.khusus_detail', [
+        'piutang' => $piutang,
+        'hutang_id' => $piutang->id // Kirim hutang_id ke view
+    ]);
+}
 
 
-    public function datatablesKhusus(Request $request)
-    {
-        // Ambil hutang_id dari request jika ada
-        $hutangId = $request->input('hutang_id'); // Pastikan 'hutang_id' ada di URL/parameter request
+public function datatablesKhusus(Request $request)
+{
+    $hutangId = $request->input('hutang_id'); // Ambil hutang_id dari request
 
-        // Filter berdasarkan hutang_id dan jenis_hutang 'khusus'
-        $data = PembayaranPiutang::when($hutangId, function ($query, $hutangId) {
-            return $query->where('hutang_id', $hutangId); // Filter berdasarkan hutang_id
-        })
+    // Pastikan 'hutang_id' difilter dan jenis_hutang adalah 'khusus'
+    $data = PembayaranPiutang::where('hutang_id', $hutangId) // Filter berdasarkan hutang_id
         ->whereHas('piutang', function ($query) {
             $query->where('jenis_hutang', 'khusus'); // Filter jenis_hutang 'khusus'
         })
         ->get();
 
-        // Mengembalikan data dalam format DataTables
-        return DataTables::of($data)->make(true);
-    }
+    // Mengembalikan data dalam format DataTables
+    return DataTables::of($data)->make(true);
+}
+
 
 
 
@@ -84,25 +71,47 @@ class PembayaranPiutangController extends Controller
 
     public function datatablesRutin(Request $request)
     {
-        // Ambil parameter hutang_id dan jenis_hutang dari request
-        $hutangId = $request->input('hutang_id');
-        $jenisHutang = $request->input('jenis_hutang', 'rutin'); // Default jenis_hutang adalah "rutin"
+        $hutangId = $request->input('hutang_id'); // Ambil hutang_id dari request
     
-        // Filter data berdasarkan hutang_id dan jenis_hutang
-        $data = PembayaranPiutang::select('pembayaran_ke', 'tanggal_pembayaran', 'jumlah_bayar_pokok')
-            ->whereHas('piutang', function ($query) use ($jenisHutang) {
-                $query->where('jenis_hutang', $jenisHutang); // Filter berdasarkan jenis_hutang
+        // Pastikan 'hutang_id' difilter dan jenis_hutang adalah 'khusus'
+        $data = PembayaranPiutang::where('hutang_id', $hutangId) // Filter berdasarkan hutang_id
+            ->whereHas('piutang', function ($query) {
+                $query->where('jenis_hutang', 'rutin'); // Filter jenis_hutang 'khusus'
             })
-            ->when($hutangId, function ($query, $hutangId) {
-                return $query->where('hutang_id', $hutangId); // Filter berdasarkan hutang_id
-            })->get();
+            ->get();
     
         // Mengembalikan data dalam format DataTables
         return DataTables::of($data)->make(true);
     }
     
     
+    public function printPaymentKhusus($paymentId)
+    {
+        // Ambil data pembayaran beserta data user terkait
+        $payment = PembayaranPiutang::with('piutang.user')->find($paymentId);
+    
+        if (!$payment) {
+            return abort(404, 'Data pembayaran tidak ditemukan.');
+        }
+    
+        // Kirim data ke view cetak
+        return view('admin.piutang.invoice_khusus', ['data' => $payment]);
+    }
 
+    public function printPaymentRutin($paymentId)
+    {
+        // Ambil data pembayaran beserta data user terkait
+        $payment = PembayaranPiutang::with('piutang.user')->find($paymentId);
+    
+        if (!$payment) {
+            return abort(404, 'Data pembayaran tidak ditemukan.');
+        }
+    
+        // Kirim data ke view cetak
+        return view('admin.piutang.invoice_rutin', ['data' => $payment]);
+    }
+    
+    
 
 
 
@@ -112,29 +121,6 @@ class PembayaranPiutangController extends Controller
         return response()->json($piutang); // Kembalikan data dalam bentuk JSON
     }
 
-    // public function storeKhusus(Request $request)
-    // {
-    //     $validatedData = $request->validate([
-    //         'nama' => 'required|exists:users,id', // Validasi harus sesuai ID user
-    //         'jenis_hutang' => 'required|string',
-    //         'jumlah_bulan' => 'required|integer|min:1|max:12',
-    //         'jumlah_hutang' => 'required|numeric|min:0',
-    //     ]);
-    
-    //     try {
-    //         // Simpan data ke database
-    //         Piutang::create([
-    //             'user_id' => $validatedData['nama'],
-    //             'jenis_hutang' => $validatedData['jenis_hutang'],
-    //             'jumlah_bulan' => $validatedData['jumlah_bulan'],
-    //             'jumlah_hutang' => $validatedData['jumlah_hutang'],
-    //         ]);
-    
-    //         return response()->json(['message' => 'Data berhasil disimpan'], 200);
-    //     } catch (\Exception $e) {
-    //         return response()->json(['message' => 'Terjadi kesalahan saat menyimpan data'], 500);
-    //     }
-    // }
     public function storeKhusus(Request $request)
     {
         // Validasi data yang dikirimkan
