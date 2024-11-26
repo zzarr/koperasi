@@ -150,7 +150,8 @@ Route::get('manage-user/data', [UserController::class, 'data'])->name('manage-us
 Route::get('/manage-user/export/pdf', [UserController::class, 'exportPDF'])->name('manage-user.export.pdf');
 
 
-Route::middleware('auth')->group(function () {
-    Route::get('/history-piutang/{id?}', [HistoryPiutangController::class, 'index'])->name('user.history-piutang');
+Route::prefix('user')->middleware('auth')->group(function() {
+    Route::get('/history-piutang', [HistoryPiutangController::class, 'index'])->name('user.history-piutang');
+    Route::get('/history-piutang/{id}', [HistoryPiutangController::class, 'detail'])->name('user.history-piutang.detail');
 });
 

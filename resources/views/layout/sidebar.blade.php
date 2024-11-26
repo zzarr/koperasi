@@ -131,6 +131,14 @@
                             <a href="{{ route('user.history.other') }}"> Simpanan Sukarela </a>
                         </li>
                     </ul>
+                    <li class="menu">
+                        <a href="{{ route('user.history-piutang') }}" class="dropdown-toggle">
+                            <div class="">
+                                <i data-feather="clipboard"></i>
+                                <span> History Piutang</span>
+                            </div>
+                        </a>
+                    </li>
                     
                     
                 </li>
