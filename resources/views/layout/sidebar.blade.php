@@ -35,7 +35,7 @@
                         </div>
                     </a>
                 </li>
-                
+
                 <li class="menu">
                     <a href="{{ route('admin.metadata.manage_metadata') }}"
                         aria-expanded="{{ Request::routeIs('manage_meta_data') ? 'true' : 'false' }}"
@@ -71,7 +71,7 @@
                             <a href="{{ route('admin.payment.monthly.index') }}"> Simpanan Wajib </a>
                         </li>
                         <li>
-                            <a href="{{ route('admin.payment.other.index') }}"> Simpanan Sukarela </a>
+                            <a href="{{ route('admin.payment.other.index') }}"> Simpanan Hari Raya </a>
                         </li>
                     </ul>
                 </li>
@@ -108,8 +108,14 @@
                         aria-expanded="{{ Request::routeIs('admin.payment.main.index') ? 'true' : 'false' }}"
                         class="dropdown-toggle collapsed ">
                         <div class="">
-                            <i data-feather="dollar-sign"></i>
+                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
+                                fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                                stroke-linejoin="round" class="feather feather-clock">
+                                <circle cx="12" cy="12" r="10"></circle>
+                                <polyline points="12 6 12 12 16 14"></polyline>
+                            </svg>
                             <span> History Pembayaran</span>
+
                         </div>
                         <div>
                             <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
@@ -128,7 +134,7 @@
                             <a href="{{ route('user.history.monthly') }}"> Simpanan Wajib </a>
                         </li>
                         <li>
-                            <a href="{{ route('user.history.other') }}"> Simpanan Sukarela </a>
+                            <a href="{{ route('user.history.other') }}"> Simpanan Hari Raya </a>
                         </li>
                     </ul>
                     <li class="menu">

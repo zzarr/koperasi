@@ -42,25 +42,17 @@
 
                     <form id="createForm">
                         @csrf
+                        <input type="hidden" name="hutang_id" value="{{ $piutang->id }}">
                         <div class="modal-body">
-                            <!-- Form input -->
+                            <!-- Form input lainnya -->
                             <div class="form-group">
-                                <label for="pembayaran ke-">Pembayaran Ke-</label>
-                                <input type="text" class="form-control" id="pembayaran ke-" name="pembayaran ke-" required>
+                                <label for="tanggal_pembayaran">Tanggal Pembayaran</label>
+                                <input type="date" name="tanggal_pembayaran" id="tanggal_pembayaran" class="form-control" required>
                             </div>
-
-                            <div class="form-group">
-                                <label for="tanggal_pembayaran">Tanggal Bayar</label>
-                                <input type="text" class="form-control" id="tanggal_pembayaran" name="tanggal_pembayaran" required>
-                            </div>
-
                             <div class="form-group">
                                 <label for="jumlah_bayar_pokok">Nominal Pokok</label>
-                                <input type="text" class="form-control" id="jumlah_bayar_pokok" name="jumlah_bayar_pokok" required>
+                                <input type="text" name="jumlah_bayar_pokok" id="jumlah_bayar_pokok" class="form-control" required>
                             </div>
-
-                            
-
                         </div>
                         <div class="modal-footer">
                             <button type="button" class="btn btn-secondary" data-dismiss="modal">Batal</button>
@@ -131,7 +123,13 @@ $(document).ready(function() {
         let table = $("#datatable").DataTable({
             processing: true,
             serverSide: true,
-            ajax: "{{ route('admin.piutang.pembayaran.rutin.ajax') }}",
+            ajax: {
+        url: "{{ route('admin.piutang.pembayaran.rutin.ajax') }}",
+        type: "GET",
+        data: function(d) {
+            d.hutang_id = {{ $hutang_id }}; // Pastikan nilai hutang_id dikirimkan
+        }
+    },
             columnDefs: [
                 {
                     targets: 0, // Kolom nomor urut
@@ -143,22 +141,16 @@ $(document).ready(function() {
                     targets: -1, // Kolom aksi di posisi terakhir
                     render: function(data, type, full, meta) {
                         let btn = `
-                        <div class="btn-list">
-                            <button class="btn btn-info btn-detail mr-1 rounded-circle" data-id="${data}">
-                                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-settings">
-                                    <circle cx="12" cy="12" r="3"></circle>
-                                    <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path>
+                            <button type="button" class="btn btn-sm btn-outline-primary btn-print" data-id="${full.id}">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" 
+                                    viewBox="0 0 24 24" fill="none" stroke="currentColor" 
+                                    stroke-width="2" stroke-linecap="round" 
+                                    stroke-linejoin="round" class="feather feather-printer">
+                                    <polyline points="6 9 6 2 18 2 18 9"></polyline>
+                                    <path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"></path>
+                                    <rect x="6" y="14" width="12" height="8"></rect>
                                 </svg>
                             </button>
-                            <button class="btn btn-danger btn-delete rounded-circle" data-id="${data}">
-                                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-trash-2">
-                                    <polyline points="3 6 5 6 21 6"></polyline>
-                                    <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path>
-                                    <line x1="10" y1="11" x2="10" y2="17"></line>
-                                    <line x1="14" y1="11" x2="14" y2="17"></line>
-                                </svg>
-                            </button>
-                        </div>
                     `;
                         return btn;
                     },
@@ -166,7 +158,7 @@ $(document).ready(function() {
             ],
             columns: [
                 { data: 'id' },           
-                { data: 'pembayaran ke-' },     
+                { data: 'pembayaran_ke' },     
                 { data: 'tanggal_pembayaran' },  
                 { data: 'jumlah_bayar_pokok' },   
                 { data: 'id' },            // Kolom aksi
@@ -209,11 +201,16 @@ $(document).ready(function() {
     });
 
 
-    $(document).on('click', '.btn-detail', function () {
-    const id = $(this).data('id'); // Ambil ID dari tombol
-    // Arahkan ke halaman baru untuk melihat detail
-    window.location.href = `/admin/piutang/${id}/detail`;
-    });
+    $(document).on('click', '.btn-print', function() {
+    // Ambil data-id dari tombol print yang ditekan
+    const paymentId = $(this).data('id');
+
+    // Buka halaman cetak dengan ID pembayaran
+    const printUrl = `/admin/piutang/pembayaran/rutin/print/${paymentId}`;
+
+    // Membuka halaman cetak di tab baru
+    window.open(printUrl, '_blank');
+});
 
 });
 </script>
@@ -221,25 +218,54 @@ $(document).ready(function() {
 
 
 <script>
-    $('#createForm').on('submit', function(e) {
-        e.preventDefault();
+    $(document).ready(function () {
+        $('#createForm').on('submit', function (event) {
+            event.preventDefault(); // Mencegah form untuk submit secara default
 
-        $.ajax({
-            url: "{{ route('admin.piutang.store') }}", // Route untuk menyimpan data
-            method: 'POST',
-            data: $(this).serialize(), // Ambil data dari form
-            success: function(response) {
-                $('#exampleModal').modal('hide'); // Tutup modal
-                $('#createForm')[0].reset(); // Reset form
-                $('#datatable').DataTable().ajax.reload(); // Reload data di datatable
-                Notiflix.Notify.success('Data berhasil ditambahkan!'); // Notifikasi sukses
-            },
-            error: function(xhr) {
-                const errors = xhr.responseJSON.errors;
-                for (const key in errors) {
-                    Notiflix.Notify.failure(errors[key][0]); // Tampilkan error pada setiap field
-                }
+            const hutangId = $("input[name='hutang_id']").val(); // Mengambil ID hutang dari form
+
+            // Validasi input form sebelum mengirimkan data
+            if (!$('#tanggal_pembayaran').val() || !$('#jumlah_bayar_pokok').val()) {
+                Notiflix.Notify.failure('Semua field harus diisi');
+                return; // Menghentikan eksekusi jika ada field yang kosong
             }
+
+            // Ambil data dari form
+            const formData = {
+                hutang_id: hutangId,
+                tanggal_pembayaran: $('#tanggal_pembayaran').val(),
+                jumlah_bayar_pokok: $('#jumlah_bayar_pokok').val(),
+            };
+
+            // Kirim data ke backend
+            $.ajax({
+                url: '/admin/piutang/pembayaran/rutin/store', // Ganti dengan URL yang sesuai
+                method: 'POST',
+                data: formData,
+                success: function (response) {
+                    if (response.message) {
+                        Notiflix.Notify.success(response.message); // Tampilkan notifikasi sukses
+                        $('#createForm')[0].reset(); // Reset form setelah berhasil
+                        $('#exampleModal').modal('hide'); // Menutup modal setelah berhasil
+                        // Refresh DataTable
+                        $('#datatable').DataTable().ajax.reload();
+                    }
+                },
+                error: function (xhr, status, error) {
+                    console.error('Error:', error);
+                    if (xhr.status === 422) {
+                        // Jika ada validasi gagal di server, tampilkan pesan kesalahan
+                        const errors = xhr.responseJSON.errors;
+                        let errorMessage = 'Gagal menyimpan pembayaran. ';
+                        for (const key in errors) {
+                            errorMessage += `${errors[key].join(', ')} `;
+                        }
+                        Notiflix.Notify.failure(errorMessage.trim());
+                    } else {
+                        Notiflix.Notify.failure('Terjadi kesalahan pada server');
+                    }
+                }
+            });
         });
     });
 </script>

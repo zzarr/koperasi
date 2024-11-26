@@ -27,26 +27,93 @@ class PembayaranPiutangController extends Controller
             abort(404); // Jika jenis hutang bukan rutin, kembalikan 404
         }
 
-        return view('admin.piutang.rutin_detail', compact('piutang')); // Tampilkan view untuk rutin
+        return view('admin.piutang.rutin_detail', [
+            'piutang' => $piutang,
+            'hutang_id' => $piutang->id // Kirim hutang_id ke view
+        ]);// Tampilkan view untuk rutin
     }
 
     public function showKhususDetail($id)
+{
+    $piutang = Piutang::findOrFail($id); // Ambil data piutang berdasarkan ID
+    if ($piutang->jenis_hutang !== 'khusus') {
+        abort(404); // Jika jenis hutang bukan khusus, kembalikan 404
+    }
+
+    // Kirim juga 'id' sebagai 'hutang_id' ke view
+    return view('admin.piutang.khusus_detail', [
+        'piutang' => $piutang,
+        'hutang_id' => $piutang->id // Kirim hutang_id ke view
+    ]);
+}
+
+
+public function datatablesKhusus(Request $request)
+{
+    $hutangId = $request->input('hutang_id'); // Ambil hutang_id dari request
+
+    // Pastikan 'hutang_id' difilter dan jenis_hutang adalah 'khusus'
+    $data = PembayaranPiutang::where('hutang_id', $hutangId) // Filter berdasarkan hutang_id
+        ->whereHas('piutang', function ($query) {
+            $query->where('jenis_hutang', 'khusus'); // Filter jenis_hutang 'khusus'
+        })
+        ->get();
+
+    // Mengembalikan data dalam format DataTables
+    return DataTables::of($data)->make(true);
+}
+
+
+
+
+
+    
+
+    public function datatablesRutin(Request $request)
     {
-        $piutang = Piutang::findOrFail($id); // Ambil data piutang berdasarkan ID
-        if ($piutang->jenis_hutang !== 'khusus') {
-            abort(404); // Jika jenis hutang bukan khusus, kembalikan 404
+        $hutangId = $request->input('hutang_id'); // Ambil hutang_id dari request
+    
+        // Pastikan 'hutang_id' difilter dan jenis_hutang adalah 'khusus'
+        $data = PembayaranPiutang::where('hutang_id', $hutangId) // Filter berdasarkan hutang_id
+            ->whereHas('piutang', function ($query) {
+                $query->where('jenis_hutang', 'rutin'); // Filter jenis_hutang 'khusus'
+            })
+            ->get();
+    
+        // Mengembalikan data dalam format DataTables
+        return DataTables::of($data)->make(true);
+    }
+    
+    
+    public function printPaymentKhusus($paymentId)
+    {
+        // Ambil data pembayaran beserta data user terkait
+        $payment = PembayaranPiutang::with('piutang.user')->find($paymentId);
+    
+        if (!$payment) {
+            return abort(404, 'Data pembayaran tidak ditemukan.');
         }
-
-        return view('admin.piutang.khusus_detail', compact('piutang')); // Tampilkan view untuk khusus
+    
+        // Kirim data ke view cetak
+        return view('admin.piutang.invoice_khusus', ['data' => $payment]);
     }
 
-
-    public function datatables(Request $request)
-    { {
-            $data = PembayaranPiutang::all();
-            return DataTables::of($data)->make(true);
+    public function printPaymentRutin($paymentId)
+    {
+        // Ambil data pembayaran beserta data user terkait
+        $payment = PembayaranPiutang::with('piutang.user')->find($paymentId);
+    
+        if (!$payment) {
+            return abort(404, 'Data pembayaran tidak ditemukan.');
         }
+    
+        // Kirim data ke view cetak
+        return view('admin.piutang.invoice_rutin', ['data' => $payment]);
     }
+    
+    
+
+
 
         public function getPiutang($id)
     {
@@ -56,29 +123,80 @@ class PembayaranPiutangController extends Controller
 
     public function storeKhusus(Request $request)
     {
+        // Validasi data yang dikirimkan
         $validatedData = $request->validate([
-            'nama' => 'required|exists:users,id', // Validasi harus sesuai ID user
-            'jenis_hutang' => 'required|string',
-            'jumlah_bulan' => 'required|integer|min:1|max:12',
-            'jumlah_hutang' => 'required|numeric|min:0',
+            'hutang_id' => 'required|exists:piutangs,id', // Validasi ID hutang (relasi dengan tabel piutangs)
+            'tanggal_pembayaran' => 'required|date', // Validasi tanggal pembayaran
+            'jumlah_bayar_pokok' => 'required|numeric|min:0', // Validasi nominal pokok
+            'jumlah_bayar_bunga' => 'required|numeric|min:0', // Validasi nominal bunga
         ]);
     
         try {
-            // Simpan data ke database
-            Piutang::create([
-                'user_id' => $validatedData['nama'],
-                'jenis_hutang' => $validatedData['jenis_hutang'],
-                'jumlah_bulan' => $validatedData['jumlah_bulan'],
-                'jumlah_hutang' => $validatedData['jumlah_hutang'],
-                'sisa' => $validatedData['jumlah_hutang'], // Misalnya, sisa sama dengan jumlah awal
-                'is_lunas' => 0, // Default belum lunas
+            // Ambil data piutang berdasarkan hutang_id
+            $piutang = Piutang::findOrFail($validatedData['hutang_id']);
+    
+            // Hitung jumlah pembayaran sebelumnya
+            $latestPaymentCount = PembayaranPiutang::where('hutang_id', $piutang->id)->count();
+    
+            // Tentukan nilai pembayaran_ke
+            $pembayaranKe = $latestPaymentCount + 1;
+    
+            // Simpan data pembayaran baru
+            PembayaranPiutang::create([
+                'hutang_id' => $piutang->id, // Menghubungkan ke piutang
+                'pembayaran_ke' => $pembayaranKe, // Nilai otomatis
+                'tanggal_pembayaran' => $validatedData['tanggal_pembayaran'],
+                'jumlah_bayar_pokok' => $validatedData['jumlah_bayar_pokok'],
+                'jumlah_bayar_bunga' => $validatedData['jumlah_bayar_bunga'],
             ]);
     
             return response()->json(['message' => 'Data berhasil disimpan'], 200);
         } catch (\Exception $e) {
-            return response()->json(['message' => 'Terjadi kesalahan saat menyimpan data'], 500);
+            return response()->json(['message' => 'Terjadi kesalahan saat menyimpan data: ' . $e->getMessage()], 500);
         }
     }
 
+    public function storeRutin(Request $request)
+    {
+        // Validasi data yang dikirimkan
+        $validatedData = $request->validate([
+            'hutang_id' => 'required|exists:piutangs,id', // Validasi ID hutang (relasi dengan tabel piutangs)
+            'tanggal_pembayaran' => 'required|date', // Validasi tanggal pembayaran
+            'jumlah_bayar_pokok' => 'required|numeric|min:0', // Validasi nominal pokok
+            // 'jumlah_bayar_bunga' => 'required|numeric|min:0', 
+        ]);
+    
+        try {
+            // Ambil data piutang berdasarkan hutang_id
+            $piutang = Piutang::findOrFail($validatedData['hutang_id']);
+    
+            // Hitung jumlah pembayaran sebelumnya
+            $latestPaymentCount = PembayaranPiutang::where('hutang_id', $piutang->id)->count();
+    
+            // Tentukan nilai pembayaran_ke
+            $pembayaranKe = $latestPaymentCount + 1;
+    
+            // Simpan data pembayaran baru
+            PembayaranPiutang::create([
+                'hutang_id' => $piutang->id, // Menghubungkan ke piutang
+                'pembayaran_ke' => $pembayaranKe, // Nilai otomatis
+                'tanggal_pembayaran' => $validatedData['tanggal_pembayaran'],
+                'jumlah_bayar_pokok' => $validatedData['jumlah_bayar_pokok'],
+                'jumlah_bayar_bunga' => 0,
+            ]);
+    
+            return response()->json(['message' => 'Data berhasil disimpan'], 200);
+        } catch (\Exception $e) {
+            return response()->json(['message' => 'Terjadi kesalahan saat menyimpan data: ' . $e->getMessage()], 500);
+        }
+    }
+    
+    
+    
+
+
+     
+    
+    
 
 }

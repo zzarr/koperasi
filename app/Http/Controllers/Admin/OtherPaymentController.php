@@ -13,6 +13,8 @@ use Illuminate\Support\Facades\DB;
 use App\Imports\OtherPaymentImport;
 use App\Http\Controllers\Controller;
 use Maatwebsite\Excel\Facades\Excel;
+use Carbon\Carbon;
+use Barryvdh\DomPDF\Facade\Pdf;
 
 class OtherPaymentController extends Controller
 {
@@ -151,4 +153,30 @@ class OtherPaymentController extends Controller
 
         return redirect()->back()->with('success', 'Import Success!');
     }
+
+    public function dataTanggal($id){
+        $data = OtherPayment::where('user_id', $id)->get();
+        return response()->json($data);
+        
+    }
+
+    public function exportInvoice(Request $request)
+    {
+        $data = OtherPayment::with('user')
+            ->where('payment_month', $request->month)
+            ->where('user_id', $request->user_id)
+            ->first();
+    
+        if (!$data) {
+            return back()->with('error', 'Data tidak ditemukan untuk tanggal yang dipilih.');
+        }
+    
+        // Generate PDF
+        $pdf = Pdf::loadView('admin.payment.other.invoiceOther', compact('data'))
+            ->setPaper('a4', 'landscape');
+    
+        // Stream PDF ke browser
+        return $pdf->stream('Invoice_' . $data->id . '.pdf');
+    }
+    
 }

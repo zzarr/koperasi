@@ -15,7 +15,7 @@ class PembayaranPiutang extends Model
     // Tentukan kolom yang dapat diisi secara massal
     protected $fillable = [
         'hutang_id',
-        'pembayaran ke-',
+        'pembayaran_ke',
         'jumlah_bayar_pokok',
         'jumlah_bayar_bunga',
         'tanggal_pembayaran',
@@ -24,6 +24,6 @@ class PembayaranPiutang extends Model
     // Mengonfigurasi relasi dengan model Piutang
     public function piutang()
     {
-        return $this->belongsTo(Piutang::class, 'hutang_id');
+        return $this->belongsTo(Piutang::class, 'hutang_id', 'id');
     }
 }
