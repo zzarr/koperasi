@@ -58,10 +58,10 @@
                                     {{ $data->piutang->user->username ?? 'Data tidak ditemukan' }}<br>
                                 </address>
                             </div>
-                            <div class="col-md-6 text-end">
+                            {{-- <div class="col-md-6 text-end">
                                 <strong>Tanggal Cetak:</strong><br>
                                 {{ now()->format('d M Y') }}<br>
-                            </div>
+                            </div> --}}
                         </div>
 
                         <div class="table-responsive mt-4">
@@ -70,6 +70,7 @@
                                     <tr>
                                         <th>Pembayaran Ke-</th>
                                         <th>Tanggal Pembayaran</th>
+                                        <th>Catatan</th>
                                         <th class="text-end">Nominal Bayar Pokok</th>
                                     </tr>
                                 </thead>
@@ -77,12 +78,13 @@
                                     <tr>
                                         <td>{{ $data->pembayaran_ke }}</td>
                                         <td>{{ $data->tanggal_pembayaran }}</td>
+                                        <td>{{ $data->catatan }}</td>
                                         <td class="text-end">{{ formatRupiah($data->jumlah_bayar_pokok) }}</td>
                                     </tr>
-                                    {{-- <tr class="bg-light">
-                                        <td colspan="3" class="text-end"><strong>Total</strong></td>
+                                    <tr class="bg-light">
+                                        <td colspan="3" class="text-end"><strong>Total Pembayaran</strong></td>
                                         <td class="text-end"><strong>{{ formatRupiah($data->jumlah_bayar_pokok) }}</strong></td>
-                                    </tr> --}}
+                                    </tr>
                                 </tbody>
                             </table>
                         </div>

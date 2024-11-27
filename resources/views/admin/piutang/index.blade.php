@@ -74,7 +74,7 @@
                                 </div>
                                 <div class="form-group">
                                     <label for="jumlah_hutang">Jumlah Hutang</label>
-                                    <input type="text" class="form-control" id="jumlah_hutang" name="jumlah_hutang" required>
+                                    <input type="text" class="form-control"  id="jumlah_hutang"  name="jumlah_hutang"   required  oninput="formatInputRupiah(this)">
                                 </div>
 
                             </div>
@@ -144,6 +144,20 @@
             }
         });
     });
+
+    function formatInputRupiah(input) {
+    // Hilangkan karakter non-digit
+    let angka = input.value.replace(/[^,\d]/g, '');
+    
+    if (!angka) {
+        input.value = ''; // Kosongkan jika tidak ada angka
+        return;
+    }
+
+    // Format angka dengan separator ribuan
+    input.value = 'Rp ' + angka.replace(/\B(?=(\d{3})+(?!\d))/g, ".");
+}
+
 </script>
 
 
@@ -211,27 +225,41 @@
                 },
             ],
             columns: [
-                { data: 'id' },             // Nomor urut
-                { data: 'user_name' },       // User ID
-                { data: 'jenis_hutang' },  // Jenis Hutang
-                { data: 'jumlah_bulan' }, // Jumlah Hutang
-                { data: 'jumlah_hutang' },  // Jumlah Bulan
-                { data: 'sisa' },          // Sisa
+                { data: 'id' },       
+                { data: 'user_name' },     
+                { data: 'jenis_hutang' }, 
+                { data: 'jumlah_bulan' },
                 {
-                    data: 'is_lunas',       // Status Lunas
+                    data: 'jumlah_hutang',
+                    render: function (data) {
+                        return formatRupiah(data);
+                    }
+                },  
+                {
+                    data: 'sisa',
+                    render: function (data) {
+                        return formatRupiah(data);
+                    }
+                },          
+                {
+                    data: 'is_lunas',      
                     render: function(data, type, row) {
-                        // Menampilkan "Lunas" jika nilai is_lunas = 1, "Belum Lunas" jika nilai is_lunas = 0
+                       
                         return data == 1 ? 'Lunas' : 'Belum Lunas';
                     }
                 },
 
-                { data: 'id' },            // Kolom aksi
+                { data: 'id' },     
             ],
             language: {
                 searchPlaceholder: 'Cari...',
                 sSearch: '',
             }
         });
+                    function formatRupiah(angka) {
+                    if (angka == null) return '-';
+                    return 'Rp ' + angka.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".");
+                   }
 
  // Event listener untuk tombol delete
  $(document).on('click', '.btn-delete', function() {
