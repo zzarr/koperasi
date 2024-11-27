@@ -51,11 +51,15 @@
                             </div>
                             <div class="form-group">
                                 <label for="jumlah_bayar_pokok">Nominal Pokok</label>
-                                <input type="text" name="jumlah_bayar_pokok" id="jumlah_bayar_pokok" class="form-control" required>
+                                <input type="text" name="jumlah_bayar_pokok" id="jumlah_bayar_pokok" class="form-control" required oninput="formatInputRupiah(this)">
                             </div>
                             <div class="form-group">
                                 <label for="jumlah_bayar_bunga">Nominal Bunga</label>
-                                <input type="text" name="jumlah_bayar_bunga" id="jumlah_bayar_bunga" class="form-control" required>
+                                <input type="text" name="jumlah_bayar_bunga" id="jumlah_bayar_bunga" class="form-control" required oninput="formatInputRupiah(this)">
+                            </div>
+                            <div class="form-group">
+                                <label for="catatan">Catatan</label>
+                                <textarea name="catatan" id="catatan" class="form-control" rows="3" placeholder="Tambahkan catatan jika perlu"></textarea>
                             </div>
                         </div>
                         <div class="modal-footer">
@@ -82,6 +86,7 @@
                             <th>Tanggal Pembayaran</th>
                             <th>Jumlah Bayar Pokok</th>
                             <th>Jumlah Bayar Bunga</th>
+                            <th>Catatan</th>
                             <th class="no-content">Action</th>
 
                         </tr>
@@ -168,8 +173,19 @@ $(document).ready(function() {
                 { data: 'id' },          
                 { data: 'pembayaran_ke' },     
                 { data: 'tanggal_pembayaran' },  
-                { data: 'jumlah_bayar_pokok' },  
-                { data: 'jumlah_bayar_bunga' }, 
+                {
+                    data: 'jumlah_bayar_pokok',
+                    render: function (data) {
+                        return formatRupiah(data);
+                    }
+                },  
+                {
+                    data: 'jumlah_bayar_bunga',
+                    render: function (data) {
+                        return formatRupiah(data);
+                    }
+                },   
+                { data: 'catatan' }, 
                 { data: 'id' },            // Kolom aksi
             ],
             language: {
@@ -177,6 +193,10 @@ $(document).ready(function() {
                 sSearch: '',
             }
         });
+        function formatRupiah(angka) {
+                    if (angka == null) return '-';
+                    return 'Rp ' + angka.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".");
+                   }
 
         $(document).on('click', '.btn-print', function() {
     // Ambil data-id dari tombol print yang ditekan
@@ -215,6 +235,7 @@ $(document).ready(function() {
                 tanggal_pembayaran: $('#tanggal_pembayaran').val(),
                 jumlah_bayar_pokok: $('#jumlah_bayar_pokok').val(),
                 jumlah_bayar_bunga: $('#jumlah_bayar_bunga').val(),
+                catatan: $('#catatan').val(),
             };
 
             // Kirim data ke backend
@@ -248,6 +269,19 @@ $(document).ready(function() {
             });
         });
     });
+
+    function formatInputRupiah(input) {
+    // Hilangkan karakter non-digit
+    let angka = input.value.replace(/[^,\d]/g, '');
+    
+    if (!angka) {
+        input.value = ''; // Kosongkan jika tidak ada angka
+        return;
+    }
+
+    // Format angka dengan separator ribuan
+    input.value = 'Rp ' + angka.replace(/\B(?=(\d{3})+(?!\d))/g, ".");
+}
 </script>
 
 
