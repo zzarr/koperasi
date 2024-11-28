@@ -24,6 +24,7 @@ Route::get('/', function () {
     return redirect()->route('login');
 });
 
+
 // Authentication Routes
 Route::get('/login', [AuthController::class, 'index'])->name('login')->middleware('guest');
 Route::post('/login', [AuthController::class, 'login'])->middleware('guest');

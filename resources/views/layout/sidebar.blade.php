@@ -48,7 +48,7 @@
                 </li>
                 <li class="menu">
                     <a href="#submenu" data-toggle="collapse"
-                        aria-expanded="{{ Request::routeIs('admin.payment.main.index') ? 'true' : 'false' }}"
+                    aria-expanded="{{ Request::routeIs('admin.payment.main.index', 'admin.payment.monthly.index', 'admin.payment.other.index') ? 'true' : 'false' }}"
                         class="dropdown-toggle collapsed ">
                         <div class="">
                             <i data-feather="dollar-sign"></i>
@@ -84,7 +84,9 @@
                     </a>
                 </li>
                 <li class="menu">
-                    <a href="{{ route('admin.withdraw.index') }}" aria-expanded="false" class="dropdown-toggle">
+                    <a href="{{ route('admin.withdraw.index') }}" 
+                    aria-expanded="{{ Request::routeIs('admin.withdraw.index') ? 'true' : 'false' }}"
+                    class="dropdown-toggle">
                         <div class="">
                             <i data-feather="credit-card"></i>
                             <span> Manage Penarikan Dana</span>

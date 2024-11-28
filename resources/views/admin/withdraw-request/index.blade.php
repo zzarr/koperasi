@@ -41,7 +41,7 @@
                             <th>No</th>
                             <th>Nama</th>
                             <th>Jenis Penarikan</th>
-                            <th>Banyak</th>
+                            {{-- <th>Banyak</th> --}}
                             <th>Nilai Penarikan</th>
                             <th>Catatan</th>
                             <th>Status</th>
@@ -223,17 +223,17 @@
     });
 
     // Validate Input Value
-    $(document).on('change input', '#value', function() {
-        let val = $(this).val();
+    // $(document).on('change input', '#value', function() {
+    //     let val = $(this).val();
 
-        if (type == 'shu-monthly' && (val * config_payment) > +wallet.shu) {
-            alert('Dompet SHU tidak mencukupi!');
-            $(this).val('');
-        } else if (type == 'other-monthly' && (val * config_payment) > +wallet.other) {
-            alert('Dompet Sukarela tidak mencukupi!');
-            $(this).val('');
-        }
-    });
+    //     if (type == 'shu-monthly' && (val * config_payment) > +wallet.shu) {
+    //         alert('Dompet SHU tidak mencukupi!');
+    //         $(this).val('');
+    //     } else if (type == 'other-monthly' && (val * config_payment) > +wallet.other) {
+    //         alert('Dompet Sukarela tidak mencukupi!');
+    //         $(this).val('');
+    //     }
+    // });
 
     // Submit Form
     $('#user-modal').on('click', '#btn_form', function() {
@@ -290,11 +290,14 @@
         processing: true,
         serverSide: true,
         scrollY: "50vh",
-        scrollX: true,
+        scrollX: false,
         ajax: "{{ route('admin.withdraw.ajax') }}",
         scrollCollapse: true,
         fixedColumns: true,
         fixedHeader: true,
+        responsive: true,
+
+        
        
         columnDefs: [{
                 targets: 0,
@@ -313,7 +316,7 @@
                 }
             },
                         {
-                targets: 4, // Kolom amount
+                targets: 3, // Kolom amount
                 createdCell: function(td, cellData, rowData, row, col) {
                     $(td).addClass('text-center');
                 },
@@ -361,9 +364,9 @@
             {
                 data: 'name',
             },
-            {
-                data: 'value',
-            },
+            // {
+            //     data: 'value',
+            // },
             {
                 data: 'amount',
             },

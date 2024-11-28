@@ -165,7 +165,7 @@ class MonthlyPaymentController extends Controller
 
     public function exportInvoice(Request $request)
     {
-        $data = MonthlyPayment::with('user')->where('paid_at', $request->tanggal)->first();
+        $data = MonthlyPayment::with('user')->where('payment_month', $request->month)->first();
 
         if (!$data) {
             return back()->with('error', 'Data tidak ditemukan untuk tanggal yang dipilih.');
