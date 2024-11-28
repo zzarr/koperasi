@@ -3,7 +3,7 @@
 @section('content')
     <div class="page-header">
         <div class="page-title">
-            <h3>Simpanan Sukarela</h3>
+            <h3>Simpanan Hari Raya</h3>
         </div>
         <nav class="breadcrumb-one" aria-label="breadcrumb">
             <ol class="breadcrumb">
@@ -14,7 +14,7 @@
                             <polyline points="9 22 9 12 15 12 15 22"></polyline>
                         </svg></a></li>
                 <li class="breadcrumb-item " aria-current="page"><span>Pembayaran</span></li>
-                <li class="breadcrumb-item active" aria-current="page"><span>Simpanan Sukarela</span></li>
+                <li class="breadcrumb-item active" aria-current="page"><span>Simpanan Hari Raya</span></li>
 
             </ol>
         </nav>
@@ -362,7 +362,7 @@
                             col = array.indexOf(meta.col) + 1;
 
                             if (!data) {
-                                return `<button type="button" class="btn btn-primary btn-add" data-id="${full.id}" data-month="${col}">+</button>`;
+                                return `<button type="button" class="btn btn-outline-primary btn-add" data-id="${full.id}" data-month="${col}">+</button>`;
                             }
                             // return `<button type="button" class="btn btn-danger">-</button>`+data;
                             return data

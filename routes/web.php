@@ -15,6 +15,7 @@ use App\Http\Controllers\Admin\{
 use App\Http\Controllers\user\{
     AnggotaController,
     PaymentHistoryController,
+    HistoryPiutangController
     // MasterDataController
 };
 use App\Http\Controllers\AuthController;
@@ -86,13 +87,16 @@ Route::middleware(['auth', 'verified', 'role:admin'])->group(function () {
             Route::group(['prefix' => 'pembayaran', 'as' => 'pembayaran.'], function () {
                 Route::get('/{id}', [PembayaranPiutangController::class, 'getPiutang'])->name('get');
                 Route::group(['prefix' => 'rutin', 'as' => 'rutin.'], function () {
-                    Route::get('/datatables', [PembayaranPiutangController::class, 'datatables'])->name('ajax');
+                    Route::post('/store', [PembayaranPiutangController::class, 'storeRutin'])->name('store');
+                    Route::get('/datatables', [PembayaranPiutangController::class, 'datatablesRutin'])->name('ajax');
                     Route::get('/{id}/detail', [PembayaranPiutangController::class, 'showRutinDetail'])->name('detail');
+                    Route::get('/print/{paymentId}', [PembayaranPiutangController::class, 'printPaymentRutin'])->name('printPayment');
                 });
                 Route::group(['prefix' => 'khusus', 'as' => 'khusus.'], function () {
                     Route::post('/store', [PembayaranPiutangController::class, 'storeKhusus'])->name('store');
-                    Route::get('/datatables', [PembayaranPiutangController::class, 'datatables'])->name('ajax');
+                    Route::get('/datatables', [PembayaranPiutangController::class, 'datatablesKhusus'])->name('ajax');
                     Route::get('/{id}/detail', [PembayaranPiutangController::class, 'showKhususDetail'])->name('detail');
+                    Route::get('/print/{paymentId}', [PembayaranPiutangController::class, 'printPaymentKhusus'])->name('printPayment');
                 });
             });
         });
@@ -152,3 +156,9 @@ Route::middleware(['auth', 'verified', 'role:user'])->group(function () {
 Route::resource('manage-user', UserController::class);
 Route::get('manage-user/data', [UserController::class, 'data'])->name('manage-user.data');
 Route::get('/manage-user/export/pdf', [UserController::class, 'exportPDF'])->name('manage-user.export.pdf');
+
+
+Route::prefix('user')->middleware('auth')->group(function () {
+    Route::get('/history-piutang', [HistoryPiutangController::class, 'index'])->name('user.history-piutang');
+    Route::get('/history-piutang/{id}', [HistoryPiutangController::class, 'detail'])->name('user.history-piutang.detail');
+});

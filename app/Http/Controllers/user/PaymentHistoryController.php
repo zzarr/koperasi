@@ -24,7 +24,9 @@ class PaymentHistoryController extends Controller
     }
 
     public function mainDatatable(){
-        $data = MainPayment::where('user_id', Auth::id())->get();
+        $data = MainPayment::where('user_id', Auth::id())->get()->filter(function ($item) {
+            return $item->amount > 0; // Hanya data dengan amount > 0
+        });
 
         return Datatables::of($data)->addIndexColumn() // Tambahkan kolom index secara otomatis
         ->make(true);;
@@ -36,7 +38,13 @@ class PaymentHistoryController extends Controller
     }
 
     public function monthlyDatatable(){
-        $data = MonthlyPayment::where('user_id', Auth::user()->id)->get();
+        $data = MonthlyPayment::where('user_id', Auth::user()->id)
+        ->get()
+        ->filter(function ($item) {
+            return $item->amount > 0; // Hanya data dengan amount > 0
+        });
+
+        
 
         return Datatables::of($data)->make();
     }
@@ -47,7 +55,9 @@ class PaymentHistoryController extends Controller
     }
 
     public function otherDatatable(){
-        $data = OtherPayment::where('user_id', Auth::user()->id)->get();
+        $data = OtherPayment::where('user_id', Auth::user()->id)->get()->filter(function ($item) {
+            return $item->amount > 0; // Hanya data dengan amount > 0
+        });
 
         return Datatables::of($data)->make();
     }

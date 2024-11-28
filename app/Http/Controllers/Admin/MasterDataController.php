@@ -71,29 +71,7 @@ class MasterDataController extends Controller
                 ]
             );
 
-            // Ambil konfigurasi pembayaran utama
-            $configPayment = ConfigPayment::where(['is_active' => 1, 'name' => 'main_payment'])->first();
-
-            // Ambil semua pengguna dari tabel MainPayment secara unik berdasarkan user_id
-            $users = MainPayment::select('user_id')->distinct()->get();
-
-            foreach ($users as $user) {
-                // Hitung total pembayaran utama untuk setiap user
-                $mainTotal = MainPayment::where('user_id', $user->user_id)->sum('amount');
-
-                // Periksa apakah pembayaran sudah mencapai jumlah lunas
-                if ($mainTotal >= $configPayment->paid_off_amount) {
-                    // Update status pembayaran untuk user terkait
-                    User::where('id', $user->user_id)->update([
-                        'main_payment_status' => 1
-                    ]);
-                } else {
-                    // Optional: Update jika status belum lunas
-                    User::where('id', $user->user_id)->update([
-                        'main_payment_status' => 0
-                    ]);
-                }
-            }
+           
 
             DB::commit();
             $this->isSuccess = true;

@@ -14,6 +14,7 @@ class Piutang extends Model
 
     // Tentukan kolom yang dapat diisi secara massal (mass assignable)
     protected $fillable = [
+        'id',
         'user_id',
         'jenis_hutang',
         'jumlah_hutang',
@@ -29,6 +30,6 @@ class Piutang extends Model
     }
 
     public function pembayaranPiutang(){
-        return $this->hasMany(PembayaranPiutang::class, 'hutang_id');
+        return $this->hasMany(PembayaranPiutang::class, 'hutang_id', 'id');
     }
 }
