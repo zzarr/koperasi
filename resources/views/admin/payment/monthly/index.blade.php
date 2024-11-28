@@ -102,11 +102,11 @@
         </div>
     </div>
 
-    {{-- modal --}}
+    {{-- modal Tanbah Data --}}
     <div class="modal fade" id="user-modal" tabindex="-1" role="dialog" aria-labelledby="userModalTitle" aria-hidden="true">
-        <div class="modal-dialog modal-md modal-dialog-centered" role="document">
+        <div class="modal-dialog" role="document">
             <div class="modal-content">
-                <div class="modal-header bg-primary">
+                <div class="modal-header">
                     <h5 class="modal-title text-white" id="userModalTitle">
                         <span id="action-modal"></span>
                     </h5>
@@ -136,39 +136,31 @@
         </div>
     </div>
 
-<!-- Modal Invoice -->
-{{-- <div class="modal fade" id="modal-invoice" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle"
-    aria-hidden="true">
-    <div class="modal-dialog modal-md modal-dialog-centered" role="document">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title" id="exampleModalLongTitle"><span id="action-modal"></span></h5>
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                    <span aria-hidden="true">&times;</span>
-                </button>
-            </div>
-            <div class="modal-body">
-                <form id="invoice-form">
+    <div class="modal fade" id="modal-invoice" tabindex="-1" role="dialog" aria-labelledby="modalInvoiceLabel" aria-hidden="true">
+        <div class="modal-dialog modal-md modal-dialog-centered" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="modalInvoiceLabel">Cetak Invoice</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <form id="invoice-form" method="POST" action="{{ route('admin.payment.monthly.export') }}">
                     @csrf
-                    <label for="payment-id">Pilih Pembayaran:</label>
-                    <select id="payment-id" name="payment_id" required class="form-control">
-                        <option value="" disabled selected>Loading...</option>
-                    </select>
-                    <button type="submit">Cetak Invoice</button>
+                    <div class="modal-body">
+                        <label for="payment-tanggal">Pilih Bulan Pembayaran:</label>
+                        <select id="payment-tanggal" name="month" required class="form-control">
+                            <option value="" disabled selected>Loading...</option>
+                        </select>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Tutup</button>
+                        <button type="submit" id="btn_form" class="btn btn-primary">Cetak</button>
+                    </div>
                 </form>
-                <div id="invoice-container" style="display: none;"></div>
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-dismiss="modal"><i class="fa fa-times"></i> Close</button>
-                <button type="button" id="btn_form" class="btn btn-primary"><i class="fa fa-save"></i> Save</button>
             </div>
         </div>
     </div>
-</div> --}}
-
-    
-        
-
     
 @endsection
 
@@ -225,7 +217,7 @@ $('#user-modal').on('click', '#btn_form', function() {
             } else {
                 Notiflix.Notify.success('Data berhasil disimpan!');
 
-                window.location.href = data.pdf_url;
+                // window.location.href = data.pdf_url;
             }
         },
         error: function(res) {
@@ -246,12 +238,62 @@ $('#user-modal').on('click', '#btn_form', function() {
 </script>
 
 <script>
-    // Logika untuk form submission jika diperlukan
-    $('#invoice-form').on('submit', function(e) {
-        e.preventDefault();
-        // Logika untuk mengirim form atau cetak invoice
-        // Jika menggunakan Ajax, bisa di sini
-    });
+
+
+    $(document).on('click', '.btn-view', function() {
+                // Ambil data-id dari tombol yang ditekan
+                const dataId = $(this).data('id');
+
+                // Tampilkan modal
+                $('#modal-invoice').modal('show');
+
+                // Ambil data dari backend untuk mengisi select
+                $.ajax({
+                    url: `/admin/payment/monthly/data_tanggal/${dataId}`, // Endpoint untuk mengambil data pembayaran
+                    type: 'GET',
+                    success: function(data) {
+                    const select = $('#payment-tanggal');
+                    select.empty(); // Hapus opsi sebelumnya
+
+                    // Tambahkan opsi baru berdasarkan properti "paid_at" dari data
+                    if (Array.isArray(data)) {
+                        data.forEach(payment => {
+                                if (payment.paid_at!== null) {
+                                    select.append(
+                                        `<option value="${payment.payment_month}">Bulan ke-${payment.payment_month}</option>`
+                                    );
+                            }
+                        });
+                       
+                    } else {
+                        alert('Data yang diterima tidak valid.');
+                    }
+
+                        // Set opsi default
+                        select.prepend(
+                            '<option value="" disabled selected>Pilih Pembayaran</option>'
+                        );
+                    },
+                    error: function() {
+                        alert('Gagal mengambil data pembayaran.');
+                    }
+                });
+            });
+
+            $('#user-modal').on('shown.bs.modal', function(event) {
+                $('#paid_at').daterangepicker({
+                    singleDatePicker: true,
+                    locale: {
+                        format: 'YYYY-MM-DD',
+                        autoUpdateInput: false,
+                    }
+                })
+                var rupiah = $('#amount');
+                rupiah.on('keyup', function(e) {
+                    rupiah.val(formatRupiah(rupiah.val(), 'Rp. '));
+                });
+            });
+
 
 
     $(document).ready(function() {
@@ -370,32 +412,24 @@ $('#user-modal').on('click', '#btn_form', function() {
                     },
                 },
                 {
-                    targets: 30,
-                    title: 'Aksi',
-                    orderable: false,
-                createdCell: function(td, cellData, rowData, row, col) {
-                    $(td).addClass('tmbl-usr text-center');
-                },
-                render: function(data, type, full, meta) {
-                    return `
-     <div class="action-buttons d-flex justify-content-center">
-    <a href="javascript:void(0)" 
-       class="btn btn-sm btn-outline-primary btn-icon mr-2 btn-invoice" 
-       id="btn-invoice" 
-       data-id=""  
-       title="Cetak Invoice">
-        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" 
-             viewBox="0 0 24 24" fill="none" stroke="currentColor" 
-             stroke-width="2" stroke-linecap="round" 
-             stroke-linejoin="round" class="feather feather-printer">
-            <polyline points="6 9 6 2 18 2 18 9"></polyline>
-            <path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"></path>
-            <rect x="6" y="14" width="12" height="8"></rect>
-        </svg>
-    </a>
-</div>`;
-                }
-            }
+                        targets: 30,
+                        orderable: false,
+                        searchable: false,
+                        render: function(data, type, full, meta) {
+                            return `
+                    <button type="button" class="btn btn-outline-primary btn-sm btn-view" data-id="${full.id}" id="btn-view">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" 
+                     viewBox="0 0 24 24" fill="none" stroke="currentColor" 
+                     stroke-width="2" stroke-linecap="round" 
+                     stroke-linejoin="round" class="feather feather-printer">
+                     <polyline points="6 9 6 2 18 2 18 9"></polyline>
+                     <path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"></path>
+                     <rect x="6" y="14" width="12" height="8"></rect>
+                    </svg>
+                    </button>
+                `;
+                        },
+                    },
             ],
 
             columns: [{

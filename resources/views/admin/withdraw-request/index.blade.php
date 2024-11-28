@@ -41,7 +41,7 @@
                             <th>No</th>
                             <th>Nama</th>
                             <th>Jenis Penarikan</th>
-                            <th>Banyak</th>
+                            {{-- <th>Banyak</th> --}}
                             <th>Nilai Penarikan</th>
                             <th>Catatan</th>
                             <th>Status</th>
@@ -58,7 +58,7 @@
     </div>
 </div>
 
-<!-- Modal -->
+<!-- Modal Buat Penarikan -->
 <div class="modal fade" id="user-modal" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
     <div class="modal-dialog modal-lg modal-dialog-centered" role="document">
         <div class="modal-content">
@@ -97,11 +97,7 @@
                                 <select name="type" id="type" class="form-control form-control-border after" disabled required>
                                     <option selected disabled value="">-- Pilih Jenis Penarikan --</option>
                                     <option value="all">Penarikan Keseluruhan Tabungan</option>
-                                    {{-- <option value="shu-cash">Penarikan Dana SHU ke Cash</option> --}}
                                     <option value="other-cash">Penarikan Keseluruhan Tabungan Hari Raya</option>
-                                    {{-- <option value="shu-monthly">Pindahkan Dana SHU Ke Tabungan Wajib</option> --}}
-                                    {{-- <option value="shu-other">Pindahkan Dana SHU Ke Tabungan Sukarela</option> --}}
-                                    {{-- <option value="other-monthly">Pindahkan Dana Sukarela Ke Tabungan Wajib</option> --}}
                                 </select>
                             </div>
                             <div class="form-group d-none" id="form-value">
@@ -195,43 +191,12 @@
     // Handle Type Selection
     $(document).on('change', '#type', function() {
         type = $(this).val();
-
-        if (type == 'shu-monthly' || type == 'other-monthly') {
-            $('#form-value').removeClass('d-none');
-            $('#amount-div').addClass('d-none');
-        } else {
-            if (type == 'shu-other') $('#amount').val(formatRupiah(wallet.shu, 'Rp. '));
-            else if (type == 'shu-cash') $('#amount').val(formatRupiah(wallet.shu, 'Rp. '));
-            // else if (type == 'other-cash') $('#amount').val(formatRupiah(wallet.other, 'Rp. ')); 
-            else $('#amount').val(formatRupiah('0', 'Rp. '));
-
-            if (type == 'shu-other' || type == 'shu-cash' ) $('#amount-div').removeClass('d-none');
-            else $('#amount-div').addClass('d-none');
-
-            $('#form-value').addClass('d-none');
-            $('#value').val('');
-        }
-
-        // Update Wallet Information (bener)
         if (type == 'all') {
             $('#wallet-type').html('Keseluruhan');
             $('#wallet-amount').html(formatRupiah(wallet.total, 'Rp. '));
         } else if (type == 'other-monthly' || type == 'other-cash') {
             $('#wallet-type').html('Hari Raya');
             $('#wallet-amount').html(formatRupiah(wallet.other, 'Rp. '));
-        }
-    });
-
-    // Validate Input Value
-    $(document).on('change input', '#value', function() {
-        let val = $(this).val();
-
-        if (type == 'shu-monthly' && (val * config_payment) > +wallet.shu) {
-            alert('Dompet SHU tidak mencukupi!');
-            $(this).val('');
-        } else if (type == 'other-monthly' && (val * config_payment) > +wallet.other) {
-            alert('Dompet Sukarela tidak mencukupi!');
-            $(this).val('');
         }
     });
 
@@ -290,11 +255,14 @@
         processing: true,
         serverSide: true,
         scrollY: "50vh",
-        scrollX: true,
+        scrollX: false,
         ajax: "{{ route('admin.withdraw.ajax') }}",
         scrollCollapse: true,
         fixedColumns: true,
         fixedHeader: true,
+        responsive: true,
+
+        
        
         columnDefs: [{
                 targets: 0,
@@ -313,15 +281,12 @@
                 }
             },
                         {
-                targets: 4, // Kolom amount
+                targets: 3, // Kolom amount
                 createdCell: function(td, cellData, rowData, row, col) {
                     $(td).addClass('text-center');
                 },
                 render: function(data, type, full, meta) {
-                    // Pastikan data ada dan valid sebelum memformat
                     if (!data) return 'Rp 0';
-
-                    // Gunakan formatRupiah untuk memformat angka
                     return formatRupiah(String(data), 'Rp. ');
                 }
             },
@@ -361,9 +326,9 @@
             {
                 data: 'name',
             },
-            {
-                data: 'value',
-            },
+            // {
+            //     data: 'value',
+            // },
             {
                 data: 'amount',
             },

@@ -38,7 +38,8 @@ class UserController extends Controller
     public function index()
     {
         $users = User::with('roles')->get();
-        $roles = Role::all(); // Menambahkan pengambilan semua roles
+        $roles = Role::where('name', '!=', 'Admin')->get(); // Menyaring role 'Admin'
+ // Menambahkan pengambilan semua roles
         return view('admin.manage-user.index', compact('users', 'roles')); // Mengirimkan roles ke view
     }
 
@@ -111,23 +112,42 @@ class UserController extends Controller
 
     // Menghapus user
     public function destroy($id)
-    {
-        DB::beginTransaction();
-        try {
-            $user = User::findOrFail($id);
-            $user->delete();
-            DB::commit();
-            $this->isSuccess = true;
-        } catch (\Exception $e) {
-            DB::rollBack();
-            $this->exception = $e->getMessage();
-        }
+{
+    DB::beginTransaction();
+    try {
+        // Temukan user berdasarkan ID
+        $user = User::findOrFail($id);
+
+        // Hapus data terkait di tabel-tabel lain
+        $user->wallet()->delete(); // Hapus wallet
+        $user->mainPayment()->delete(); // Hapus main payments
+        $user->monthlyPayment()->delete(); // Hapus monthly payments
+        $user->otherPayment()->delete(); // Hapus other payments
+        $user->yearlyLog()->delete(); // Hapus yearly logs
+        $user->piutangs()->delete(); // Hapus piutangs
+        $user->pembayaran_piutangs()->delete(); // Hapus pembayaran piutangs
+
+        // Hapus user
+        $user->delete();
+
+        DB::commit();
 
         return response()->json([
-            "status"    => $this->isSuccess ?? false,
-            "code"      => $this->isSuccess ? 200 : 600,
-            "message"   => $this->isSuccess ? "Success!" : ($this->exception ?? "Unknown error"),
-            "data"      => $this->isSuccess ? $user : [],
-        ], 201);
+            "status"    => true,
+            "code"      => 200,
+            "message"   => "User and related data deleted successfully!",
+            "data"      => $user,
+        ], 200);
+    } catch (\Exception $e) {
+        DB::rollBack();
+
+        return response()->json([
+            "status"    => false,
+            "code"      => 600,
+            "message"   => "Failed to delete user: " . $e->getMessage(),
+            "data"      => [],
+        ], 500);
     }
+}
+
 }

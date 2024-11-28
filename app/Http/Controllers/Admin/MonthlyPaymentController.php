@@ -8,17 +8,12 @@ use Yajra\DataTables\Facades\DataTables;
 
 use Illuminate\Support\Facades\DB;
 
-
 use App\Models\User;
 use App\Models\MonthlyPayment;
 use App\Models\Wallet;
 use App\Models\YearlyLog;
 use App\Models\ConfigPayment;
 use Barryvdh\DomPDF\Facade\Pdf;
-
-
-
-
 
 class MonthlyPaymentController extends Controller
 {
@@ -156,48 +151,25 @@ class MonthlyPaymentController extends Controller
         ], 201);
     }
 
-    // public function dataTanggal($id){
-    //     $data = MonthlyPayment::where('user_id', $id)->get();
-
-    //     return response()->json($data);
-
-    // }
-    // public function previewInvoice($id)
-    // {
-    //     // Ambil data monthly berdasarkan ID
-    //     $user = User::with('monthlyPayment')->findOrFail($id);
-
-    //     // Validasi data
-    //     if (!$user) {
-    //         return redirect()->back()->withErrors(['error' => 'Data monthly tidak ditemukan.']);
-    //     }
-
-    //     // Generate PDF
-    //     $pdf = Pdf::loadView('admin.payment.monthly.invoices', compact('user'))
-    //         ->setPaper('a4', 'portrait');
-
-    //     // Stream PDF ke browser untuk preview
-    //     return $pdf->stream('Invoice_Monthly_' . $user . '.pdf');
-    // }
-    public function downloadInvoice($id)
+    public function dataTanggal($id)
     {
-        try {
-            // Cari data pembayaran berdasarkan ID
-            $payment = MonthlyPayment::findOrFail($id);
+        $data = MonthlyPayment::where('user_id', $id)->get();
 
-            // Dapatkan informasi pengguna
-            $user = $payment->user;
+        return response()->json($data);
+    }
 
-            // Generate PDF
-            $pdf = PDF::loadView('admin.payment.monthly.invoice', [
-                'user' => $user,
-                'payment' => $payment,
-            ]);
+    public function exportInvoice(Request $request)
+    {
+        $data = MonthlyPayment::with('user')->where('payment_month', $request->month)->first();
 
-            // Download PDF
-            return $pdf->download('invoice-' . $user->id . '-' . $payment->payment_month . '-' . $payment->payment_year . '.pdf');
-        } catch (\Exception $e) {
-            return redirect()->back()->with('error', 'Terjadi kesalahan: ' . $e->getMessage());
+        if (!$data) {
+            return back()->with('error', 'Data tidak ditemukan untuk tanggal yang dipilih.');
         }
+
+        $pdf = Pdf::loadView('admin.payment.monthly.invoices', compact('data'))
+            ->setPaper('a4', 'landscape');
+
+
+        return $pdf->stream('Invoice_' . $data->id . '.pdf');
     }
 }

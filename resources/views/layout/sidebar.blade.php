@@ -6,12 +6,12 @@
 
         <ul class="navbar-nav theme-brand flex-row  text-center">
             <li class="nav-item theme-logo">
-                <a href="index.html">
+                <a href="javascript:void(0)">
                     <img src="assets/img/90x90.jpg" class="navbar-logo" alt="logo">
                 </a>
             </li>
             <li class="nav-item theme-text">
-                <a href="index.html" class="nav-link">Koperasi </a>
+                <a href="#" class="nav-link">Koperasi </a>
             </li>
         </ul>
 
@@ -48,7 +48,7 @@
                 </li>
                 <li class="menu">
                     <a href="#submenu" data-toggle="collapse"
-                        aria-expanded="{{ Request::routeIs('admin.payment.main.index') ? 'true' : 'false' }}"
+                    aria-expanded="{{ Request::routeIs('admin.payment.main.index', 'admin.payment.monthly.index', 'admin.payment.other.index') ? 'true' : 'false' }}"
                         class="dropdown-toggle collapsed ">
                         <div class="">
                             <i data-feather="dollar-sign"></i>
@@ -84,7 +84,9 @@
                     </a>
                 </li>
                 <li class="menu">
-                    <a href="{{ route('admin.withdraw.index') }}" aria-expanded="false" class="dropdown-toggle">
+                    <a href="{{ route('admin.withdraw.index') }}" 
+                    aria-expanded="{{ Request::routeIs('admin.withdraw.index') ? 'true' : 'false' }}"
+                    class="dropdown-toggle">
                         <div class="">
                             <i data-feather="credit-card"></i>
                             <span> Manage Penarikan Dana</span>
@@ -96,7 +98,9 @@
 
             @role('user')
                 <li class="menu">
-                    <a href="#" aria-expanded="true" class="dropdown-toggle">
+                    <a href="{{ route('user.dashboard') }}" 
+                    aria-expanded="{{ Request::routeIs('user.dashboard') ? 'true' : 'false' }}"
+                    class="dropdown-toggle">
                         <div class="">
                             <i data-feather="grid"></i>
                             <span> Dashboard</span>
@@ -105,7 +109,8 @@
                 </li>
                 <li class="menu">
                     <a href="#submenu" data-toggle="collapse"
-                        aria-expanded="{{ Request::routeIs('admin.payment.main.index') ? 'true' : 'false' }}"
+                    aria-expanded="{{ Request::routeIs('user.history.main', 'user.history.monthly', 'user.history.other') ? 'true' : 'false' }}"
+
                         class="dropdown-toggle collapsed ">
                         <div class="">
                             <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
@@ -137,6 +142,18 @@
                             <a href="{{ route('user.history.other') }}"> Simpanan Hari Raya </a>
                         </li>
                     </ul>
+                    <li class="menu">
+                        <a href="{{ route('user.history-piutang') }}"
+                        aria-expanded="{{ Request::routeIs('user.history-piutang') ? 'true' : 'false' }}"
+                        class="dropdown-toggle">
+                            <div class="">
+                                <i data-feather="clipboard"></i>
+                                <span> History Piutang</span>
+                            </div>
+                        </a>
+                    </li>
+                    
+                    
                 </li>
             @endrole
 
