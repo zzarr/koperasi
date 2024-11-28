@@ -85,54 +85,7 @@ class PembayaranPiutangController extends Controller
         return response()->json($piutang);
     }
 
-    public function storeKhusus(Request $request)
-    {
-        $cleanedJumlahPokok = str_replace(['Rp', '.', ' '], '', $request->jumlah_bayar_pokok);
-        $request->merge(['jumlah_bayar_pokok' => $cleanedJumlahPokok]);
-        $cleanedJumlahBunga = str_replace(['Rp', '.', ' '], '', $request->jumlah_bayar_bunga);
-        $request->merge(['jumlah_bayar_bunga' => $cleanedJumlahBunga]);
-
-        $validatedData = $request->validate([
-            'hutang_id' => 'required|exists:piutangs,id', 
-            'tanggal_pembayaran' => 'required|date', 
-            'jumlah_bayar_pokok' => 'required|numeric|min:0', 
-            'jumlah_bayar_bunga' => 'required|numeric|min:0', 
-            'catatan' => 'nullable|string|max:255',
-        ]);
-    
-        try {
-            $piutang = Piutang::findOrFail($validatedData['hutang_id']);
-            $latestPaymentCount = PembayaranPiutang::where('hutang_id', $piutang->id)->count();
-            $pembayaranKe = $latestPaymentCount + 1;
-     
-            PembayaranPiutang::create([
-                'hutang_id' => $piutang->id,
-                'pembayaran_ke' => $pembayaranKe,
-                'tanggal_pembayaran' => $validatedData['tanggal_pembayaran'],
-                'jumlah_bayar_pokok' => $validatedData['jumlah_bayar_pokok'],
-                'jumlah_bayar_bunga' => $validatedData['jumlah_bayar_bunga'],
-                'catatan' => $validatedData['catatan']  ?? '-',
-            ]);
-
-            $sisa = $piutang->sisa - $validatedData['jumlah_bayar_pokok'] - $validatedData['jumlah_bayar_bunga'];
-
-            if ($sisa <= 0) {
-                $piutang->update([
-                    'is_lunas' => 1,
-                    'sisa' => 0, // Sisa dianggap sudah lunas
-                ]);
-            } else {
-                // Jika belum lunas, update sisa hutang
-                $piutang->update([
-                    'sisa' => $sisa,
-                ]);
-            }
-    
-            return response()->json(['message' => 'Data berhasil disimpan'], 200);
-        } catch (\Exception $e) {
-            return response()->json(['message' => 'Terjadi kesalahan saat menyimpan data: ' . $e->getMessage()], 500);
-        }
-    }
+ 
 
 
 
