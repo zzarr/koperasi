@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Models\PembayaranPiutang;
+use App\Models\ConfigPayment;
 use Yajra\DataTables\Facades\DataTables;
 use App\Models\Piutang;
 use Illuminate\Http\Request;
@@ -104,6 +105,16 @@ class PembayaranPiutangController extends Controller
         ]);
     
         try {
+                    // Ambil data bunga dari tabel configpayment berdasarkan nama 'dept_routine'
+            $configPayment = ConfigPayment::where('name', 'dept_routine')->first();
+            if (!$configPayment) {
+                return response()->json(['message' => 'Konfigurasi pembayaran untuk "dept_routine" tidak ditemukan'], 404);
+            }
+
+            // Hitung jumlah_bayar_bunga berdasarkan persentase dari configpayment
+            $persenBunga = $configPayment->paid_off_amount / 100; // Misalkan amount disimpan dalam persen
+            $jumlahBayarBunga = $validatedData['jumlah_bayar_pokok'] * $persenBunga;
+            $jumlahBayarPokokSetelahDikurangi = $validatedData['jumlah_bayar_pokok'] - $jumlahBayarBunga;
             $piutang = Piutang::findOrFail($validatedData['hutang_id']);
             $latestPaymentCount = PembayaranPiutang::where('hutang_id', $piutang->id)->count();
             $pembayaranKe = $latestPaymentCount + 1;
@@ -112,8 +123,8 @@ class PembayaranPiutangController extends Controller
                 'hutang_id' => $piutang->id, 
                 'pembayaran_ke' => $pembayaranKe, 
                 'tanggal_pembayaran' => $validatedData['tanggal_pembayaran'],
-                'jumlah_bayar_pokok' => $validatedData['jumlah_bayar_pokok'],
-                'jumlah_bayar_bunga' => 0,
+                'jumlah_bayar_pokok' => $jumlahBayarPokokSetelahDikurangi,
+                'jumlah_bayar_bunga' => $jumlahBayarBunga,
                 'catatan' => $validatedData['catatan']  ?? '-',
             ]);
 
