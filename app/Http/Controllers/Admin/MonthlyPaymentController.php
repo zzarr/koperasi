@@ -8,17 +8,12 @@ use Yajra\DataTables\Facades\DataTables;
 
 use Illuminate\Support\Facades\DB;
 
-
 use App\Models\User;
 use App\Models\MonthlyPayment;
 use App\Models\Wallet;
 use App\Models\YearlyLog;
 use App\Models\ConfigPayment;
 use Barryvdh\DomPDF\Facade\Pdf;
-
-
-
-
 
 class MonthlyPaymentController extends Controller
 {
@@ -171,12 +166,10 @@ class MonthlyPaymentController extends Controller
             return back()->with('error', 'Data tidak ditemukan untuk tanggal yang dipilih.');
         }
 
-        // Generate PDF
         $pdf = Pdf::loadView('admin.payment.monthly.invoices', compact('data'))
             ->setPaper('a4', 'landscape');
 
 
-        // Stream PDF ke browser untuk preview
         return $pdf->stream('Invoice_' . $data->id . '.pdf');
     }
 }
