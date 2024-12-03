@@ -58,18 +58,13 @@
                                     <label for="jumlah_bulan">Jumlah Bulan</label>
                                     <select class="form-control" id="jumlah_bulan" name="jumlah_bulan" required>
                                         <option value="" disabled selected>Pilih Jumlah Bulan</option>
-                                        <option value="1">1</option>
-                                        <option value="2">2</option>
-                                        <option value="3">3</option>
-                                        <option value="4">4</option>
-                                        <option value="5">5</option>
-                                        <option value="6">6</option>
-                                        <option value="7">7</option>
-                                        <option value="8">8</option>
-                                        <option value="9">9</option>
-                                        <option value="10">10</option>
-                                        <option value="11">11</option>
-                                        <option value="12">12</option>
+                                        <option>10</option>
+                                        <option>12</option>
+                                        <option>15</option>
+                                        <option>20</option>
+                                        <option>24</option>
+                                        <option>30</option>
+                                        <option>36</option>
                                     </select>
                                 </div>
                                 <div class="form-group">
@@ -148,7 +143,7 @@
     function formatInputRupiah(input) {
     // Hilangkan karakter non-digit
     let angka = input.value.replace(/[^,\d]/g, '');
-    
+
     if (!angka) {
         input.value = ''; // Kosongkan jika tidak ada angka
         return;
@@ -221,35 +216,35 @@
                     `;
                         return btn;
                     },
-                   
+
                 },
             ],
             columns: [
-                { data: 'id' },       
-                { data: 'user_name' },     
-                { data: 'jenis_hutang' }, 
+                { data: 'id' },
+                { data: 'user_name' },
+                { data: 'jenis_hutang' },
                 { data: 'jumlah_bulan' },
                 {
                     data: 'jumlah_hutang',
                     render: function (data) {
                         return formatRupiah(data);
                     }
-                },  
+                },
                 {
                     data: 'sisa',
                     render: function (data) {
                         return formatRupiah(data);
                     }
-                },          
+                },
                 {
-                    data: 'is_lunas',      
+                    data: 'is_lunas',
                     render: function(data, type, row) {
-                       
+
                         return data == 1 ? 'Lunas' : 'Belum Lunas';
                     }
                 },
 
-                { data: 'id' },     
+                { data: 'id' },
             ],
             language: {
                 searchPlaceholder: 'Cari...',

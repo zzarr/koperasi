@@ -70,7 +70,7 @@ class WithdrawController extends Controller
                 ]);
             } elseif ($request->type == 'other-cash') {
                 // Penarikan dana Hari Raya (dari saldo 'other')
-                if ($wallet->other - filterNumber($request->amount) >= 0) {
+                if ((int)$wallet->other - (int)filterNumber($request->amount) >= 0) {
                     $amount = $wallet->other;
                     $wallet->update([
                         'other' => 0,

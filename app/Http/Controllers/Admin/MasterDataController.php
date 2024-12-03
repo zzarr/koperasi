@@ -58,7 +58,7 @@ class MasterDataController extends Controller
             ConfigPayment::updateOrCreate(
                 ['name' => 'dept_routine'],
                 [
-                    'paid_off_amount'   => preg_replace( '/[^0-9]/', '', $request->dept_routine ),
+                    'paid_off_amount'   => $request->dept_routine,
                     'is_active'         => 1
                 ]
             );
@@ -66,12 +66,12 @@ class MasterDataController extends Controller
             ConfigPayment::updateOrCreate(
                 ['name' => 'dept_special'],
                 [
-                    'paid_off_amount'   => preg_replace( '/[^0-9]/', '', $request->dept_special ),
+                    'paid_off_amount'   => $request->dept_special,
                     'is_active'         => 1
                 ]
             );
 
-           
+
 
             DB::commit();
             $this->isSuccess = true;
