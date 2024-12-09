@@ -15,13 +15,15 @@ class PembayaranPiutangController extends Controller
     public function showRutinDetail($id)
     {
         $piutang = Piutang::findOrFail($id); 
+        $meta = ConfigPayment::where('name', 'dept_routine')->first();
         if ($piutang->jenis_hutang !== 'rutin') {
             abort(404); 
         }
 
         return view('admin.piutang.rutin_detail', [
             'piutang' => $piutang,
-            'hutang_id' => $piutang->id 
+            'hutang_id' => $piutang->id,
+            'nominal'   => ($piutang->jumlah_hutang / $piutang->jumlah_bulan) + ($piutang->jumlah_hutang * $meta->paid_off_amount / 100)
         ]);
     }
 
@@ -86,8 +88,6 @@ class PembayaranPiutangController extends Controller
         return response()->json($piutang);
     }
 
- 
-
 
 
     public function storeRutin(Request $request)
@@ -113,9 +113,10 @@ class PembayaranPiutangController extends Controller
 
             // Hitung jumlah_bayar_bunga berdasarkan persentase dari configpayment
             $persenBunga = $configPayment->paid_off_amount / 100; // Misalkan amount disimpan dalam persen
-            $jumlahBayarBunga = $validatedData['jumlah_bayar_pokok'] * $persenBunga;
-            $jumlahBayarPokokSetelahDikurangi = $validatedData['jumlah_bayar_pokok'] - $jumlahBayarBunga;
             $piutang = Piutang::findOrFail($validatedData['hutang_id']);
+
+            $jumlahBayarBunga = ($piutang->jumlah_hutang * $persenBunga);
+            $jumlahBayarPokokSetelahDikurangi = $validatedData['jumlah_bayar_pokok'] - $jumlahBayarBunga;
             $latestPaymentCount = PembayaranPiutang::where('hutang_id', $piutang->id)->count();
             $pembayaranKe = $latestPaymentCount + 1;
     
