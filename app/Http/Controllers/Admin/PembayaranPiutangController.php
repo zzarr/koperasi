@@ -14,7 +14,8 @@ class PembayaranPiutangController extends Controller
 
     public function showRutinDetail($id)
     {
-        $piutang = Piutang::findOrFail($id);
+        $piutang = Piutang::findOrFail($id); 
+        $meta = ConfigPayment::where('name', 'dept_routine')->first();
         if ($piutang->jenis_hutang !== 'rutin') {
             abort(404);
         }
@@ -23,7 +24,8 @@ class PembayaranPiutangController extends Controller
         return view('admin.piutang.rutin_detail', [
             'piutang' => $piutang,
             'hutang_id' => $piutang->id,
-            'sisa' => $sisaHutang
+            'sisa' => $sisaHutang,
+            'nominal'   => ($piutang->jumlah_hutang / $piutang->jumlah_bulan) + ($piutang->jumlah_hutang * $meta->paid_off_amount / 100)
         ]);
     }
 

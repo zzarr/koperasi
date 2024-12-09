@@ -62,43 +62,44 @@ class AnggotaController extends Controller
 	}
 
 
-	// public function dashboard()
-	// {
-	// 	$userId = Auth::id();
 
-	// 	// Jumlah pembayaran lainnya
-	// 	$other_payments = DB::table('other_payments')->where('user_id', $userId)->sum('amount');
+// 	public function dashboard()
+// {
+//     $userId = Auth::id();
 
-	// 	// Jumlah pembayaran utama
-	// 	$main_payments = DB::table('main_payments')->where('user_id', $userId)->sum('amount');
+//     // Jumlah pembayaran lainnya
+//     $other_payments = DB::table('other_payments')->where('user_id', $userId)->sum('amount');
 
-	// 	// Jumlah pembayaran bulanan
-	// 	$monthly_payments = DB::table('monthly_payments')->where('user_id', $userId)->sum('amount');
-		
-	// 	// Hutang rutin
-	// 	$hutang_rutin = DB::table('piutangs')
-	// 		->where('user_id', $userId)
-	// 		->where('jenis_hutang', 'rutin')
-	// 		->sum('jumlah_hutang');
+//     // Jumlah pembayaran utama
+//     $main_payments = DB::table('main_payments')->where('user_id', $userId)->sum('amount');
 
-	// 	// Hutang khusus
-	// 	$hutang_khusus = DB::table('piutangs')
-	// 		->where('user_id', $userId)
-	// 		->where('jenis_hutang', 'khusus')
-	// 		->sum('jumlah_hutang');
+//     // Jumlah pembayaran bulanan
+//     $monthly_payments = DB::table('monthly_payments')->where('user_id', $userId)->sum('amount');
 
-	// 	// Total saldo wallet
-	// 	$wallets = DB::table('wallets')->where('user_id', $userId)->sum('total');
+//     // Hutang rutin
+//     $hutang_rutin = DB::table('piutangs')
+//         ->where('user_id', $userId)
+//         ->where('jenis_hutang', 'rutin')
+//         ->sum('jumlah_hutang');
 
-	// 	return view('user.dashboard', compact(
-	// 		'other_payments',
-	// 		'main_payments',
-	// 		'monthly_payments',
-	// 		'hutang_rutin',
-	// 		'hutang_khusus',
-	// 		'wallets'
-	// 	));
-	// }
+//     // Hutang khusus
+//     $hutang_khusus = DB::table('piutangs')
+//         ->where('user_id', $userId)
+//         ->where('jenis_hutang', 'khusus')
+//         ->sum('jumlah_hutang');
+
+//     // Total saldo wallet
+//     $wallets = DB::table('wallets')->where('user_id', $userId)->sum('total');
+
+//     return view('user.dashboard', compact(
+//         'other_payments',
+//         'main_payments',
+//         'monthly_payments',
+//         'hutang_rutin',
+//         'hutang_khusus',
+//         'wallets'
+//     ));
+// }
 
 	
 
