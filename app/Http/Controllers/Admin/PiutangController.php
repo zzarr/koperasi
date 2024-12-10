@@ -20,18 +20,18 @@ class PiutangController extends Controller
 
     public function datatables(Request $request)
     {
-        $data = Piutang::with('user'); 
+        $data = Piutang::with('user');
         return DataTables::of($data)
             ->addColumn('user_name', function ($row) {
-                return $row->user ? $row->user->name : '-'; 
+                return $row->user ? $row->user->name : '-';
             })
             ->make(true);
     }
 
     public function getUsers()
     {
-        $users = User::all(['id', 'name']); 
-        return response()->json($users); 
+        $users = User::all(['id', 'name']);
+        return response()->json($users);
     }
 
     /**
@@ -45,43 +45,43 @@ class PiutangController extends Controller
     /**
      * Store a newly created resource in storage.
      */
-    
+
     public function store(Request $request)
     {
         $cleanedJumlahHutang = str_replace(['Rp', '.', ' '], '', $request->jumlah_hutang);
         $request->merge(['jumlah_hutang' => $cleanedJumlahHutang]);
-    
+
         $validatedData = $request->validate([
             'nama' => 'required|exists:users,id',
             'jenis_hutang' => 'required|string',
-            'jumlah_bulan' => 'required|integer|min:1|max:12',
+            'jumlah_bulan' => 'required|integer',
             'jumlah_hutang' => 'required|numeric|min:0',
         ]);
-    
+
         try {
             $paymentType = $validatedData['jenis_hutang'] == 'rutin' ? 'dept_routine' : 'dept_special';
-    
+
             $configPayment = \App\Models\ConfigPayment::where('name', $paymentType)->first();
             if (!$configPayment) {
                 return response()->json(['message' => 'Jenis hutang tidak ditemukan dalam konfigurasi pembayaran'], 400);
             }
             $sisa = $validatedData['jumlah_hutang'] * ($configPayment->paid_off_amount / 100) + $validatedData['jumlah_hutang'];
-    
+
             Piutang::create([
-                'user_id' => $validatedData['nama'], 
+                'user_id' => $validatedData['nama'],
                 'jenis_hutang' => $validatedData['jenis_hutang'],
                 'jumlah_bulan' => $validatedData['jumlah_bulan'],
                 'jumlah_hutang' => $validatedData['jumlah_hutang'],
                 'sisa' => $sisa,
                 'is_lunas' => 0,
             ]);
-    
+
             return response()->json(['message' => 'Data berhasil disimpan'], 200);
         } catch (\Exception $e) {
             return response()->json(['message' => 'Terjadi kesalahan saat menyimpan data'], 500);
         }
     }
-    
+
     /**
      * Display the specified resource.
      */

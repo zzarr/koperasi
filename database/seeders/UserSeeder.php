@@ -21,7 +21,16 @@ class UserSeeder extends Seeder
      */
     public function run()
     {
-       
+        $user = User::create([
+            'name' => 'Admin',
+            'username' => 'admin',
+            'email' => 'admin@gmail.com',
+            'password' => Hash::make('Admin#123'),
+            'phone_number' => '0895334623006',
+            'registered_at' => now()
+        ]);
+
+        $user->assignRole('admin');
 
         $user2 = User::create([
             'id' => Str::uuid(), // Set UUID manually

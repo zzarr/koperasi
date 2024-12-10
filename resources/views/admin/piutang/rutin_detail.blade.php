@@ -12,7 +12,7 @@
             <li class="breadcrumb-item active" aria-current="page"><span>Manajemen Pembayaran Piutang Rutin</span></li>
         </ol>
     </nav>
-    
+
 </div>
 
 <div class="d-flex justify-content-start mb-3">
@@ -51,7 +51,7 @@
                             </div>
                             <div class="form-group">
                                 <label for="jumlah_bayar_pokok">Nominal Pokok</label>
-                                <input type="text" name="jumlah_bayar_pokok" id="jumlah_bayar_pokok" class="form-control" value="{{ formatRupiah($nominal) }}" required required oninput="formatInputRupiah(this)">
+                                <input type="text" name="jumlah_bayar_pokok" id="jumlah_bayar_pokok" class="form-control" required required oninput="formatInputRupiah(this)">
                             </div>
                             <div class="form-group">
                                 <label for="catatan">Catatan</label>
@@ -71,14 +71,43 @@
 <div class="row" id="cancel-row">
     <div class="col-xl-12 col-lg-12 col-sm-12 layout-spacing">
         <div class="widget-content widget-content-area br-6">
+            <style>
+                .rp-box {
+                    position: absolute;
+                    top: 10px; /* Jarak dari atas */
+                    right: 10px; /* Jarak dari kanan */
+                    padding: 5px 10px; /* Ruang di dalam kotak */
+                    background-color: #0080ffe5; /* Warna latar belakang kotak */
+                    border: 1px solid #ddd; /* Batas kotak */
+                    border-radius: 5px; /* Membulatkan sudut */
+                    font-weight: bold; /* Menonjolkan teks */
+                    color: #fffdfd; /* Warna teks */
+                    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1); /* Bayangan kotak */
+                }
+            </style>
+            <div class="rp-box">
+                Sisa Hutang = Rp {{ number_format($sisa, 2, ',', '.') }}
+            
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24"
+                viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                stroke-width="2" stroke-linecap="round"
+                stroke-linejoin="round" class="feather feather-printer"
+                onclick="window.open('/admin/piutang/pembayaran/rutin/print-all/{{ $piutang->id }}', '_blank')">
+                <polyline points="6 9 6 2 18 2 18 9"></polyline>
+                <path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"></path>
+                <rect x="6" y="14" width="12" height="8"></rect>
+               </svg>
+            </div>
             <div class="table-responsive mb-4 mt-4">
                 <table id="datatable" id="zero-config" class="table table-hover" style="width:100%">
                     <thead>
+                      
                         <tr>
                             <th>No</th>
                             <th>Pembayaran Ke-</th>
                             <th>Tanggal Pembayaran</th>
                             <th>Jumlah Bayar Pokok</th>
+                            <th>Jumlah Bayar Bunga</th>
                             <th>Catatan</th>
                             <th class="no-content">Action</th>
 
@@ -131,24 +160,24 @@ $(document).ready(function() {
             url: "{{ route('admin.piutang.pembayaran.rutin.ajax') }}",
             type: "GET",
             data: function(d) {
-                d.hutang_id = {{ $hutang_id }}; 
+                d.hutang_id = {{ $hutang_id }};
             }
              },
             columnDefs: [
                 {
-                    targets: 0, 
+                    targets: 0,
                     render: function(data, type, full, meta) {
                         return meta.row + 1;
                     },
                 },
                 {
-                    targets: -1, 
+                    targets: -1,
                     render: function(data, type, full, meta) {
                         let btn = `
                             <button type="button" class="btn btn-sm btn-outline-primary btn-print" data-id="${full.id}">
-                                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" 
-                                    viewBox="0 0 24 24" fill="none" stroke="currentColor" 
-                                    stroke-width="2" stroke-linecap="round" 
+                                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24"
+                                    viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                    stroke-width="2" stroke-linecap="round"
                                     stroke-linejoin="round" class="feather feather-printer">
                                     <polyline points="6 9 6 2 18 2 18 9"></polyline>
                                     <path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"></path>
@@ -161,17 +190,23 @@ $(document).ready(function() {
                 },
             ],
             columns: [
-                { data: 'id' },           
-                { data: 'pembayaran_ke' },     
-                { data: 'tanggal_pembayaran' },  
+                { data: 'id' },
+                { data: 'pembayaran_ke' },
+                { data: 'tanggal_pembayaran' },
                 {
                     data: 'jumlah_bayar_pokok',
                     render: function (data) {
                         return formatRupiah(data);
                     }
-                },    
-                { data: 'catatan' },   
-                { data: 'id' },           
+                },
+                {
+                    data: 'jumlah_bayar_bunga',
+                    render: function (data) {
+                        return formatRupiah(data);
+                    }
+                },
+                { data: 'catatan' },
+                { data: 'id' },
             ],
             language: {
                 searchPlaceholder: 'Cari...',
@@ -230,12 +265,12 @@ $(document).ready(function() {
 <script>
     $(document).ready(function () {
         $('#createForm').on('submit', function (event) {
-            event.preventDefault(); 
+            event.preventDefault();
 
             const hutangId = $("input[name='hutang_id']").val();
             if (!$('#tanggal_pembayaran').val() || !$('#jumlah_bayar_pokok').val()) {
                 Notiflix.Notify.failure('Semua field harus diisi');
-                return; 
+                return;
             }
 
             const formData = {
@@ -246,14 +281,14 @@ $(document).ready(function() {
             };
 
             $.ajax({
-                url: '/admin/piutang/pembayaran/rutin/store', 
+                url: '/admin/piutang/pembayaran/rutin/store',
                 method: 'POST',
                 data: formData,
                 success: function (response) {
                     if (response.message) {
-                        Notiflix.Notify.success(response.message); 
-                        $('#createForm')[0].reset(); 
-                        $('#exampleModal').modal('hide'); 
+                        Notiflix.Notify.success(response.message);
+                        $('#createForm')[0].reset();
+                        $('#exampleModal').modal('hide');
                         $('#datatable').DataTable().ajax.reload();
                     }
                 },
@@ -277,7 +312,7 @@ $(document).ready(function() {
     function formatInputRupiah(input) {
     let angka = input.value.replace(/[^,\d]/g, '');
     if (!angka) {
-        input.value = ''; 
+        input.value = '';
         return;
     }
     input.value = 'Rp ' + angka.replace(/\B(?=(\d{3})+(?!\d))/g, ".");

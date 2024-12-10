@@ -16,7 +16,7 @@ class CreateUsersTable extends Migration
     {
         Schema::create('users', function (Blueprint $table) {
             $table->uuid('id')->primary();
-            
+
             $table->string('member_id')->nullable();
             $table->string('email')->nullable();
             $table->string('username');
@@ -27,12 +27,12 @@ class CreateUsersTable extends Migration
             $table->tinyInteger('is_banned')->default(0);
             $table->string('status')->nullable();
             $table->tinyInteger('main_payment_status')->default(0);
-            $table->date('registered_at');
+            $table->date('registered_at')->useCurrent();
             $table->string('tmt')->nullable();
             $table->softDeletes();
             $table->timestamps();
 
-           
+
         });
     }
 
