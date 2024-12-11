@@ -72,6 +72,7 @@
                                         <th>Tanggal Pembayaran</th>
                                         <th>Catatan</th>
                                         <th class="text-end">Nominal Bayar Pokok</th>
+                                        <th class="text-end">Nominal Bayar Bunga</th>
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -80,10 +81,11 @@
                                         <td>{{ $data->tanggal_pembayaran }}</td>
                                         <td>{{ $data->catatan }}</td>
                                         <td class="text-end">{{ formatRupiah($data->jumlah_bayar_pokok) }}</td>
+                                        <td class="text-end">{{ formatRupiah($data->jumlah_bayar_bunga) }}</td>
                                     </tr>
                                     <tr class="bg-light">
-                                        <td colspan="3" class="text-end"><strong>Total Pembayaran</strong></td>
-                                        <td class="text-end"><strong>{{ formatRupiah($data->jumlah_bayar_pokok) }}</strong></td>
+                                        <td colspan="4" class="text-end"><strong>Total Pembayaran</strong></td>
+                                        <td class="text-end"><strong>{{ formatRupiah($data->jumlah_bayar_pokok + $data->jumlah_bayar_bunga) }}</strong></td>
                                     </tr>
                                 </tbody>
                             </table>

@@ -73,18 +73,18 @@ class OtherPaymentController extends Controller
             ]);
 
             // Inisialisasi bulan (jika belum dibuat)
-            for ($i = 1; $i <= 12; $i++) {
-                OtherPayment::updateOrCreate(
-                    [
-                        'user_id' => $request->user_id,
-                        'payment_month' => $i,
-                        'payment_year' => $request->payment_year,
-                    ],
-                    [
-                        'amount' => 0,
-                    ]
-                );
-            }
+//            for ($i = 1; $i <= 12; $i++) {
+//                OtherPayment::updateOrCreate(
+//                    [
+//                        'user_id' => $request->user_id,
+//                        'payment_month' => $i,
+//                        'payment_year' => $request->payment_year,
+//                    ],
+//                    [
+//                        'amount' => 0,
+//                    ]
+//                );
+//            }
 
             // Simpan atau perbarui pembayaran
             $otherPayment = OtherPayment::updateOrCreate(
@@ -157,7 +157,7 @@ class OtherPaymentController extends Controller
     public function dataTanggal($id){
         $data = OtherPayment::where('user_id', $id)->get();
         return response()->json($data);
-        
+
     }
 
     public function exportInvoice(Request $request)
@@ -166,17 +166,17 @@ class OtherPaymentController extends Controller
             ->where('payment_month', $request->month)
             ->where('user_id', $request->user_id)
             ->first();
-    
+
         if (!$data) {
             return back()->with('error', 'Data tidak ditemukan untuk tanggal yang dipilih.');
         }
-    
+
         // Generate PDF
         $pdf = Pdf::loadView('admin.payment.other.invoiceOther', compact('data'))
             ->setPaper('a4', 'landscape');
-    
+
         // Stream PDF ke browser
         return $pdf->stream('Invoice_' . $data->id . '.pdf');
     }
-    
+
 }

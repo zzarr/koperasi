@@ -4,7 +4,7 @@
         <meta charset="UTF-8" />
         <meta name="viewport" content="width=device-width, initial-scale=1.0" />
         @foreach ($usernames as $username)
-        <title>Cetak Seluruh Data Pembayaran Khusus {{ $username }}</title>
+        <title>Cetak Seluruh Data Pembayaran Rutin {{ $username }}</title>
         <link href="{{ asset('templates/assets/css/bootstrap.min.css') }}" rel="stylesheet" />
         <style>
             body {
@@ -50,9 +50,8 @@
                             </div>
                         </div>
                     </div>
-                    
+                   
                         <p><strong>Username       : {{ $username }}</strong></p>
-                        <p><strong>Sisa Hutang :Rp.{{ number_format($sisaHutang, 2) }}</strong></p>
                         <p><strong>Sisa Hutang : {{ number_format($sisaHutang, 2) }}</strong></p>
                     @endforeach
 
