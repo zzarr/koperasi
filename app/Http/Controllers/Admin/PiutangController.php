@@ -65,7 +65,7 @@ class PiutangController extends Controller
             if (!$configPayment) {
                 return response()->json(['message' => 'Jenis hutang tidak ditemukan dalam konfigurasi pembayaran'], 400);
             }
-            $sisa = $validatedData['jumlah_hutang'] * ($configPayment->paid_off_amount / 100) + $validatedData['jumlah_hutang'];
+            $sisa = $validatedData['jumlah_hutang']  * ($configPayment->paid_off_amount / 100) * $validatedData['jumlah_bulan'] + $validatedData['jumlah_hutang'];
 
             Piutang::create([
                 'user_id' => $validatedData['nama'],

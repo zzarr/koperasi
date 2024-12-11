@@ -71,33 +71,18 @@
 <div class="row" id="cancel-row">
     <div class="col-xl-12 col-lg-12 col-sm-12 layout-spacing">
         <div class="widget-content widget-content-area br-6">
-            <style>
-                .rp-box {
-                    position: absolute;
-                    top: 10px; /* Jarak dari atas */
-                    right: 10px; /* Jarak dari kanan */
-                    padding: 5px 10px; /* Ruang di dalam kotak */
-                    background-color: #0080ffe5; /* Warna latar belakang kotak */
-                    border: 1px solid #ddd; /* Batas kotak */
-                    border-radius: 5px; /* Membulatkan sudut */
-                    font-weight: bold; /* Menonjolkan teks */
-                    color: #fffdfd; /* Warna teks */
-                    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1); /* Bayangan kotak */
-                }
-            </style>
-            <div class="rp-box">
-                Sisa Hutang = Rp {{ number_format($sisa, 2, ',', '.') }}
-            
-                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24"
-                viewBox="0 0 24 24" fill="none" stroke="currentColor"
-                stroke-width="2" stroke-linecap="round"
-                stroke-linejoin="round" class="feather feather-printer"
-                onclick="window.open('/admin/piutang/pembayaran/rutin/print-all/{{ $piutang->id }}', '_blank')">
-                <polyline points="6 9 6 2 18 2 18 9"></polyline>
-                <path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"></path>
-                <rect x="6" y="14" width="12" height="8"></rect>
-               </svg>
-            </div>
+            <div class="rp-box  float-right my-5">
+                <h5>   Sisa Hutang = Rp {{ number_format($sisa, 2, ',', '.') }} 
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24"
+                    viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                    stroke-width="2" stroke-linecap="round"
+                    stroke-linejoin="round" class="feather feather-printer"
+                    onclick="window.open('/admin/piutang/pembayaran/rutin/print-all/{{ $piutang->id }}', '_blank')">
+                    <polyline points="6 9 6 2 18 2 18 9"></polyline>
+                    <path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"></path>
+                    <rect x="6" y="14" width="12" height="8"></rect>
+                   </svg></h5>
+                </div>
             <div class="table-responsive mb-4 mt-4">
                 <table id="datatable" id="zero-config" class="table table-hover" style="width:100%">
                     <thead>
@@ -211,6 +196,10 @@ $(document).ready(function() {
             language: {
                 searchPlaceholder: 'Cari...',
                 sSearch: '',
+                oPaginate: {
+                sPrevious: '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-arrow-left"><line x1="19" y1="12" x2="5" y2="12"></line><polyline points="12 19 5 12 12 5"></polyline></svg>',
+                sNext: '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-arrow-right"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg>'
+            }
             }
         });
         function formatRupiah(angka) {
