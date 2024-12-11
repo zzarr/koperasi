@@ -12,7 +12,7 @@ use Yajra\DataTables\Facades\DataTables;
 class HistoryPiutangController extends Controller
 {
     /**
-     * Menampilkan halaman utama history piutang
+     * Menampilkan halaman utama history hutang
      */
     public function index(Request $request)
     {
@@ -23,24 +23,24 @@ class HistoryPiutangController extends Controller
             return DataTables::of($data)
                 ->addIndexColumn()
                 ->addColumn('aksi', function ($row) {
-                    // Tombol aksi untuk detail
                     return '<a href="' . route('user.history-piutang.detail', $row->id) . '" class="btn btn-info btn-sm">Detail</a>';
                 })
                 ->editColumn('jumlah_hutang', function ($row) {
                     return number_format($row->jumlah_hutang, 0, ',', '.');
                 })
                 ->editColumn('sisa', function ($row) {
-                    return number_format($row->sisa, 0, ',', '.');
+                    // Hitung sisa hutang
+                    $totalPembayaran = PembayaranPiutang::where('hutang_id', $row->id)->sum('jumlah_bayar_pokok') + PembayaranPiutang::where('hutang_id', $row->id)->sum('jumlah_bayar_bunga');
+                    $sisa = $row->jumlah_hutang - $totalPembayaran;
+                    return number_format($sisa, 0, ',', '.');
                 })
                 ->editColumn('is_lunas', function ($row) {
-                    // Menampilkan status Lunas atau Belum Lunas
                     return $row->is_lunas ? 'Lunas' : 'Belum Lunas';
                 })
-                ->rawColumns(['aksi']) // Pastikan kolom aksi dapat dirender sebagai HTML
+                ->rawColumns(['aksi']) // Pastikan kolom aksi dirender sebagai HTML
                 ->make(true);
         }
 
-        // Jika bukan request Ajax, kembalikan tampilan view
         return view('user.history-hutang');
     }
 
@@ -49,27 +49,23 @@ class HistoryPiutangController extends Controller
      */
     public function detail($id)
     {
-        // Cari piutang berdasarkan ID dan pastikan itu milik user yang sedang login
         $piutang = Piutang::where('id', $id)->where('user_id', Auth::id())->first();
 
-        // Jika piutang tidak ditemukan, redirect ke history piutang
         if (!$piutang) {
             return redirect()->route('user.history-piutang')->with('error', 'Piutang tidak ditemukan atau tidak milik Anda.');
         }
 
-        // Ambil data pembayaran terkait dengan piutang menggunakan model PembayaranPiutang
         if (request()->ajax()) {
             $pembayarans = PembayaranPiutang::where('hutang_id', $piutang->id)->get();
 
             return DataTables::of($pembayarans)
                 ->addIndexColumn()
                 ->editColumn('jumlah_pembayaran', function ($row) {
-                    return number_format($row->jumlah_pembayaran, 0, ',', '.');
+                    return number_format($row->jumlah_bayar_pokok + $row->jumlah_bayar_bunga, 0, ',', '.');
                 })
                 ->make(true);
         }
 
-        // Kirim data detail piutang dan data pembayaran ke view
         return view('user.detail-piutang', compact('piutang'));
     }
 }

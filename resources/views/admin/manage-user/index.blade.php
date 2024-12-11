@@ -1,74 +1,99 @@
 @extends('layout.app')
 
 @section('content')
-<div class="page-header">
-    <div class="page-title">
-        <h3>Manage Users</h3>
+<div class="row" id="manage-users-row">
+    <div class="col-xl-12 col-lg-12 col-sm-12 layout-spacing">
+        <div class="widget-content widget-content-area br-6">
+            <div class="page-header">
+                <div class="page-title">
+                    <h3>Manage Users</h3>
+                </div>
+                <nav class="breadcrumb-one" aria-label="breadcrumb">
+                    <ol class="breadcrumb">
+                        <li class="breadcrumb-item"><a href="javascript:void(0);"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-home"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path><polyline points="9 22 9 12 15 12 15 22"></polyline></svg></a></li>
+                        <li class="breadcrumb-item active" aria-current="page"><span>Manage Users</span></li>
+                    </ol>
+                </nav>
+            </div>
+
+            <div class="mb-4 mt-4">
+                <button type="button" class="btn btn-primary mb-3" data-toggle="modal" data-target="#userModal" onclick="resetForm()">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-plus">
+                        <line x1="12" y1="5" x2="12" y2="19"></line>
+                        <line x1="5" y1="12" x2="19" y2="12"></line>
+                    </svg> Tambah User
+                </button>
+            <!-- Tombol import -->
+            <button type="button" class="btn btn-success mb-3" data-toggle="modal" data-target="#importModal">
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-upload">
+                    <polyline points="16 16 12 12 8 16"></polyline>
+                    <line x1="12" y1="12" x2="12" y2="21"></line>
+                    <path d="M20 16V8a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v8"></path>
+                </svg> Import Data
+            </button>
+<!-- Modal untuk Import -->
+<div class="modal fade" id="importModal" tabindex="-1" aria-labelledby="importModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="importModalLabel">Import Data</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <form action="{{ route('manage-user.import') }}" method="POST" enctype="multipart/form-data">
+                @csrf
+                <div class="modal-body">
+                    <div class="form-group">
+                        <label for="file">Pilih File</label>
+                        <input type="file" name="file" id="file" class="form-control" accept=".csv,.xlsx" required>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+                    <button type="submit" class="btn btn-primary">Import</button>
+                </div>
+            </form>
+        </div>
     </div>
-    <nav class="breadcrumb-one" aria-label="breadcrumb">
-        <ol class="breadcrumb">
-            <li class="breadcrumb-item">
-                <a href="javascript:void(0);">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-home">
-                        <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path>
-                        <polyline points="9 22 9 12 15 12 15 22"></polyline>
-                    </svg>
-                </a>
-            </li>
-            <li class="breadcrumb-item active" aria-current="page"><span>Manage Users</span></li>
-        </ol>
-    </nav>
 </div>
 
-<!-- Add User Button -->
-<button type="button" class="btn btn-primary mb-3" data-toggle="modal" data-target="#userModal" onclick="resetForm()">
-    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-plus">
-        <line x1="12" y1="5" x2="12" y2="19"></line>
-        <line x1="5" y1="12" x2="19" y2="12"></line>
-    </svg> Tambah User
-</button>
-
-<!-- Export PDF Button -->
-<a href="{{ route('manage-user.export.pdf') }}" class="btn btn-danger mb-3">
-    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-file-text">
-        <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
-        <polyline points="14 2 14 8 20 8"></polyline>
-        <line x1="16" y1="13" x2="8" y2="13"></line>
-        <line x1="16" y1="17" x2="8" y2="17"></line>
-        <polyline points="10 9 9 9 8 9"></polyline>
-    </svg> Export PDF
-</a>
-
 <!-- Users Table -->
-<table class="table table-bordered">
-    <thead>
-        <tr>
-            <th>Name</th>
-            <th>Email</th>
-            <th>Username</th>
-            <th>Phone</th>
-            <th>Address</th>
-            <th>Role</th>
-            <th>Actions</th>
-        </tr>
-    </thead>
-    <tbody>
-        @foreach ($users as $user)
-        <tr id="user-row-{{ $user->id }}">
-            <td>{{ $user->name }}</td>
-            <td>{{ $user->email }}</td>
-            <td>{{ $user->username }}</td>
-            <td>{{ $user->phone_number ?? '-' }}</td>
-            <td>{{ $user->address ?? '-' }}</td>
-            <td>{{ $user->roles->pluck('name')->first() ?? 'No Role' }}</td>
-            <td>
-                <button class="btn btn-warning btn-sm" onclick="editUser({{ $user }})">Edit</button>
-                <button class="btn btn-danger btn-sm" onclick="deleteUser('{{ $user->id }}')">Delete</button>
-            </td>
-        </tr>
-        @endforeach
-    </tbody>
-</table>
+<div class="table-responsive mb-4 mt-4">
+    <table id="userTable" class="table table-hover" style="width:100%">
+        <thead>
+            <tr>
+                <th>Name</th>
+                <th>Email</th>
+                <th>Username</th>
+                <th>Phone</th>
+                <th>Address</th>
+                <th>Role</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach ($users as $user)
+            <tr id="user-row-{{ $user->id }}">
+                <td>{{ $user->name }}</td>
+                <td>{{ $user->email }}</td>
+                <td>{{ $user->username }}</td>
+                <td>{{ $user->phone_number ?? '-' }}</td>
+                <td>{{ $user->address ?? '-' }}</td>
+                <td>{{ $user->roles->pluck('name')->first() ?? 'No Role' }}</td>
+                <td>
+                    <button class="btn btn-warning btn-sm" onclick="editUser({{ $user }})">
+                        <i class="fas fa-edit"></i>
+                    </button>
+                    <button class="btn btn-danger btn-sm" onclick="deleteUser('{{ $user->id }}')">
+                        <i class="fas fa-trash"></i>
+                    </button>
+                </td>
+            </tr>
+            @endforeach
+        </tbody>
+    </table>
+</div>
 
 <!-- User Modal -->
 <div class="modal fade" id="userModal" tabindex="-1" aria-labelledby="userModalLabel" aria-hidden="true">

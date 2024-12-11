@@ -11,6 +11,9 @@ use Illuminate\Support\Facades\Hash;
 use Yajra\DataTables\DataTables;
 use Spatie\Permission\Models\Role;
 use Barryvdh\DomPDF\Facade\Pdf;
+use Maatwebsite\Excel\Facades\Excel;
+use App\Imports\UsersImport;
+
 
 class UserController extends Controller
 {
@@ -23,16 +26,21 @@ class UserController extends Controller
         $this->exception = null;
     }
 
-    public function exportPDF()
+    public function import(Request $request)
     {
-    $users = User::with('roles')->get(); // Ambil data pengguna dengan relasi roles
+        $request->validate([
+            'file' => 'required|mimes:xlsx,csv', // Validate file input
+        ]);
 
-    // Load view dan kirim data ke PDF
-    $pdf = Pdf::loadView('eksport.users-pdf', compact('users'));
+        try {
+            // Import data using the UsersImport class
+            Excel::import(new UsersImport, $request->file('file'));
 
-    // Unduh file PDF
-    return $pdf->download('users.pdf');
-    }   
+            return redirect()->route('manage-user.index')->with('success', 'Users imported successfully!');
+        } catch (\Exception $e) {
+            return redirect()->back()->with('error', 'Failed to import users: ' . $e->getMessage());
+        }
+    }
 
     // Menampilkan view utama untuk manajemen user
     public function index()
