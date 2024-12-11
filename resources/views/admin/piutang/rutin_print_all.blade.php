@@ -52,7 +52,7 @@
                     </div>
                    
                         <p><strong>Username       : {{ $username }}</strong></p>
-                        <p><strong>Sisa Hutang : {{ number_format($sisaHutang, 2) }}</strong></p>
+                        <p><strong>Sisa Hutang : Rp.{{ number_format($sisaHutang, 2) }}</strong></p>
                     @endforeach
 
                     <div class="table-responsive mt-4">
