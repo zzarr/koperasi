@@ -3,10 +3,12 @@
 namespace App\Imports;
 
 use App\Models\User;
+use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Hash;
-use Maatwebsite\Excel\Concerns\ToModel;
+use Maatwebsite\Excel\Concerns\ToCollection;
+use Maatwebsite\Excel\Concerns\WithStartRow;
 
-class UsersImport implements ToModel
+class UsersImport implements ToCollection, WithStartRow
 {
     /**
      * Map each row from the file to the User model.
@@ -14,15 +16,25 @@ class UsersImport implements ToModel
      * @param array $row
      * @return \Illuminate\Database\Eloquent\Model|null
      */
-    public function model(array $row)
+
+    public function startRow(): int
     {
-        return new User([
-            'name' => $row[0],
-            'email' => $row[1],
-            'username' => $row[2],
-            'password' => Hash::make($row[3]), // Hash the password
-            'phone_number' => $row[4],
-            'address' => $row[5],
-        ]);
+        return 2;
+    }
+
+    public function collection(Collection $rows)
+    {
+        foreach ($rows as $row)
+        {
+            User::create([
+                'name' => $row[0],
+                'email' => $row[1],
+                'username' => $row[2],
+                'password' => Hash::make($row[3]), // Hash the password
+                'phone_number' => $row[4],
+                'address' => $row[5],
+                'registered_at' => now(),
+            ])->assignRole('user');
+        }
     }
 }

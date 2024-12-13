@@ -184,6 +184,7 @@
 
         // Inisialisasi DataTables
         let table = $("#datatable").DataTable({
+            order:[[0, 'desc']],
             processing: true,
             serverSide: true,
             ajax: "{{ route('admin.piutang.ajax') }}",

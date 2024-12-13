@@ -50,7 +50,7 @@ class MainPaymentController extends Controller
             $configPayment['main'] = ConfigPayment::where(['is_active' => 1, 'name' => 'main_payment'])->first();
             $mainPayment = MainPayment::updateOrCreate(
                 ['id' => $request->id,
-                
+
                     'user_id'   => $request->user_id,
                     'config_payment_id' => $configPayment['main']->id,
                     'amount'    => $request->amount,
@@ -102,27 +102,27 @@ class MainPaymentController extends Controller
     }
 
     public function dataTanggal($id){
-        $data = MainPayment::where('user_id', $id)->get();
+        $data = MainPayment::where('user_id', $id)->orderBy('created_at', 'ASC')->get();
 
         return response()->json($data);
-        
+
     }
 
     public function exportInvoice(Request $request)
     {
         $data = MainPayment::with('user')->where('paid_at', $request->tanggal)->first();
-    
+
         if (!$data) {
             return back()->with('error', 'Data tidak ditemukan untuk tanggal yang dipilih.');
         }
-    
+
         // Generate PDF
         $pdf = Pdf::loadView('admin.payment.main.invoice', compact('data'))
             ->setPaper('a4', 'landscape');
-    
+
         // Stream PDF ke browser untuk preview
         return $pdf->stream('Invoice_' . $data->id . '.pdf');
     }
-    
+
 
 }

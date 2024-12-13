@@ -12,14 +12,12 @@
             <li class="breadcrumb-item active" aria-current="page"><span>Manajemen Pembayaran Piutang Khusus</span></li>
         </ol>
     </nav>
-    
+
 </div>
 
 <div class="d-flex justify-content-start mb-3">
-<a href="/admin/piutang" class="btn btn-secondary">Kembali</a></div>
-
-<div class="d-flex justify-content-start mb-3">
-    <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#exampleModal">
+    <a href="/admin/piutang" class="btn btn-secondary">Kembali</a>
+    <button type="button" class="btn btn-primary mx-2" data-toggle="modal" data-target="#exampleModal">
         <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
             stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
             class="feather feather-plus">
@@ -27,6 +25,10 @@
             <line x1="5" y1="12" x2="19" y2="12"></line>
         </svg> Tambah Data
     </button>
+    <button class="btn btn-primary" onclick="window.open('/admin/piutang/pembayaran/khusus/print-all/{{ $piutang->id }}', '_blank')">
+        <i class="fa fa-print"></i> Cetak Semua Riwayat Pembayaran
+    </button>
+</div>
 
     <div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
           aria-hidden="true">
@@ -67,8 +69,8 @@
                             <button type="submit" class="btn btn-primary">Simpan</button>
                         </div>
                     </form>
-                    
-                    
+
+
 
                 </div>
             </div>
@@ -77,9 +79,9 @@
 <div class="row" id="cancel-row">
     <div class="col-xl-12 col-lg-12 col-sm-12 layout-spacing">
         <div class="widget-content widget-content-area br-6">
-           
+
             <div class="rp-box  float-right my-5">
-            <h5>   Sisa Hutang = Rp {{ number_format($sisa, 2, ',', '.') }} 
+            <h5>   Sisa Hutang = Rp {{ number_format($sisa, 2, ',', '.') }}
                 <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24"
                 viewBox="0 0 24 24" fill="none" stroke="currentColor"
                 stroke-width="2" stroke-linecap="round"
@@ -143,7 +145,7 @@ $(document).ready(function() {
                 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
             }
         });
-        
+
 
         // Inisialisasi DataTables
         let table = $("#datatable").DataTable({
@@ -168,9 +170,9 @@ $(document).ready(function() {
                     render: function(data, type, full, meta) {
                         let btn = `
                             <button type="button" class="btn btn-sm btn-outline-primary btn-print" data-id="${full.id}">
-                                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" 
-                                    viewBox="0 0 24 24" fill="none" stroke="currentColor" 
-                                    stroke-width="2" stroke-linecap="round" 
+                                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24"
+                                    viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                    stroke-width="2" stroke-linecap="round"
                                     stroke-linejoin="round" class="feather feather-printer">
                                     <polyline points="6 9 6 2 18 2 18 9"></polyline>
                                     <path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"></path>
@@ -183,22 +185,22 @@ $(document).ready(function() {
                 },
             ],
             columns: [
-                { data: 'id' },          
-                { data: 'pembayaran_ke' },     
-                { data: 'tanggal_pembayaran' },  
+                { data: 'id' },
+                { data: 'pembayaran_ke' },
+                { data: 'tanggal_pembayaran' },
                 {
                     data: 'jumlah_bayar_pokok',
                     render: function (data) {
                         return formatRupiah(data);
                     }
-                },  
+                },
                 {
                     data: 'jumlah_bayar_bunga',
                     render: function (data) {
                         return formatRupiah(data);
                     }
-                },   
-                { data: 'catatan' }, 
+                },
+                { data: 'catatan' },
                 { data: 'id' },            // Kolom aksi
             ],
             language: {
@@ -291,7 +293,7 @@ $(document).ready(function() {
     function formatInputRupiah(input) {
     // Hilangkan karakter non-digit
     let angka = input.value.replace(/[^,\d]/g, '');
-    
+
     if (!angka) {
         input.value = ''; // Kosongkan jika tidak ada angka
         return;

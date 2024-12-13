@@ -31,6 +31,9 @@
                     <path d="M20 16V8a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v8"></path>
                 </svg> Import Data
             </button>
+            <a href="{{ asset('template-import-user.xlsx') }}" class="btn btn-warning mb-3">
+                <i class="fa fa-download"></i> Download Template Import
+            </a>
 <!-- Modal untuk Import -->
 <div class="modal fade" id="importModal" tabindex="-1" aria-labelledby="importModalLabel" aria-hidden="true">
     <div class="modal-dialog">

@@ -220,9 +220,16 @@
                         searchable: false,
                         render: function(data, type, full, meta) {
                             return `
-                    <button type="button" class="btn btn-outline-primary btn-sm btn-view" data-id="${full.id}" id="btn-view">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-eye"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path><circle cx="12" cy="12" r="3"></circle></svg>
-                    </button>
+                        <button type="button" class="btn btn-outline-primary btn-sm btn-view" data-id="${full.id}" id="btn-view">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24"
+                                 viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                 stroke-width="2" stroke-linecap="round"
+                                 stroke-linejoin="round" class="feather feather-printer">
+                                 <polyline points="6 9 6 2 18 2 18 9"></polyline>
+                                 <path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"></path>
+                                 <rect x="6" y="14" width="12" height="8"></rect>
+                            </svg>
+                        </button>
                 `;
                         },
                     },
@@ -317,10 +324,12 @@
 
                         // Tambahkan opsi baru berdasarkan properti "paid_at" dari data
                         if (Array.isArray(data)) {
+                            let i = 1;
                             data.forEach(payment => {
                                 select.append(
-                                    `<option value="${payment.paid_at}">${payment.paid_at}</option>`
+                                    `<option value="${payment.paid_at}">Bulan ke-${i}</option>`
                                 );
+                                i++;
                             });
                         } else {
                             alert('Data yang diterima tidak valid.');

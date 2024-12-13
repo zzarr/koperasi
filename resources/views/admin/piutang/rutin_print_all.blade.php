@@ -3,31 +3,30 @@
     <head>
         <meta charset="UTF-8" />
         <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-        @foreach ($usernames as $username)
-        <title>Cetak Seluruh Data Pembayaran Rutin {{ $username }}</title>
+        <title>Cetak Seluruh Data Pembayaran Rutin {{ $pembayaran[0]->piutang->user->name }}</title>
         <link href="{{ asset('templates/assets/css/bootstrap.min.css') }}" rel="stylesheet" />
         <style>
             body {
                 font-family: Arial, sans-serif;
             }
-    
+
             .invoice-head {
                 border-bottom: 1px solid #ddd;
                 margin-bottom: 20px;
             }
-    
+
             .table {
                 width: 100%;
                 border-collapse: collapse;
             }
-    
+
             .table th,
             .table td {
                 border: 1px solid #ddd;
                 padding: 8px;
                 text-align: left;
             }
-    
+
             .table th {
                 background-color: #f8f9fa;
             }
@@ -38,7 +37,7 @@
         <div class="row">
             <div class="col-lg-10 mx-auto">
                 <div class="card">
-                    
+
 
                     <div class="card-body invoice-head">
                         <div class="row">
@@ -50,10 +49,11 @@
                             </div>
                         </div>
                     </div>
-                   
-                        <p><strong>Username       : {{ $username }}</strong></p>
-                        <p><strong>Sisa Hutang : Rp.{{ number_format($sisaHutang, 2) }}</strong></p>
-                    @endforeach
+
+                    <p><strong>Nama       : {{ $pembayaran[0]->piutang->user->name }}</strong></p>
+                    <p><strong>Total Hutang : Rp.{{ number_format($totalHutang, 2) }}</strong></p>
+                    <p><strong>Total Dibayar : Rp.{{ number_format($totalBayar, 2) }}</strong></p>
+                    <p><strong>Sisa Hutang : Rp.{{ number_format($sisaHutang, 2) }}</strong></p>
 
                     <div class="table-responsive mt-4">
                         <table class="table table-bordered">

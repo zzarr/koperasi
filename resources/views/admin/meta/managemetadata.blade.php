@@ -46,12 +46,12 @@
                                     placeholder="" value="{{ $monthly->paid_off_amount ?? '' }}" required>
                             </div>
                             <div class="form-group">
-                                <label>Hutang Rutin</label>
+                                <label>Persentase Bunga Hutang Rutin (%)</label>
                                 <input type="text" class="form-control" id="dept_routine" name="dept_routine"
                                     value="{{ $routine->paid_off_amount ?? '' }}" required>
                             </div>
                             <div class="form-group">
-                                <label>Hutang Khusus</label>
+                                <label>Persentase Bunga Hutang Khusus (%)</label>
                                 <input type="text" class="form-control" id="dept_special" name="dept_special"
                                     value="{{ $special->paid_off_amount ?? '' }}" required>
                             </div>

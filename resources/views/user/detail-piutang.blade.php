@@ -60,7 +60,7 @@
             ajax: "{{ route('user.history-piutang.detail', $piutang->id) }}",
             columns: [
                 { data: 'DT_RowIndex', name: 'DT_RowIndex', orderable: false, searchable: false },
-                { data: 'pembayaran ke-', name: 'pembayaran_ke' },
+                { data: 'pembayaran_ke', name: 'pembayaran_ke' },
                 { data: 'jumlah_bayar_pokok', name: 'jumlah_bayar_pokok' },
                 { data: 'jumlah_bayar_bunga', name: 'jumlah_bayar_bunga' },
                 { data: 'tanggal_pembayaran', name: 'tanggal_pembayaran' }

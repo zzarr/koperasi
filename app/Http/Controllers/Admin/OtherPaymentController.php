@@ -155,7 +155,7 @@ class OtherPaymentController extends Controller
     }
 
     public function dataTanggal($id){
-        $data = OtherPayment::where('user_id', $id)->get();
+        $data = OtherPayment::where('user_id', $id)->where('payment_year', date('Y'))->orderBy('payment_month', 'ASC')->get();
         return response()->json($data);
 
     }

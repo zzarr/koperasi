@@ -38,6 +38,7 @@ class UserController extends Controller
 
             return redirect()->route('manage-user.index')->with('success', 'Users imported successfully!');
         } catch (\Exception $e) {
+            dd($e->getMessage());
             return redirect()->back()->with('error', 'Failed to import users: ' . $e->getMessage());
         }
     }

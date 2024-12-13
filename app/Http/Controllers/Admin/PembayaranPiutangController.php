@@ -14,7 +14,7 @@ class PembayaranPiutangController extends Controller
 
     public function showRutinDetail($id)
     {
-        $piutang = Piutang::findOrFail($id); 
+        $piutang = Piutang::findOrFail($id);
         $meta = ConfigPayment::where('name', 'dept_routine')->first();
         if ($piutang->jenis_hutang !== 'rutin') {
             abort(404);
@@ -92,67 +92,62 @@ class PembayaranPiutangController extends Controller
         $pembayaran = PembayaranPiutang::with('piutang.user') // Memuat relasi piutang dan user
             ->where('hutang_id', $hutang_id)
             ->get();
-    
+
         if ($pembayaran->isEmpty()) {
             return abort(404, 'Data tidak ditemukan.');
         }
-    
-        // Menyaring hanya username yang unik
-        $usernames = $pembayaran->map(function ($item) {
-            return $item->piutang->user->username ?? 'Data tidak ditemukan';
-        })->unique(); // Menggunakan unique untuk menghindari duplikasi
-        $totalHutang = $pembayaran->first()->piutang->jumlah_hutang; // Mengambil jumlah hutang dari data piutang pertama
 
-        // Menghitung total pembayaran (jumlah bayar pokok + jumlah bayar bunga)
-        $totalPembayaran = $pembayaran->sum(function ($item) {
-            return $item->jumlah_bayar_pokok + $item->jumlah_bayar_bunga;
-        });
-    
+        // Menyaring hanya username yang unik
+        $bayarPokok = $pembayaran->sum('jumlah_bayar_pokok');
+        $bayarBunga = $pembayaran->sum('jumlah_bayar_bunga');
+
+        $sisaHutang = Piutang::find($hutang_id)->sisa;
+        $totalPembayaran = $bayarBunga + $bayarPokok;
+        $totalHutang = $sisaHutang+$totalPembayaran; // Mengambil jumlah hutang dari data piutang pertama
+
         // Menghitung sisa hutang
-        $sisaHutang = $totalHutang - $totalPembayaran;
-    
+
         return view('admin.piutang.rutin_print_all', [
             'pembayaran' => $pembayaran,
-            'usernames' => $usernames, // Hanya kirim username unik
+            'usernames' => $pembayaran[0]->piutang->user->name, // Hanya kirim username unik
             'hutang_id' => $hutang_id,
             'sisaHutang' => $sisaHutang,
+            'totalHutang' => $totalHutang,
+            'totalBayar' => $totalPembayaran,
         ]);
     }
-    
+
     public function printAllKhusus($hutang_id)
     {
         // Mengambil semua pembayaran yang sesuai dengan hutang_id
+        // Mengambil semua pembayaran yang sesuai dengan hutang_id
         $pembayaran = PembayaranPiutang::with('piutang.user') // Memuat relasi piutang dan user
-            ->where('hutang_id', $hutang_id)
+        ->where('hutang_id', $hutang_id)
             ->get();
-    
+
         if ($pembayaran->isEmpty()) {
             return abort(404, 'Data tidak ditemukan.');
         }
-    
-        // Menyaring hanya username yang unik
-        $usernames = $pembayaran->map(function ($item) {
-            return $item->piutang->user->username ?? 'Data tidak ditemukan';
-        })->unique(); // Menggunakan unique untuk menghindari duplikasi
-        $totalHutang = $pembayaran->first()->piutang->jumlah_hutang; // Mengambil jumlah hutang dari data piutang pertama
 
-        // Menghitung total pembayaran (jumlah bayar pokok + jumlah bayar bunga)
-        $totalPembayaran = $pembayaran->sum(function ($item) {
-            return $item->jumlah_bayar_pokok + $item->jumlah_bayar_bunga;
-        });
-    
-        // Menghitung sisa hutang
-        $sisaHutang = $totalHutang - $totalPembayaran;
-    
+        // Menyaring hanya username yang unik
+        $bayarPokok = $pembayaran->sum('jumlah_bayar_pokok');
+        $bayarBunga = $pembayaran->sum('jumlah_bayar_bunga');
+
+        $sisaHutang = Piutang::find($hutang_id)->sisa;
+        $totalPembayaran = $bayarBunga + $bayarPokok;
+        $totalHutang = $sisaHutang+$totalPembayaran; // Mengambil jumlah hutang dari data piutang pertama
+
         return view('admin.piutang.khusus_print_all', [
             'pembayaran' => $pembayaran,
-            'usernames' => $usernames, // Hanya kirim username unik
+            'usernames' => $pembayaran[0]->piutang->user->name, // Hanya kirim username unik
             'hutang_id' => $hutang_id,
             'sisaHutang' => $sisaHutang,
+            'totalHutang' => $totalHutang,
+            'totalBayar' => $totalPembayaran,
         ]);
-    } 
-    
-    
+    }
+
+
 
 
     public function getPiutang($id)

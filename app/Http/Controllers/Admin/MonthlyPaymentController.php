@@ -153,7 +153,7 @@ class MonthlyPaymentController extends Controller
 
     public function dataTanggal($id)
     {
-        $data = MonthlyPayment::where('user_id', $id)->get();
+        $data = MonthlyPayment::where('user_id', $id)->where('payment_year', date('Y'))->orderBy('payment_month', 'ASC')->get();
 
         return response()->json($data);
     }
