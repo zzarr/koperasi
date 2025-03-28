@@ -9,6 +9,7 @@ use App\Models\YearlyLog;
 use App\Models\OtherPayment;
 use App\Models\MainPayment;
 use App\Models\MonthlyPayment;
+use Barryvdh\DomPDF\Facade\Pdf;
 use Yajra\DataTables\Facades\DataTables;
 use Illuminate\Support\Facades\DB;
 use App\Http\Controllers\Controller;
@@ -19,8 +20,8 @@ class PaymentHistoryController extends Controller
 {
     public function main() {
         return view('user.history.mainPayment');
-        
-        
+
+
     }
 
     public function mainDatatable(){
@@ -32,9 +33,25 @@ class PaymentHistoryController extends Controller
         ->make(true);;
     }
 
+    public function mainPrint()
+    {
+        $data = MainPayment::with('user')->where('user_id', Auth::user()->id)->get();
+
+        if (!$data) {
+            return back()->with('error', 'Data tidak ditemukan!');
+        }
+
+        // Generate PDF
+        $pdf = Pdf::loadView('admin.payment.main.invoiceAll', compact('data'))
+            ->setPaper('a4', 'landscape');
+
+        // Stream PDF ke browser untuk preview
+        return $pdf->stream('Invoice_' . $data[0]->id . '.pdf');
+    }
+
     public function monthly() {
         return view('user.history.monthlyPayment');
-        
+
     }
 
     public function monthlyDatatable(){
@@ -44,14 +61,30 @@ class PaymentHistoryController extends Controller
             return $item->amount > 0; // Hanya data dengan amount > 0
         });
 
-        
+
 
         return Datatables::of($data)->make();
     }
 
+    public function monthlyPrint()
+    {
+        $data = MonthlyPayment::with('user')->where('user_id', Auth::user()->id)->where('paid_at', '!=', null)->get();
+
+        if (!$data) {
+            return back()->with('error', 'Data tidak ditemukan!');
+        }
+
+        // Generate PDF
+        $pdf = Pdf::loadView('admin.payment.monthly.invoiceAll', compact('data'))
+            ->setPaper('a4', 'landscape');
+
+        // Stream PDF ke browser untuk preview
+        return $pdf->stream('Invoice_' . $data[0]->id . '.pdf');
+    }
+
     public function other() {
         return view('user.history.otherPayment');
-        
+
     }
 
     public function otherDatatable(){
@@ -60,5 +93,21 @@ class PaymentHistoryController extends Controller
         });
 
         return Datatables::of($data)->make();
+    }
+
+    public function otherPrint()
+    {
+        $data = OtherPayment::with('user')->where('user_id', Auth::user()->id)->where('paid_at', '!=', null)->get();
+
+        if (!$data) {
+            return back()->with('error', 'Data tidak ditemukan!');
+        }
+
+        // Generate PDF
+        $pdf = Pdf::loadView('admin.payment.other.invoiceAll', compact('data'))
+            ->setPaper('a4', 'landscape');
+
+        // Stream PDF ke browser untuk preview
+        return $pdf->stream('Invoice_' . $data[0]->id . '.pdf');
     }
 }

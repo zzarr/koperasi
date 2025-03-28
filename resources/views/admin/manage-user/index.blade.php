@@ -154,7 +154,12 @@
     </div>
 </div>
 
+@endsection
+
+@push('script')
 <script>
+    $('#userTable').DataTable();
+    
     function resetForm() {
         document.getElementById('userForm').reset();
         document.getElementById('userForm').action = '{{ route("manage-user.store") }}';
@@ -198,4 +203,4 @@
         }
     }
 </script>
-@endsection
+@endpush

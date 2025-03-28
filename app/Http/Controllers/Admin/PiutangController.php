@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
+use App\Models\PembayaranPiutang;
 use Yajra\DataTables\Facades\DataTables;
 use App\Models\Piutang;
 use App\Models\User;
@@ -65,16 +66,31 @@ class PiutangController extends Controller
             if (!$configPayment) {
                 return response()->json(['message' => 'Jenis hutang tidak ditemukan dalam konfigurasi pembayaran'], 400);
             }
-            $sisa = $validatedData['jumlah_hutang']  * ($configPayment->paid_off_amount / 100) * $validatedData['jumlah_bulan'] + $validatedData['jumlah_hutang'];
 
-            Piutang::create([
-                'user_id' => $validatedData['nama'],
-                'jenis_hutang' => $validatedData['jenis_hutang'],
-                'jumlah_bulan' => $validatedData['jumlah_bulan'],
-                'jumlah_hutang' => $validatedData['jumlah_hutang'],
-                'sisa' => $sisa,
-                'is_lunas' => 0,
-            ]);
+            $isAnyHutangAvailable = Piutang::where('user_id', $validatedData['nama'])->where('jenis_hutang', $validatedData['jenis_hutang'])->where('is_lunas', 0)->first();
+            if($isAnyHutangAvailable){
+                $sisaPokok = $isAnyHutangAvailable->jumlah_hutang - PembayaranPiutang::where('hutang_id', $isAnyHutangAvailable->id)->sum('jumlah_bayar_pokok');
+                $sisa = ($validatedData['jumlah_hutang'] + $sisaPokok)  * ($configPayment->paid_off_amount / 100) * $validatedData['jumlah_bulan'] + ($validatedData['jumlah_hutang'] + $sisaPokok);
+
+                $isAnyHutangAvailable->update([
+                    'jumlah_hutang' => $validatedData['jumlah_hutang'] + $sisaPokok,
+                    'jumlah_bulan' => $validatedData['jumlah_bulan'],
+                    'sisa' => $sisa,
+                ]);
+                
+                PembayaranPiutang::where('hutang_id', $isAnyHutangAvailable->id)->delete();
+            }else{
+                $sisa = $validatedData['jumlah_hutang']  * ($configPayment->paid_off_amount / 100) * $validatedData['jumlah_bulan'] + $validatedData['jumlah_hutang'];
+
+                Piutang::create([
+                    'user_id' => $validatedData['nama'],
+                    'jenis_hutang' => $validatedData['jenis_hutang'],
+                    'jumlah_bulan' => $validatedData['jumlah_bulan'],
+                    'jumlah_hutang' => $validatedData['jumlah_hutang'],
+                    'sisa' => $sisa,
+                    'is_lunas' => 0,
+                ]);
+            }
 
             return response()->json(['message' => 'Data berhasil disimpan'], 200);
         } catch (\Exception $e) {

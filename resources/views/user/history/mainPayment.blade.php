@@ -7,6 +7,7 @@
         <div class="page-title">
             <h3>History Simpanan Pokok</h3>
         </div>
+
         <nav class="breadcrumb-one" aria-label="breadcrumb">
             <ol class="breadcrumb">
                 <li class="breadcrumb-item"><a href="javascript:void(0);"><svg xmlns="http://www.w3.org/2000/svg" width="24"
@@ -20,6 +21,11 @@
 
             </ol>
         </nav>
+    </div>
+    <div class="d-flex justify-content-start mb-3">
+        <button class="btn btn-primary" onclick="window.open(`{{ route('user.history.main.print') }}`)">
+            <i class="fa fa-print"></i> Cetak Semua Riwayat Pembayaran
+        </button>
     </div>
 
     <div class="row" id="cancel-row">
@@ -43,13 +49,6 @@
                         <tbody>
 
                         </tbody>
-                        <tfoot>
-                            <tr>
-                                <th>No</th>
-                                <th>Jumlah pembayaran</th>
-                                <th>Tanggal</th>
-                            </tr>
-                        </tfoot>
                     </table>
                 </div>
             </div> <!-- Penutup div.widget-content -->

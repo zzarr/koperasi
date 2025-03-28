@@ -21,6 +21,11 @@
             </ol>
         </nav>
     </div>
+    <div class="d-flex justify-content-start mb-3">
+        <button class="btn btn-primary" onclick="window.open(`{{ route('user.history.monthly.print') }}`)">
+            <i class="fa fa-print"></i> Cetak Semua Riwayat Pembayaran
+        </button>
+    </div>
 
     <div class="row" id="cancel-row">
         <div class="col-12 layout-spacing">
@@ -44,14 +49,6 @@
                         <tbody>
 
                         </tbody>
-                        <tfoot>
-                            <tr>
-
-                                <th>pembayaran ke</th>
-                                <th>Jumlah pembayaran</th>
-                                <th>Tanggal</th>
-                            </tr>
-                        </tfoot>
                     </table>
                 </div>
             </div> <!-- Penutup div.widget-content -->

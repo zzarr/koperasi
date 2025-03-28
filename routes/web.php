@@ -143,10 +143,15 @@ Route::middleware(['auth', 'verified', 'role:user'])->group(function () {
         Route::group(['prefix' => 'history', 'as' => 'history.'], function () {
             Route::get('/main', [PaymentHistoryController::class, 'main'])->name('main');
             Route::get('/main/ajax', [PaymentHistoryController::class, 'mainDatatable'])->name('main.ajax');
+            Route::get('/main/print', [PaymentHistoryController::class, 'mainPrint'])->name('main.print');
+
             Route::get('/monthly', [PaymentHistoryController::class, 'monthly'])->name('monthly');
             Route::get('/monthly/ajax', [PaymentHistoryController::class, 'monthlyDatatable'])->name('monthly.ajax');
+            Route::get('/monthly/print', [PaymentHistoryController::class, 'monthlyPrint'])->name('monthly.print');
+
             Route::get('/other', [PaymentHistoryController::class, 'other'])->name('other');
             Route::get('/other/ajax', [PaymentHistoryController::class, 'otherDatatable'])->name('other.ajax');
+            Route::get('/other/print', [PaymentHistoryController::class, 'otherPrint'])->name('other.print');
         });
         //end route history pembayaran
 
@@ -165,4 +170,5 @@ Route::post('/manage-user/import', [UserController::class, 'import'])->name('man
 Route::prefix('user')->middleware('auth')->group(function () {
     Route::get('/history-piutang', [HistoryPiutangController::class, 'index'])->name('user.history-piutang');
     Route::get('/history-piutang/{id}', [HistoryPiutangController::class, 'detail'])->name('user.history-piutang.detail');
+    Route::get('/history-piutang/print/{hutang_id}', [HistoryPiutangController::class, 'printAll'])->name('user.history-piutang.print');
 });
