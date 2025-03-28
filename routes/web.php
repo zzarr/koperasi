@@ -34,7 +34,14 @@ Route::get('/logout', [AuthController::class, 'logout'])->name('logout')->middle
 
 // Admin Routes
 Route::middleware(['auth', 'verified', 'role:admin'])->group(function () {
+
+    
     Route::group(['prefix' => 'admin', 'as' => 'admin.'], function () {
+        Route::group(['prefix' => 'report', 'as' => 'report.'], function () {
+            Route::get('/', [MonthlyPaymentController::class, 'indexReport'])->name('index');
+            Route::post('/exportInvoice', [MonthlyPaymentController::class, 'exportInvoiceReport'])->name('export');
+        });
+        
         // Payment Routes
         Route::group(['prefix' => 'payment', 'as' => 'payment.'], function () {
             Route::group(['prefix' => 'main', 'as' => 'main.'], function () {

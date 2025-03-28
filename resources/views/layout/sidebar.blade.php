@@ -76,6 +76,14 @@
                     </ul>
                 </li>
                 <li class="menu">
+                    <a href="{{ route('admin.report.index') }}" aria-expanded="false" class="dropdown-toggle">
+                        <div class="">
+                            <i data-feather="excel"></i>
+                            <span> Laporan Bulanan</span>
+                        </div>
+                    </a>
+                </li>
+                <li class="menu">
                     <a href="{{ route('admin.piutang.index') }}" aria-expanded="false" class="dropdown-toggle">
                         <div class="">
                             <i data-feather="clipboard"></i>

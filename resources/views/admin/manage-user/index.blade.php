@@ -66,12 +66,11 @@
     <table id="userTable" class="table table-hover" style="width:100%">
         <thead>
             <tr>
-                <th>Name</th>
+                <th>Nama</th>
                 <th>Email</th>
                 <th>Username</th>
-                <th>Phone</th>
-                <th>Address</th>
-                <th>Role</th>
+                <th>Nomor HP</th>
+                <th>Jenis Anggota</th>
                 <th>Actions</th>
             </tr>
         </thead>
@@ -82,8 +81,7 @@
                 <td>{{ $user->email }}</td>
                 <td>{{ $user->username }}</td>
                 <td>{{ $user->phone_number ?? '-' }}</td>
-                <td>{{ $user->address ?? '-' }}</td>
-                <td>{{ $user->roles->pluck('name')->first() ?? 'No Role' }}</td>
+                <td>{{ Str::title($user->address) }}</td>
                 <td>
                     <button class="btn btn-warning btn-sm" onclick="editUser({{ $user }})">
                         <i class="fas fa-edit"></i>
@@ -113,7 +111,7 @@
                 <input type="hidden" name="id" id="userId">
                 <div class="modal-body">
                     <div class="form-group">
-                        <label for="name">Name</label>
+                        <label for="name">Nama</label>
                         <input type="text" name="name" id="name" class="form-control" required>
                     </div>
                     <div class="form-group">
@@ -125,20 +123,20 @@
                         <input type="text" name="username" id="username" class="form-control" required>
                     </div>
                     <div class="form-group">
-                        <label for="phone_number">Phone Number</label>
+                        <label for="phone_number">Nomor HP</label>
                         <input type="text" name="phone_number" id="phone_number" class="form-control" required>
                     </div>
                     <div class="form-group">
-                        <label for="address">Address</label>
-                        <textarea name="address" id="address" class="form-control" required></textarea>
-                    </div>
-                    <div class="form-group">
-                        <label for="role">Role</label>
-                        <select name="role_id" id="role" class="form-control" required>
-                            @foreach ($roles as $role)
-                            <option value="{{ $role->id }}">{{ $role->name }}</option>
-                            @endforeach
+                        <label for="role">Jenis Anggota</label>
+                        <select name="address" id="address" class="form-control" required>
+                            <option value="asn">ASN</option>
+                            <option value="tu">TU</option>
+                            <option value="non-asn">Non-ASN</option>
                         </select>
+                    </div>
+                    <div class="form-group d-none">
+                        <label for="role">Role</label>
+                        <input type="hidden" name="role_id" id="role" value="{{ $roles[0]->id }}">
                     </div>
                     <div class="form-group">
                         <label for="password">Password</label>

@@ -28,44 +28,90 @@
 
         <!-- Main content -->
 
-        <div class="row" id="cancel-row">
-            <div class="col-12 layout-spacing">
-                <div class="widget-content widget-content-area br-6">
-                    <form id="meta" action="{{ route('admin.metadata.manage_metadata.store') }}" method="POST">
+        <form id="meta" action="{{ route('admin.metadata.manage_metadata.store') }}" method="POST">
+            <div class="row" id="cancel-row">
+                <div class="col-6 layout-spacing">
+                    <div class="widget-content widget-content-area br-6">
                         @csrf
                         <input type="hidden" id="metaId" name="id">
                         <div class="modal-body">
                             <div class="form-group">
-                                <label>Total Angsuran Pokok</label>
-                                <input type="text" class="form-control" id="main_payment" name="main_payment"
-                                    value="{{ $main->paid_off_amount ?? '' }}" required>
+                                <label>Nama Aplikasi</label>
+                                <input type="text" class="form-control" id="app_name" name="app_name"
+                                    value="{{ $app->where('name', 'app_app_name')->first()->paid_off_amount ?? '' }}" required>
                             </div>
                             <div class="form-group">
-                                <label>Total Angsuran Wajib</label>
-                                <input type="text" class="form-control" id="monthly_payment" name="monthly_payment"
-                                    placeholder="" value="{{ $monthly->paid_off_amount ?? '' }}" required>
+                                <label>Nama Instansi</label>
+                                <input type="text" class="form-control" id="instansi" name="instansi"
+                                    placeholder="" value="{{ $app->where('name', 'app_instansi')->first()->paid_off_amount ?? '' }}" required>
                             </div>
                             <div class="form-group">
-                                <label>Persentase Bunga Hutang Rutin (%)</label>
-                                <input type="text" class="form-control" id="dept_routine" name="dept_routine"
-                                    value="{{ $routine->paid_off_amount ?? '' }}" required>
+                                <label>Wilayah Titi Mangsa</label>
+                                <input type="text" class="form-control" id="location" name="location"
+                                    placeholder="" value="{{ $app->where('name', 'app_location')->first()->paid_off_amount ?? '' }}" required>
                             </div>
                             <div class="form-group">
-                                <label>Persentase Bunga Hutang Khusus (%)</label>
-                                <input type="text" class="form-control" id="dept_special" name="dept_special"
-                                    value="{{ $special->paid_off_amount ?? '' }}" required>
+                                <label>Nama Ketua Koperasi</label>
+                                <input type="text" class="form-control" id="ketua" name="ketua"
+                                    value="{{ $app->where('name', 'app_ketua')->first()->paid_off_amount ?? '' }}" required>
+                            </div>
+                            <div class="form-group">
+                                <label>Nama Bendahara</label>
+                                <input type="text" class="form-control" id="bendahara" name="bendahara"
+                                    value="{{ $app->where('name', 'app_bendahara')->first()->paid_off_amount ?? '' }}" required>
                             </div>
                         </div>
 
                         <button type="button" class="btn btn-secondary" data-dismiss="modal">Batal</button>
                         <button type="submit" class="btn btn-primary">Simpan Perubahan</button>
 
-                    </form>
+                    </div>
+                </div>
+            
+                <div class="col-6 layout-spacing">
+                    <div class="widget-content widget-content-area br-6">
+                        <div class="modal-body">
+                            <div class="form-group">
+                                <label>Total Angsuran Pokok</label>
+                                <input type="text" class="form-control" id="main_payment" name="main_payment"
+                                value="{{ $main->paid_off_amount ?? '' }}" required>
+                            </div>
+                            <div class="form-group">
+                                <label>Total Angsuran Wajib ASN</label>
+                                <input type="text" class="form-control" id="monthly_payment_asn" name="monthly_payment_asn"
+                                placeholder="" value="{{ $monthlyAsn->paid_off_amount ?? '' }}" required>
+                            </div>
+                            <div class="form-group">
+                                <label>Total Angsuran Wajib TU</label>
+                                <input type="text" class="form-control" id="monthly_payment_tu" name="monthly_payment_tu"
+                                placeholder="" value="{{ $monthlyTu->paid_off_amount ?? '' }}" required>
+                            </div>
+                            <div class="form-group">
+                                <label>Total Angsuran Wajib Non-ASN</label>
+                                <input type="text" class="form-control" id="monthly_payment" name="monthly_payment"
+                                placeholder="" value="{{ $monthly->paid_off_amount ?? '' }}" required>
+                            </div>
+                            <div class="form-group">
+                                <label>Persentase Jasa Hutang Rutin (%)</label>
+                                <input type="text" class="form-control" id="dept_routine" name="dept_routine"
+                                value="{{ $routine->paid_off_amount ?? '' }}" required>
+                            </div>
+                            <div class="form-group">
+                                <label>Persentase Jasa Hutang Khusus (%)</label>
+                                <input type="text" class="form-control" id="dept_special" name="dept_special"
+                                value="{{ $special->paid_off_amount ?? '' }}" required>
+                            </div>
+                        </div>
+                        
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Batal</button>
+                        <button type="submit" class="btn btn-primary">Simpan Perubahan</button>
+                        
+                    </div>
                 </div>
             </div>
-        </div>
-
-        <!-- /.content -->
+        </form>
+            
+            <!-- /.content -->
     </div>
 
     <!-- /.content-wrapper -->

@@ -69,7 +69,7 @@
                                         <th>Tanggal Pembayaran</th>
                                         <th>Catatan</th>
                                         <th class="text-end">Nominal Bayar Pokok</th>
-                                        <th class="text-end">Nominal Bayar Bunga</th>
+                                        <th class="text-end">Nominal Bayar Jasa</th>
                                     </tr>
                                 </thead>
                                 <tbody>

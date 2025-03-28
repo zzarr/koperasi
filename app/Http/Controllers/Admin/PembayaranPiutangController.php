@@ -16,9 +16,9 @@ class PembayaranPiutangController extends Controller
     {
         $piutang = Piutang::findOrFail($id);
         $meta = ConfigPayment::where('name', 'dept_routine')->first();
-        if ($piutang->jenis_hutang !== 'rutin') {
-            abort(404);
-        }
+        // if ($piutang->jenis_hutang !== 'rutin') {
+        //     abort(404);
+        // }
         $sisaHutang = Piutang::where('id', $id)->value('sisa');
 
         return view('admin.piutang.rutin_detail', [
@@ -32,14 +32,16 @@ class PembayaranPiutangController extends Controller
     public function showKhususDetail($id)
     {
         $piutang = Piutang::findOrFail($id);
-        if ($piutang->jenis_hutang !== 'khusus') {
-            abort(404);
-        }
+        $meta = ConfigPayment::where('name', 'dept_special')->first();
+        // if ($piutang->jenis_hutang !== 'khusus') {
+        //     abort(404);
+        // }
         $sisaHutang = Piutang::where('id', $id)->value('sisa');
         return view('admin.piutang.khusus_detail', [
             'piutang' => $piutang,
             'hutang_id' => $piutang->id,
-            'sisa' => $sisaHutang
+            'sisa' => $sisaHutang,
+            'nominal'   => ($piutang->jumlah_hutang * $meta->paid_off_amount / 100)
         ]);
     }
 
@@ -48,9 +50,9 @@ class PembayaranPiutangController extends Controller
     {
         $hutangId = $request->input('hutang_id');
         $data = PembayaranPiutang::where('hutang_id', $hutangId)
-            ->whereHas('piutang', function ($query) {
-                $query->where('jenis_hutang', 'khusus');
-            })
+            // ->whereHas('piutang', function ($query) {
+            //     $query->where('jenis_hutang', 'khusus');
+            // })
             ->get();
         return DataTables::of($data)->make(true);
     }
@@ -59,9 +61,9 @@ class PembayaranPiutangController extends Controller
     {
         $hutangId = $request->input('hutang_id');
         $data = PembayaranPiutang::where('hutang_id', $hutangId)
-            ->whereHas('piutang', function ($query) {
-                $query->where('jenis_hutang', 'rutin');
-            })
+            // ->whereHas('piutang', function ($query) {
+            //     $query->where('jenis_hutang', 'rutin');
+            // })
             ->get();
 
         return DataTables::of($data)->make(true);

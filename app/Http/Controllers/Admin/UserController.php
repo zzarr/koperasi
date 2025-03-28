@@ -46,9 +46,9 @@ class UserController extends Controller
     // Menampilkan view utama untuk manajemen user
     public function index()
     {
-        $users = User::with('roles')->get();
-        $roles = Role::where('name', '!=', 'Admin')->get(); // Menyaring role 'Admin'
- // Menambahkan pengambilan semua roles
+        $users = User::role('user')->with('roles')->get();
+        $roles = Role::where('name', '!=', 'Admin')->get();
+ 
         return view('admin.manage-user.index', compact('users', 'roles')); // Mengirimkan roles ke view
     }
 

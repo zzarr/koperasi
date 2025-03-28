@@ -24,7 +24,10 @@ class MasterDataController extends Controller
 
     public function index()
     {
+        $data['app'] = ConfigPayment::where('name', 'LIKE', '%app_%')->get();
         $data['main'] = ConfigPayment::where('name', 'main_payment')->first();
+        $data['monthlyAsn'] = ConfigPayment::where('name', 'monthly_payment_asn')->first();
+        $data['monthlyTu'] = ConfigPayment::where('name', 'monthly_payment_tu')->first();
         $data['monthly'] = ConfigPayment::where('name', 'monthly_payment')->first();
         $data['routine'] = ConfigPayment::where('name', 'dept_routine')->first();
         $data['special'] = ConfigPayment::where('name', 'dept_special')->first();
@@ -48,6 +51,22 @@ class MasterDataController extends Controller
             );
 
             ConfigPayment::updateOrCreate(
+                ['name' => 'monthly_payment_asn'],
+                [
+                    'paid_off_amount'   => preg_replace('/[^0-9]/', '', $request->monthly_payment_asn),
+                    'is_active'         => 1
+                ]
+            );
+            
+            ConfigPayment::updateOrCreate(
+                ['name' => 'monthly_payment_tu'],
+                [
+                    'paid_off_amount'   => preg_replace('/[^0-9]/', '', $request->monthly_payment_tu),
+                    'is_active'         => 1
+                ]
+            );
+            
+            ConfigPayment::updateOrCreate(
                 ['name' => 'monthly_payment'],
                 [
                     'paid_off_amount'   => preg_replace('/[^0-9]/', '', $request->monthly_payment),
@@ -67,6 +86,43 @@ class MasterDataController extends Controller
                 ['name' => 'dept_special'],
                 [
                     'paid_off_amount'   => $request->dept_special,
+                    'is_active'         => 1
+                ]
+            );
+
+            // ======================================================
+            ConfigPayment::updateOrCreate(
+                ['name' => 'app_app_name'],
+                [
+                    'paid_off_amount'   => $request->app_name,
+                    'is_active'         => 1
+                ]
+            );
+            ConfigPayment::updateOrCreate(
+                ['name' => 'app_instansi'],
+                [
+                    'paid_off_amount'   => $request->instansi,
+                    'is_active'         => 1
+                ]
+            );
+            ConfigPayment::updateOrCreate(
+                ['name' => 'app_location'],
+                [
+                    'paid_off_amount'   => $request->location,
+                    'is_active'         => 1
+                ]
+            );
+            ConfigPayment::updateOrCreate(
+                ['name' => 'app_ketua'],
+                [
+                    'paid_off_amount'   => $request->ketua,
+                    'is_active'         => 1
+                ]
+            );
+            ConfigPayment::updateOrCreate(
+                ['name' => 'app_bendahara'],
+                [
+                    'paid_off_amount'   => $request->bendahara,
                     'is_active'         => 1
                 ]
             );

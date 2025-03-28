@@ -54,7 +54,7 @@
                             </div>
                             <div class="form-group">
                                 <label for="jumlah_bayar_pokok">Nominal Pokok</label>
-                                <input type="text" name="jumlah_bayar_pokok" id="jumlah_bayar_pokok" class="form-control" value="{{ formatRupiah($nominal) }}" required required oninput="formatInputRupiah(this)">
+                                <input type="text" name="jumlah_bayar_pokok" id="jumlah_bayar_pokok" class="form-control" value="{{ formatRupiah($nominal) }}" required oninput="formatInputRupiah(this)">
                             </div>
                             <div class="form-group">
                                 <label for="catatan">Catatan</label>
@@ -86,7 +86,7 @@
                                     <th>Pembayaran Ke-</th>
                                     <th>Tanggal Pembayaran</th>
                                     <th>Jumlah Bayar Pokok</th>
-                                    <th>Jumlah Bayar Bunga</th>
+                                    <th>Jumlah Bayar Jasa</th>
                                     <th>Catatan</th>
                                     <th class="no-content">Action</th>
 
