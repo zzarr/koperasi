@@ -21,6 +21,7 @@ class Piutang extends Model
         'jumlah_bulan',
         'sisa',
         'is_lunas',
+        'source',
     ];
 
     // Mengonfigurasi relasi dengan model User

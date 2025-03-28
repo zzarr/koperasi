@@ -8,7 +8,7 @@
 
 <div class="page-header">
     <div class="page-title">
-        <h3>Simpanan Wajib</h3>
+        <h3>Laporan Bulanan</h3>
     </div>
     <nav class="breadcrumb-one" aria-label="breadcrumb">
         <ol class="breadcrumb">
@@ -145,7 +145,7 @@
                         <span aria-hidden="true">&times;</span>
                     </button>
                 </div>
-                <form id="invoice-form" method="POST" action="{{ route('admin.payment.monthly.export') }}">
+                <form id="invoice-form" method="POST" action="{{ route('admin.report.export') }}">
                     @csrf
                     <input type="hidden" name="user_id" id="user_id">
                     <div class="modal-body">
@@ -342,7 +342,7 @@ $('#user-modal').on('click', '#btn_form', function() {
                         col = array.indexOf(meta.col) + 1;
 
                         if (!data) {
-                            return `<button type="button" class="btn btn-primary btn-add" data-id="${full.id}" data-month="${col}">+</button>`;
+                            return `<button type="button" class="btn btn-primary" data-id="${full.id}" data-month="${col}" disabled>+</button>`;
                         }
                         // return `<button type="button" class="btn btn-danger">-</button>`+data;
                         return data

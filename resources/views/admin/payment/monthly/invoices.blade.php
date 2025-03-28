@@ -39,11 +39,10 @@
                         <div class="card-body invoice-head">
                             <div class="row">
                                 <div class="col-md-4 align-self-center">
-                                    <h1 class="mt-1 mb-0 text-muted">INVOICE</h1>
-                                    <h4>KOPERASI KARYAWAN</h4>
-                                    <div class="ms-auto text-end">
-                                        <p class="text-muted mb-0">Jalan Graha Asri Perdana No.11 Blok D</p>
-                                        <p class="text-muted mb-0">Kecamatan Lohbener Kabupaten Indramayu</p>
+                                    {{-- <h1 class="mt-1 mb-0 text-muted text-center">INVOICE</h1> --}}
+                                    <h1 class="text-center">{{ $configs->where('name', 'app_app_name')->first()->paid_off_amount }}</h1>
+                                    <div class="ms-auto text-center">
+                                        <p class="mb-0">{{ $configs->where('name', 'app_instansi')->first()->paid_off_amount }}</p>
                                     </div>
                                 </div>
                                 <div class="col-md-8">

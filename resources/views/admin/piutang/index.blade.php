@@ -51,26 +51,28 @@
                                     <label for="jenis_hutang">Jenis Hutang</label>
                                     <select class="form-control" id="jenis_hutang" name="jenis_hutang" required>
                                         <option value="" disabled selected>Pilih Jenis Hutang</option>
-                                        <option value="rutin">Rutin</option>
+                                        <option value="rutin">Rutin 1</option>
+                                        <option value="rutin_2">Rutin 2</option>
+                                        <option value="ob">Open Book</option>
                                         <option value="khusus">Khusus</option>
+                                        <option value="barang">Barang</option>
                                     </select>
                                 </div>
                                 <div class="form-group">
                                     <label for="jumlah_bulan">Jumlah Bulan</label>
-                                    <select class="form-control" id="jumlah_bulan" name="jumlah_bulan" required>
-                                        <option value="" disabled selected>Pilih Jumlah Bulan</option>
-                                        <option>10</option>
-                                        <option>12</option>
-                                        <option>15</option>
-                                        <option>20</option>
-                                        <option>24</option>
-                                        <option>30</option>
-                                        <option>36</option>
-                                    </select>
+                                    <input type="text" class="form-control"  id="jumlah_bulan"  name="jumlah_bulan"   required>
                                 </div>
                                 <div class="form-group">
                                     <label for="jumlah_hutang">Jumlah Hutang</label>
                                     <input type="text" class="form-control"  id="jumlah_hutang"  name="jumlah_hutang"   required  oninput="formatInputRupiah(this)">
+                                </div>
+                                <div class="form-group">
+                                    <label for="jenis_hutang">Sumber Dana</label>
+                                    <select class="form-control" id="source" name="source" required>
+                                        <option value="" disabled selected>Pilih Sumber Dana</option>
+                                        <option value="gaji">Gaji</option>
+                                        <option value="tpp">TPP/KUM</option>
+                                    </select>
                                 </div>
 
                             </div>
@@ -306,9 +308,9 @@
 
             // Tentukan URL berdasarkan jenis_hutang
             let url;
-            if (jenisHutang === 'rutin') {
+            if (jenisHutang === 'rutin' || jenisHutang === 'rutin_2' || jenisHutang === 'ob') {
                 url = `/admin/piutang/pembayaran/rutin/${id}/detail`;
-            } else if (jenisHutang === 'khusus') {
+            } else if (jenisHutang === 'khusus' || jenisHutang === 'barang') {
                 url = `/admin/piutang/pembayaran/khusus/${id}/detail`;
             } else {
                 Notiflix.Notify.failure('Jenis hutang tidak valid.'); // Jika jenis_hutang tidak valid

@@ -14,11 +14,8 @@
         </ol>
     </nav>
 </div>
-<div class="d-flex justify-content-start mb-3">
-    <button class="btn btn-primary" onclick="window.open(`{{ route('user.history-piutang.print', $piutang->id) }}`, '_blank')">
-        <i class="fa fa-print"></i> Cetak Semua Riwayat Pembayaran
-    </button>
-</div>
+
+
 
 <div class="row" id="cancel-row">
     <div class="col-xl-12 col-lg-12 col-sm-12 layout-spacing">
@@ -57,7 +54,6 @@
     $(document).ready(function () {
         // Ambil jumlah hutang awal dari piutang yang ditampilkan
         var jumlahHutang = {{ $piutang->jumlah_hutang }};
-        var sisaHutang = {{ $piutang->sisa }};
         var totalPembayaran = 0;
 
         $('#detail-table').DataTable({
@@ -93,8 +89,8 @@
                 });
 
                 // Menampilkan sisa hutang
-                let SubsisaHutang = sisaHutang;
-                $('#sisa-hutang').text('Rp ' + SubsisaHutang.toLocaleString('id-ID'));
+                var sisaHutang = jumlahHutang - totalPembayaran;
+                $('#sisa-hutang').text('Rp ' + sisaHutang.toLocaleString('id-ID'));
             }
         });
     });

@@ -2,18 +2,22 @@
 
 namespace App\Http\Controllers\Admin;
 
-use App\Http\Controllers\Controller;
-use Illuminate\Http\Request;
-use Yajra\DataTables\Facades\DataTables;
-
-use Illuminate\Support\Facades\DB;
-
 use App\Models\User;
-use App\Models\MonthlyPayment;
 use App\Models\Wallet;
+use App\Models\piutang;
+
 use App\Models\YearlyLog;
+
+use App\Models\MainPayment;
+use Illuminate\Http\Request;
 use App\Models\ConfigPayment;
+use App\Models\MonthlyPayment;
 use Barryvdh\DomPDF\Facade\Pdf;
+use App\Models\PembayaranPiutang;
+use Illuminate\Support\Facades\DB;
+use App\Http\Controllers\Controller;
+use App\Models\OtherPayment;
+use Yajra\DataTables\Facades\DataTables;
 
 class MonthlyPaymentController extends Controller
 {
@@ -24,6 +28,12 @@ class MonthlyPaymentController extends Controller
     {
         return view('admin.payment.monthly.index');
     }
+    
+    public function indexReport(Request $request)
+    {
+        return view('admin.report.index');
+    }
+    
     public function datatables(Request $request)
     {
         $year = date('Y');
@@ -63,7 +73,9 @@ class MonthlyPaymentController extends Controller
     {
         try {
             DB::beginTransaction();
-            $configPayment['monthly'] = ConfigPayment::where(['is_active' => 1, 'name' => 'monthly_payment'])->first();
+            $user = User::find($request->user_id);
+            $type = $user->address == 'asn' ? 'monthly_payment_asn' : ($user->address == 'tu' ? 'monthly_payment_tu' : 'monthly_payment');
+            $configPayment['monthly'] = ConfigPayment::where(['is_active' => 1, 'name' => $type])->first();
             $request->amount = $configPayment['monthly']->paid_off_amount;
 
             $isCreated = MonthlyPayment::where([
@@ -158,16 +170,46 @@ class MonthlyPaymentController extends Controller
         return response()->json($data);
     }
 
-    public function exportInvoice(Request $request)
+    public function exportInvoiceReport(Request $request)
     {
-        $data = MonthlyPayment::with('user')->where('payment_month', $request->month)->first();
+        $data = MonthlyPayment::with('user')->where('user_id', $request->user_id)->where('payment_month', $request->month)->first();
+        $pembayarans = PembayaranPiutang::with('piutang')->whereHas('piutang', function($q) use($data){
+            $q->where('user_id', $data->user_id);
+        })->whereMonth('tanggal_pembayaran', $request->month)->whereYear('tanggal_pembayaran', date('Y'))->get();
+        $pembayaran = $pembayarans->groupBy(function ($item) {
+            return $item->piutang->jenis_hutang; // Kelompokkan berdasarkan jenis hutang
+        });
+
+        $payment['main'] = MainPayment::where('user_id', $data->user_id)->whereMonth('paid_at', $request->month)->sum('amount');
+        $payment['monthly'] = $data->amount;
+        $payment['other'] = OtherPayment::with('user')->where('user_id', $request->user_id)->where('payment_month', $request->month)->first()->amount;
+        
+        $configs = ConfigPayment::where('name', 'LIKE', '%app_%')->get();
 
         if (!$data) {
             return back()->with('error', 'Data tidak ditemukan untuk tanggal yang dipilih.');
         }
 
-        $pdf = Pdf::loadView('admin.payment.monthly.invoices', compact('data'))
-            ->setPaper('a4', 'landscape');
+        $pdf = Pdf::loadView('admin.payment.monthly.invoices-kwitansi-bulanan', compact('data', 'pembayaran', 'configs', 'payment'))
+            ->setPaper('a4', 'portrait');
+
+
+        return $pdf->stream('Invoice_' . $data->id . '.pdf');
+    }
+
+    public function exportInvoice(Request $request, $id)
+    {
+        $data = MonthlyPayment::with('user')->where('payment_month', $request->month)->first();
+        $piutang = piutang::where('created_at', date('Y'))->where('user_id', $id)->get();
+        $pembayaran = PembayaranPiutang::whereIn('hutang_id', $piutang?->pluck('id') ?? 0)->get();
+        $configs = ConfigPayment::where('name', 'LIKE', '%app_%')->get();
+
+        if (!$data) {
+            return back()->with('error', 'Data tidak ditemukan untuk tanggal yang dipilih.');
+        }
+
+        $pdf = Pdf::loadView('admin.payment.monthly.invoices', compact('data', 'configs'))
+            ->setPaper('a4', 'portrait');
 
 
         return $pdf->stream('Invoice_' . $data->id . '.pdf');

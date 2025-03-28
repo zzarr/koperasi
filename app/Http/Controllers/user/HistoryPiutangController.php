@@ -31,7 +31,7 @@ class HistoryPiutangController extends Controller
                 ->editColumn('sisa', function ($row) {
                     // Hitung sisa hutang
                     $totalPembayaran = PembayaranPiutang::where('hutang_id', $row->id)->sum('jumlah_bayar_pokok') + PembayaranPiutang::where('hutang_id', $row->id)->sum('jumlah_bayar_bunga');
-                    $sisa = $row->jumlah_hutang - $totalPembayaran;
+                    $sisa = $row->sisa;
                     return number_format($sisa, 0, ',', '.');
                 })
                 ->editColumn('is_lunas', function ($row) {
@@ -67,5 +67,35 @@ class HistoryPiutangController extends Controller
         }
 
         return view('user.detail-piutang', compact('piutang'));
+    }
+
+    public function printAll($hutang_id)
+    {
+        // Mengambil semua pembayaran yang sesuai dengan hutang_id
+        // Mengambil semua pembayaran yang sesuai dengan hutang_id
+        $pembayaran = PembayaranPiutang::with('piutang.user') // Memuat relasi piutang dan user
+        ->where('hutang_id', $hutang_id)
+            ->get();
+
+        if ($pembayaran->isEmpty()) {
+            return abort(404, 'Data tidak ditemukan.');
+        }
+
+        // Menyaring hanya username yang unik
+        $bayarPokok = $pembayaran->sum('jumlah_bayar_pokok');
+        $bayarBunga = $pembayaran->sum('jumlah_bayar_bunga');
+
+        $sisaHutang = Piutang::find($hutang_id)->sisa;
+        $totalPembayaran = $bayarBunga + $bayarPokok;
+        $totalHutang = $sisaHutang+$totalPembayaran; // Mengambil jumlah hutang dari data piutang pertama
+
+        return view('admin.piutang.khusus_print_all', [
+            'pembayaran' => $pembayaran,
+            'usernames' => $pembayaran[0]->piutang->user->name, // Hanya kirim username unik
+            'hutang_id' => $hutang_id,
+            'sisaHutang' => $sisaHutang,
+            'totalHutang' => $totalHutang,
+            'totalBayar' => $totalPembayaran,
+        ]);
     }
 }

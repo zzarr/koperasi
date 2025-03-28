@@ -63,7 +63,7 @@
                                 <th>Pembayaran Ke-</th>
                                 <th>Tanggal Pembayaran</th>
                                 <th>Nominal Bayar Pokok</th>
-                                <th>Nominal Bayar Bunga</th>
+                                <th>Nominal Bayar Jasa</th>
                                 <th>Catatan</th>
                             </tr>
                         </thead>
