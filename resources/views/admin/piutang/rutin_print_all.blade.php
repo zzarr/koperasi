@@ -44,8 +44,8 @@
                             <div class="col-md-6">
                                 <h1 class="mt-1 mb-0 text-muted">INVOICE</h1>
                                 <h4>KOPERASI KARYAWAN</h4>
-                                <p class="text-muted mb-0">Jalan Graha Asri Perdana No.11 Blok D</p>
-                                <p class="text-muted mb-0">Kecamatan Lohbener, Kabupaten Indramayu</p>
+                                <p class="text-muted mb-0">KOSMA SASI</p>
+                                <p class="text-muted mb-0">Jl. MT. Haryono Sindang Indramayu</p>
                             </div>
                         </div>
                     </div>

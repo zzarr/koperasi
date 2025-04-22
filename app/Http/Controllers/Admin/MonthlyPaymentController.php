@@ -213,7 +213,7 @@ class MonthlyPaymentController extends Controller
     public function exportInvoice(Request $request, $id)
     {
         $data = MonthlyPayment::with('user')->where('payment_month', $request->month)->first();
-        $piutang = piutang::where('created_at', date('Y'))->where('user_id', $id)->get();
+        $piutang = Piutang::where('created_at', date('Y'))->where('user_id', $id)->get();
         $pembayaran = PembayaranPiutang::whereIn('hutang_id', $piutang?->pluck('id') ?? 0)->get();
         $configs = ConfigPayment::where('name', 'LIKE', '%app_%')->get();
 

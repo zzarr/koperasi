@@ -58,10 +58,8 @@
                                     <img src="{{ asset('assets/images/logo.png') }}" alt="logo-large" class="logo-lg brand-light" height="16" /> --}}
                                 <h1 class="mt-1 mb-0 text-muted">INVOICE</h1>
                                 <h4>KOPERASI KARYAWAN</h4>
-                                <div class="ms-auto text-end">
-                                    <p class="text-muted mb-0">Jalan Graha Asri Perdana No.11 Blok D</p>
-                                    <p class="text-muted mb-0">Kecamatan Lohbener Kabupaten Indramayu</p>
-                                </div>
+                                <p class="text-muted mb-0">KOSMA SASI</p>
+                                <p class="text-muted mb-0">Jl. MT. Haryono Sindang Indramayu</p>
                             </div>
                             <div class="col-md-8">
                                 <ul class="list-inline mb-0 contact-detail float-end">

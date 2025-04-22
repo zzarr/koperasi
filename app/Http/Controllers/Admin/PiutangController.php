@@ -71,6 +71,7 @@ class PiutangController extends Controller
                 return response()->json(['message' => 'Jenis hutang tidak ditemukan dalam konfigurasi pembayaran'], 400);
             }
 
+
             // if($isAnyHutangAvailable){
             if($validatedData['jenis_hutang'] == 'ob'){
                 $isAnyHutangAvailable = Piutang::where('user_id', $validatedData['nama'])->where('jenis_hutang', 'rutin')->where('is_lunas', 0)->first();
