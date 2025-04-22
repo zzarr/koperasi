@@ -116,6 +116,16 @@
                     </a>
                 </li>
                 <li class="menu">
+                    <a href="{{ route('user.laporan-bulanan') }}"
+                    aria-expanded="{{ Request::routeIs('user.laporan-bulanan') ? 'true' : 'false' }}"
+                    class="dropdown-toggle">
+                        <div class="">
+                            <i data-feather="file"></i>
+                            <span> Laporan Invoice Bulanan</span>
+                        </div>
+                    </a>
+                </li>
+                <li class="menu">
                     <a href="#submenu" data-toggle="collapse"
                     aria-expanded="{{ Request::routeIs('user.history.main', 'user.history.monthly', 'user.history.other') ? 'true' : 'false' }}"
 

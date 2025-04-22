@@ -143,9 +143,11 @@ Route::middleware(['auth', 'verified', 'role:admin'])->group(function () {
 Route::middleware(['auth', 'verified', 'role:user'])->group(function () {
 
     Route::get('/user/dashboard', [AnggotaController::class, 'dashboard'])->name('user.dashboard');
+    
+    Route::get('/report/invoice', [MonthlyPaymentController::class, 'indexReportUser'])->name('user.laporan-bulanan');
+    Route::post('/exportInvoice', [MonthlyPaymentController::class, 'exportInvoiceReport'])->name('export.invoice-user');
+
     Route::group(['prefix' => 'user', 'as' => 'user.'], function () {
-
-
         //route history pembayaran
         Route::group(['prefix' => 'history', 'as' => 'history.'], function () {
             Route::get('/main', [PaymentHistoryController::class, 'main'])->name('main');

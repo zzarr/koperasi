@@ -9,6 +9,7 @@ use App\Models\piutang;
 use App\Models\YearlyLog;
 
 use App\Models\MainPayment;
+use App\Models\OtherPayment;
 use Illuminate\Http\Request;
 use App\Models\ConfigPayment;
 use App\Models\MonthlyPayment;
@@ -16,7 +17,7 @@ use Barryvdh\DomPDF\Facade\Pdf;
 use App\Models\PembayaranPiutang;
 use Illuminate\Support\Facades\DB;
 use App\Http\Controllers\Controller;
-use App\Models\OtherPayment;
+use Illuminate\Support\Facades\Auth;
 use Yajra\DataTables\Facades\DataTables;
 
 class MonthlyPaymentController extends Controller
@@ -32,6 +33,17 @@ class MonthlyPaymentController extends Controller
     public function indexReport(Request $request)
     {
         return view('admin.report.index');
+    }
+    
+    public function indexReportUser(Request $request)
+    {
+        $data['invoices'] = MonthlyPayment::where('user_id', Auth::user()->id)
+                            ->where('payment_year', date('Y'))
+                            ->where('paid_at', '!=', null)
+                            ->orderBy('payment_month', 'ASC')
+                            ->get();
+
+        return view('user.report.index', $data);
     }
     
     public function datatables(Request $request)
@@ -172,7 +184,8 @@ class MonthlyPaymentController extends Controller
 
     public function exportInvoiceReport(Request $request)
     {
-        $data = MonthlyPayment::with('user')->where('user_id', $request->user_id)->where('payment_month', $request->month)->first();
+        $data = MonthlyPayment::with('user')->where('user_id', $request->user_id)->where('payment_month', $request->month)->where('payment_year', date('Y'))->first();
+        
         $pembayarans = PembayaranPiutang::with('piutang')->whereHas('piutang', function($q) use($data){
             $q->where('user_id', $data->user_id);
         })->whereMonth('tanggal_pembayaran', $request->month)->whereYear('tanggal_pembayaran', date('Y'))->get();
@@ -180,9 +193,9 @@ class MonthlyPaymentController extends Controller
             return $item->piutang->jenis_hutang; // Kelompokkan berdasarkan jenis hutang
         });
 
-        $payment['main'] = MainPayment::where('user_id', $data->user_id)->whereMonth('paid_at', $request->month)->sum('amount');
-        $payment['monthly'] = $data->amount;
-        $payment['other'] = OtherPayment::with('user')->where('user_id', $request->user_id)->where('payment_month', $request->month)->first()->amount;
+        $payment['main'] = MainPayment::where('user_id', $data->user_id)->whereMonth('paid_at', $request->month)?->sum('amount') ?? 0;
+        $payment['monthly'] = $data?->amount ?? 0;
+        $payment['other'] = OtherPayment::with('user')->where('user_id', $request->user_id)->where('payment_month', $request->month)->where('payment_year', date('Y'))->first()?->amount ?? 0;
         
         $configs = ConfigPayment::where('name', 'LIKE', '%app_%')->get();
 
