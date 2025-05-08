@@ -137,6 +137,10 @@ Route::middleware(['auth', 'verified', 'role:admin'])->group(function () {
         // Dashboard Route
         Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
     });
+
+    Route::resource('manage-user', UserController::class);
+    Route::get('manage-user/data', [UserController::class, 'data'])->name('manage-user.data');
+    Route::post('/manage-user/import', [UserController::class, 'import'])->name('manage-user.import');
 });
 
 // User Routes
@@ -163,21 +167,20 @@ Route::middleware(['auth', 'verified', 'role:user'])->group(function () {
             Route::get('/other/print', [PaymentHistoryController::class, 'otherPrint'])->name('other.print');
         });
         //end route history pembayaran
-
-
     });
 });
 
 
 // Route::middleware(['auth', 'verified', 'role:admin'])->resource('manage-user', UserController::class);
-Route::resource('manage-user', UserController::class);
-Route::get('manage-user/data', [UserController::class, 'data'])->name('manage-user.data');
 // Route::get('/manage-user/export/pdf', [UserController::class, 'exportPDF'])->name('manage-user.export.pdf');
-Route::post('/manage-user/import', [UserController::class, 'import'])->name('manage-user.import');
 
 
 Route::prefix('user')->middleware('auth')->group(function () {
     Route::get('/history-piutang', [HistoryPiutangController::class, 'index'])->name('user.history-piutang');
     Route::get('/history-piutang/{id}', [HistoryPiutangController::class, 'detail'])->name('user.history-piutang.detail');
     Route::get('/history-piutang/print/{hutang_id}', [HistoryPiutangController::class, 'printAll'])->name('user.history-piutang.print');
+
+    Route::get('/change-password', [AuthController::class, 'changePassword'])->name('change.password');
+    Route::post('/ganti-password', [AuthController::class, 'updatePassword'])->name('password.update');
+
 });

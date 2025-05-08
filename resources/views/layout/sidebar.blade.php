@@ -78,7 +78,7 @@
                 <li class="menu">
                     <a href="{{ route('admin.report.index') }}" aria-expanded="false" class="dropdown-toggle">
                         <div class="">
-                            <i data-feather="excel"></i>
+                            <i data-feather="file-text"></i>
                             <span> Laporan Bulanan</span>
                         </div>
                     </a>
@@ -86,7 +86,7 @@
                 <li class="menu">
                     <a href="{{ route('admin.piutang.index') }}" aria-expanded="false" class="dropdown-toggle">
                         <div class="">
-                            <i data-feather="clipboard"></i>
+                            <i data-feather="file-minus"></i>
                             <span> Piutang</span>
                         </div>
                     </a>
@@ -174,7 +174,16 @@
                     
                 </li>
             @endrole
-
+            <li class="menu">
+                <a href="{{ route('change.password') }}" 
+                aria-expanded="{{ Request::routeIs('change.password') ? 'true' : 'false' }}"
+                class="dropdown-toggle">
+                    <div class="">
+                        <i data-feather="lock"></i>
+                        <span> Ganti Password</span>
+                    </div>
+                </a>
+            </li>
         </ul>
     </nav>
 </div>

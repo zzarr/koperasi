@@ -2,9 +2,10 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
-use App\Models\User;
+use Illuminate\Support\Facades\Hash;
 
 class AuthController extends Controller
 {
@@ -40,6 +41,34 @@ class AuthController extends Controller
         return back()->withErrors([
             'email' => 'Email atau password salah.',
         ]);
+    }
+
+    public function changePassword(Request $request){
+        return view('change-password');
+    }
+    
+    public function updatePassword(Request $request)
+    {
+        // Validasi input
+        $request->validate([
+            'current_password' => ['required'],
+            'password' => ['required', 'confirmed', 'min:6'],
+        ],[
+            'password.min'  => "Panjang password minimal 6 karakter/angka!"
+        ]);
+
+        $user = Auth::user();
+
+        // Cek apakah current_password sesuai dengan yang ada di database
+        if (!Hash::check($request->current_password, $user->password)) {
+            return back()->withErrors(['current_password' => 'Password saat ini tidak sesuai.']);
+        }
+
+        // Update password
+        $user->password = Hash::make($request->password);
+        $user->save();
+
+        return back()->with('success', 'Password berhasil diperbarui.');
     }
 
     public function logout(Request $request)
