@@ -27,6 +27,7 @@ class MonthlyPaymentController extends Controller
 
     public function index(Request $request)
     {
+        
         return view('admin.payment.monthly.index');
     }
     
@@ -48,23 +49,31 @@ class MonthlyPaymentController extends Controller
     
     public function datatables(Request $request)
     {
-        $year = date('Y');
+        if($request->has('source')){
+            $users = User::with(['wallet'])
+                ->whereDoesntHave('roles', function ($query) {
+                    $query->where('name', 'admin'); // Exclude admin roles
+                })->get();
+
+            return DataTables::of($users)->make();
+        }
+
+        $year = $request->year ?? date('Y');
 
         $users = User::with([
             'monthlyPayment' => function ($query) use ($year) {
                 $query->where('payment_year', $year)
                     ->orderBy('payment_month', 'ASC');
-            },
-            'monthlyPayment.configPayment'
-        ])
+                },
+                'monthlyPayment.configPayment'
+            ])
             ->whereDoesntHave('roles', function ($query) {
                 $query->where('name', 'admin'); // Exclude admin roles
-            })
-            ->get();
+            })->get();
 
         return DataTables::of($users)
-            ->addColumn('monthly_total', function ($user) use ($year) {
-                return $user->monthlyPayment->where('payment_year', $year)->sum('amount') ?? 0;
+            ->addColumn('monthly_total', function ($user) {
+                return  MonthlyPayment::where('payment_year', date('Y'))->where('user_id', $user->id)->sum('amount') ?? 0;
             })
             ->addColumn('last_year_1', function ($user) {
                 return MonthlyPayment::where('payment_year', (date('Y') - 1))->where('user_id', $user->id)->sum('amount') ?? 0;
@@ -76,7 +85,8 @@ class MonthlyPaymentController extends Controller
                 return MonthlyPayment::where('payment_year', '<=', (date('Y') - 3))->where('user_id', $user->id)->sum('amount') ?? 0;
             })
             ->addColumn('total_all', function ($user) {
-                return $user->monthlyPayment->sum('amount') ?? 0;
+                return MonthlyPayment::where('user_id', $user->id)->sum('amount') ?? 0;
+                // $user->monthlyPayment->sum('amount') ?? 0;
             })
             ->make();
     }
@@ -226,5 +236,49 @@ class MonthlyPaymentController extends Controller
 
 
         return $pdf->stream('Invoice_' . $data->id . '.pdf');
+    }
+
+    public function destroy($id){
+        try {
+            DB::beginTransaction();
+            $monthlyPayment = MonthlyPayment::find($id);
+
+            $userId = $monthlyPayment->user_id;
+            
+            $monthlyPayment->update(
+                [
+                    'amount'            => 0,
+                    'paid_at'           => null,
+                ]
+            );
+
+            $monthlyTotal = MonthlyPayment::where('user_id', $userId)->sum('amount');
+
+            $wallet = Wallet::where('user_id', $userId)->first();
+            Wallet::updateOrCreate(
+                [
+                    'user_id'   => $userId,
+                ],
+                [
+                    'monthly'      => $monthlyTotal,
+                    'total'     => $wallet ? ($monthlyTotal + $wallet->main + $wallet->other) : $monthlyTotal
+                ]
+            );   
+            DB::commit();
+        } catch (\Exception $e) {
+            DB::rollBack();
+            
+            return response()->json([
+                "status"    => true,
+                "code"      => 200,
+                "message"   => $e->getMessage(),
+            ], 200);
+        }
+
+        return response()->json([
+            "status"    => true,
+            "code"      => 200,
+            "message"   => "Data Pembayaran $id berhasil dihapus!",
+        ], 200);
     }
 }

@@ -2,6 +2,47 @@
 @section('title','Simpanan Wajib')
 @push('css')
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
+<style>
+    .table-cell {
+        position: relative;
+    }
+
+    .delete-btn {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        display: none;    
+        cursor: pointer;
+        z-index: 9999;
+    }
+
+    .table-cell:hover .delete-btn {
+        display: block;
+        writing-mode: initial;
+        transition: none;
+        animation: none;
+        transform: translate(-50%, -50%) !important;
+    }
+
+    .overlay {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background-color: black;
+        opacity: 0;
+        transition: opacity 0.3s ease;
+        z-index: -11;
+    }
+
+    .table-cell:hover .overlay {
+        display: block;
+        opacity: 0.3;
+    }
+
+</style>
 @endpush
 @section('content')
 
@@ -38,6 +79,19 @@
         <div class="row" id="cancel-row">
             <div class="col-xl-12 col-lg-12 col-sm-12 layout-spacing">
                 <div class="widget-content widget-content-area br-6">
+                    <div class="row">
+                        <div class="col-2">
+                            <div class="form-group">
+                                <label for="role">Pilih Tahun</label>
+                                <select id="year" class="form-control">
+                                    @for($year = date('Y'); $year >= (date('Y') - 10); $year--)
+                                        <option {{ request('year') == $year ? 'selected' : '' }}>{{ $year }}</option>
+                                    @endfor
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+
                     <div class="table-responsive mb-4 mt-4">
                         <table id="user-table" class="table table-hover table-striped" style="width:100%">
                             <thead class="text-center">
@@ -167,6 +221,8 @@
 
 @push('script')
 <script>
+    var year = `{{ request('year') }}`;
+    var table;
    // Inisialisasi Flatpickr pada saat modal ditampilkan
 $('#user-modal').on('shown.bs.modal', function(event) {
     // Input untuk tanggal pembayaran
@@ -184,9 +240,34 @@ $('#user-table').on('click', '.btn-add', function() {
     $("#user-modal #action-modal").text('Angsuran Baru');
     $("#user-form")[0].reset();
     $('#payment_month').val($(this).attr("data-month")); // Set bulan
-    $('#payment_year').val(new Date().getFullYear()); // Set tahun
+    $('#payment_year').val(year); // Set tahun
     $("#user-form").attr('data-userId', id);
 });
+
+$('#user-table').on('click', '.delete-btn', function() {
+    var id = $(this).attr("data-id");
+    if (confirm('Apakah anda yakin ingin menghapus pembayaran ini?')) {
+            fetch(`/admin/payment/monthly/destroy/${id}`, {
+                method: 'DELETE',
+                headers: {
+                    'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content'),
+                    'Accept': 'application/json',
+                }
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.status) {
+                    alert(data.message);
+                    table.ajax.reload();
+                } else {
+                    alert('Failed to delete user: ' + data.message);
+                }
+            })
+            .catch(error => console.error('Error:', error));
+        }
+});
+
+
 
 $('#user-modal').on('click', '#btn_form', function() {
     let data = new FormData($('#user-form')[0]);
@@ -301,19 +382,29 @@ $('#user-modal').on('click', '#btn_form', function() {
 
 
     $(document).ready(function() {
+        
         $.ajaxSetup({
             headers: {
                 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
             }
         });
 
-        let table = $("#user-table").DataTable({
+        $('#year').on('change', function(){
+            window.location.replace(`{{ route('admin.payment.monthly.index') }}?year=${$(this).val()}`)
+        })
+
+        table = $("#user-table").DataTable({
             processing: true,
             serverSide: true,
             scrollY: "50vh",
             scrollX: true,
            
-            ajax: "{{ route('admin.payment.monthly.ajax') }}",
+            ajax: {
+                url: "{{ route('admin.payment.monthly.ajax') }}",
+                data: function(req){
+                    req.year = year
+                },
+            },
             scrollCollapse: true,
 
             fixedColumns: true,
@@ -329,7 +420,7 @@ $('#user-modal').on('click', '#btn_form', function() {
                         } else {
                             $(td).css('vertical-align', 'middle');
                         }
-                        $(td).addClass('text-center');
+                        $(td).addClass('text-center table-cell');
                     },
                 },
                 {
@@ -345,7 +436,7 @@ $('#user-modal').on('click', '#btn_form', function() {
                             return `<button type="button" class="btn btn-primary btn-add" data-id="${full.id}" data-month="${col}">+</button>`;
                         }
                         // return `<button type="button" class="btn btn-danger">-</button>`+data;
-                        return data
+                        return data + ` <div class="overlay"></div><button class="delete-btn btn btn-danger" data-id="${full.monthly_payment[col-1].id}"><i class="fa fa-trash"></i></button>`;
                     },
                 },
                 {
@@ -395,7 +486,7 @@ $('#user-modal').on('click', '#btn_form', function() {
                 },
                 {
                     targets: 28,
-                    title: 'Total simpanan wajib ' + ((new Date().getFullYear()) - 3),
+                    title: 'Total simpanan wajib < ' + ((new Date().getFullYear()) - 3),
                     // orderable: false,
                     createdCell: function(td, cellData, rowData, row, col) {
                         $(td).addClass('text-center');

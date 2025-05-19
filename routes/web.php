@@ -61,7 +61,7 @@ Route::middleware(['auth', 'verified', 'role:admin'])->group(function () {
                 Route::get('/datatables', [MonthlyPaymentController::class, 'datatables'])->name('ajax');
                 Route::get('/show/{id?}', [MonthlyPaymentController::class, 'show'])->name('show');
                 Route::post('/store', [MonthlyPaymentController::class, 'store'])->name('store');
-                Route::post('/destroy/{id?}', [MonthlyPaymentController::class, 'destroy'])->name('destroy');
+                Route::delete('/destroy/{id?}', [MonthlyPaymentController::class, 'destroy'])->name('destroy');
                 Route::post('/import', [MonthlyPaymentController::class, 'import'])->name('import');
                 Route::get('/download/{id}', [MonthlyPaymentController::class, 'downloadInvoice'])->name('download');
 
@@ -76,7 +76,7 @@ Route::middleware(['auth', 'verified', 'role:admin'])->group(function () {
                 Route::get('/datatables', [OtherPaymentController::class, 'datatables'])->name('ajax');
                 Route::get('/show/{id?}', [OtherPaymentController::class, 'show'])->name('show');
                 Route::post('/store', [OtherPaymentController::class, 'store'])->name('store');
-                Route::post('/destroy/{id?}', [OtherPaymentController::class, 'destroy'])->name('destroy');
+                Route::delete('/destroy/{id?}', [OtherPaymentController::class, 'destroy'])->name('destroy');
                 Route::post('/import', [OtherPaymentController::class, 'import'])->name('import');
 
                 Route::get('/data_tanggal/{id}', [OtherPaymentController::class, 'dataTanggal'])->name('dataTanggal');

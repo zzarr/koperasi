@@ -42,54 +42,11 @@
                         <table id="user-table" class="table table-hover table-striped" style="width:100%">
                             <thead class="text-center">
                                 <tr>
-                                    <th rowspan="3" style="vertical-align: middle">Nama</th>
-                                    <th colspan="24">Bulan</th>
-                                    <th rowspan="3" style="vertical-align: middle">Sisa</th>
-                                    <th rowspan="3" style="vertical-align: middle">Ket</th>
-                                    <th rowspan="3" style="vertical-align: middle">Jumlah</th>
-                                    <th rowspan="3" style="vertical-align: middle">Jumlah</th>
-                                    <th rowspan="3" style="vertical-align: middle">Jumlah</th>
-                                    <th rowspan="3" style="vertical-align: middle">Aksi</th>
-                                </tr>
-                                <tr>
-                                    <th colspan="2">1</th>
-                                    <th colspan="2">2</th>
-                                    <th colspan="2">3</th>
-                                    <th colspan="2">4</th>
-                                    <th colspan="2">5</th>
-                                    <th colspan="2">6</th>
-                                    <th colspan="2">7</th>
-                                    <th colspan="2">8</th>
-                                    <th colspan="2">9</th>
-                                    <th colspan="2">10</th>
-                                    <th colspan="2">11</th>
-                                    <th colspan="2">12</th>
-                                </tr>
-                                <tr>
-                                    <th>TGL</th>
-                                    <th>JML</th>
-                                    <th>TGL</th>
-                                    <th>JML</th>
-                                    <th>TGL</th>
-                                    <th>JML</th>
-                                    <th>TGL</th>
-                                    <th>JML</th>
-                                    <th>TGL</th>
-                                    <th>JML</th>
-                                    <th>TGL</th>
-                                    <th>JML</th>
-                                    <th>TGL</th>
-                                    <th>JML</th>
-                                    <th>TGL</th>
-                                    <th>JML</th>
-                                    <th>TGL</th>
-                                    <th>JML</th>
-                                    <th>TGL</th>
-                                    <th>JML</th>
-                                    <th>TGL</th>
-                                    <th>JML</th>
-                                    <th>TGL</th>
-                                    <th>JML</th>
+                                    <th style="vertical-align: middle">Nama</th>
+                                    <th style="vertical-align: middle">Jumlah Pokok</th>
+                                    <th style="vertical-align: middle">Jumlah Wajib</th>
+                                    <th style="vertical-align: middle">Jumlah Hari Raya</th>
+                                    <th style="vertical-align: middle">Aksi</th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -313,56 +270,20 @@ $('#user-modal').on('click', '#btn_form', function() {
             scrollY: "50vh",
             scrollX: true,
            
-            ajax: "{{ route('admin.payment.monthly.ajax') }}",
+            ajax: {
+                url : "{{ route('admin.payment.monthly.ajax') }}",
+                data: function(d){
+                    d.source = 'report'
+                }
+            },
             scrollCollapse: true,
 
             fixedColumns: true,
             fixedHeader: true,
-            columnDefs: [{
-                    targets: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24],
-                    "defaultContent": "",
-                    orderable: false,
-                    createdCell: function(td, cellData, rowData, row, col) {
-                        if (cellData) {
-                            $(td).css('writing-mode', 'sideways-lr');
-                            $(td).css('vertical-align', 'bottom');
-                        } else {
-                            $(td).css('vertical-align', 'middle');
-                        }
-                        $(td).addClass('text-center');
-                    },
-                },
+            columnDefs: [
                 {
-                    targets: [1, 3, 5, 7, 9, 11, 13, 15, 17, 19, 21, 23],
-                    "defaultContent": "",
-                    orderable: false,
-                    render: function(data, type, full, meta) {
-                        col = 0;
-                        array = [1, 3, 5, 7, 9, 11, 13, 15, 17, 19, 21, 23]
-                        col = array.indexOf(meta.col) + 1;
-
-                        if (!data) {
-                            return `<button type="button" class="btn btn-primary" data-id="${full.id}" data-month="${col}" disabled>+</button>`;
-                        }
-                        // return `<button type="button" class="btn btn-danger">-</button>`+data;
-                        return data
-                    },
-                },
-                {
-                    targets: [2, 4, 6, 8, 10, 12, 14, 16, 18, 20, 22, 24],
-                    "defaultContent": "",
-                    orderable: false,
-                    render: function(data, type, full, meta) {
-                        if (!data || data === 0) {
-                            return `-`;
-                        }
-                        // return `<button type="button" class="btn btn-danger">-</button>`+data;
-                        return formatRupiah(String(data), 'Rp. ');
-                    },
-                },
-                {
-                    targets: 25,
-                    title: 'Total simpanan wajib ' + new Date().getFullYear(),
+                    targets: -4,
+                    title: 'Total simpanan Pokok',
                     // orderable: false,
                     createdCell: function(td, cellData, rowData, row, col) {
                         $(td).addClass('text-center');
@@ -372,8 +293,8 @@ $('#user-modal').on('click', '#btn_form', function() {
                     },
                 },
                 {
-                    targets: 26,
-                    title: 'Total simpanan wajib ' + ((new Date().getFullYear()) - 1),
+                    targets: -3,
+                    title: 'Total simpanan wajib',
                     // orderable: false,
                     createdCell: function(td, cellData, rowData, row, col) {
                         $(td).addClass('text-center');
@@ -383,8 +304,8 @@ $('#user-modal').on('click', '#btn_form', function() {
                     },
                 },
                 {
-                    targets: 27,
-                    title: 'Total simpanan wajib ' + ((new Date().getFullYear()) - 2),
+                    targets: -2,
+                    title: 'Total simpanan Hari Raya ',
                     // orderable: false,
                     createdCell: function(td, cellData, rowData, row, col) {
                         $(td).addClass('text-center');
@@ -394,29 +315,7 @@ $('#user-modal').on('click', '#btn_form', function() {
                     },
                 },
                 {
-                    targets: 28,
-                    title: 'Total simpanan wajib ' + ((new Date().getFullYear()) - 3),
-                    // orderable: false,
-                    createdCell: function(td, cellData, rowData, row, col) {
-                        $(td).addClass('text-center');
-                    },
-                    render: function(data, type, full, meta) {
-                        return formatRupiah(String(data), 'Rp. ');
-                    },
-                },
-                {
-                    targets: 29,
-                    title: 'Total simpanan wajib Keseluruhan',
-                    // orderable: false,
-                    createdCell: function(td, cellData, rowData, row, col) {
-                        $(td).addClass('text-center');
-                    },
-                    render: function(data, type, full, meta) {
-                        return formatRupiah(String(data), 'Rp. ');
-                    },
-                },
-                {
-                        targets: 30,
+                        targets: -1,
                         orderable: false,
                         searchable: false,
                         render: function(data, type, full, meta) {
@@ -439,120 +338,17 @@ $('#user-modal').on('click', '#btn_form', function() {
             columns: [{
                     data: 'name'
                 },
-
-                // 1
                 {
-                    data: 'monthly_payment.0.paid_at'
+                    data: 'wallet.main'
                 },
                 {
-                    data: 'monthly_payment.0.amount'
-                },
-
-                // 2
-                {
-                    data: 'monthly_payment.1.paid_at'
+                    data: 'wallet.monthly'
                 },
                 {
-                    data: 'monthly_payment.1.amount'
-                },
-
-                // 3
-                {
-                    data: 'monthly_payment.2.paid_at'
+                    data: 'wallet.other'
                 },
                 {
-                    data: 'monthly_payment.2.amount'
-                },
-
-                // 4
-                {
-                    data: 'monthly_payment.3.paid_at'
-                },
-                {
-                    data: 'monthly_payment.3.amount'
-                },
-
-                // 5
-                {
-                    data: 'monthly_payment.4.paid_at'
-                },
-                {
-                    data: 'monthly_payment.4.amount'
-                },
-
-                // 6
-                {
-                    data: 'monthly_payment.5.paid_at'
-                },
-                {
-                    data: 'monthly_payment.5.amount'
-                },
-
-                // 7
-                {
-                    data: 'monthly_payment.6.paid_at'
-                },
-                {
-                    data: 'monthly_payment.6.amount'
-                },
-
-                // 8
-                {
-                    data: 'monthly_payment.7.paid_at'
-                },
-                {
-                    data: 'monthly_payment.7.amount'
-                },
-
-                // 9
-                {
-                    data: 'monthly_payment.8.paid_at'
-                },
-                {
-                    data: 'monthly_payment.8.amount'
-                },
-
-                // 10
-                {
-                    data: 'monthly_payment.9.paid_at'
-                },
-                {
-                    data: 'monthly_payment.9.amount'
-                },
-
-                // 11
-                {
-                    data: 'monthly_payment.10.paid_at'
-                },
-                {
-                    data: 'monthly_payment.10.amount'
-                },
-
-                // 12
-                {
-                    data: 'monthly_payment.11.paid_at'
-                },
-                {
-                    data: 'monthly_payment.11.amount'
-                },
-
-                {
-                    data: 'monthly_total'
-                },
-                {
-                    data: 'last_year_1'
-                },
-                {
-                    data: 'last_year_2'
-                },
-                {
-                    data: 'last_year_3'
-                },
-                {
-                    data: 'total_all'
-                },
-                {
-                data: 'id',
+                    data: 'id',
                 }
             ],
             language: {

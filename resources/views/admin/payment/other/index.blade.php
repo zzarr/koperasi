@@ -1,5 +1,48 @@
 @extends('layout.app')
 @section('title', 'Simpanan Sukarela')
+@push('css')
+    <style>
+    .table-cell {
+        position: relative;
+    }
+
+    .delete-btn {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        display: none;    
+        cursor: pointer;
+        z-index: 9999;
+    }
+
+    .table-cell:hover .delete-btn {
+        display: block;
+        writing-mode: initial;
+        transition: none;
+        animation: none;
+        transform: translate(-50%, -50%) !important;
+    }
+
+    .overlay {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background-color: black;
+        opacity: 0;
+        transition: opacity 0.3s ease;
+        z-index: -11;
+    }
+
+    .table-cell:hover .overlay {
+        display: block;
+        opacity: 0.3;
+    }
+
+</style>
+@endpush
 @section('content')
     <div class="page-header">
         <div class="page-title">
@@ -23,12 +66,21 @@
     <div class="row" id="cancel-row">
         <div class="col-12 layout-spacing">
             <div class="widget-content widget-content-area br-6">
+                
                 <div class="row">
-                    <div class="col-6">
-                        <!-- Konten di sini -->
+                    <div class="col-2">
+                        <div class="form-group">
+                            <label for="role">Pilih Tahun</label>
+                            <select id="year" class="form-control">
+                                @for($year = date('Y'); $year >= (date('Y') - 10); $year--)
+                                    <option {{ request('year') == $year ? 'selected' : '' }}>{{ $year }}</option>
+                                @endfor
+                            </select>
+                        </div>
                     </div>
-                </div> <!-- Penutup div.row -->
-                <div class="table-responsive" style="overflow-x: auto; white-space: nowrap;">
+                </div>
+
+                <div class="table-responsive" style="overflow-x: auto;">
                     <table id="user-table" width="100%" class="table table-bordered table-striped table-hover">
                         <thead class="text-center">
                             <tr>
@@ -184,6 +236,13 @@
     <script src="{{ asset('demo1/plugins/select2/custom-select2.js') }}"></script>
     <script>
         $(document).ready(function() {
+            var year = `{{ request('year') }}`;
+            var table;
+
+             $('#year').on('change', function(){
+                window.location.replace(`{{ route('admin.payment.other.index') }}?year=${$(this).val()}`)
+            })
+
             $('#user-modal').on('shown.bs.modal', function(event) {
                 $('#payment_month').daterangepicker({
                     singleDatePicker: true,
@@ -207,13 +266,43 @@
                 });
             });
 
+            $('#user-table').on('click', '.delete-btn', function() {
+                var id = $(this).attr("data-id");
+                if (confirm('Apakah anda yakin ingin menghapus pembayaran ini?')) {
+                        fetch(`/admin/payment/other/destroy/${id}`, {
+                            method: 'DELETE',
+                            headers: {
+                                'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content'),
+                                'Accept': 'application/json',
+                            }
+                        })
+                        .then(response => response.json())
+                        .then(data => {
+                            if (data.status) {
+                                alert(data.message);
+                                table.ajax.reload();
+                            } else {
+                                alert('Failed to delete user: ' + data.message);
+                            }
+                        })
+                        .catch(error => console.error('Error:', error));
+                    }
+            });
+
             var table = $("#user-table").DataTable({
                 paging: true,
                 processing: true,
                 serverSide: true,
                 scrollY: "50vh",
                 scrollX: true,
-                ajax: "{{ route('admin.payment.other.ajax') }}",
+
+                ajax: {
+                    url: "{{ route('admin.payment.other.ajax') }}",
+                    data: function(req){
+                        req.year = year
+                    },
+                },
+
                 scrollCollapse: true,
 
                 fixedColumns: true,
@@ -349,7 +438,7 @@
                             } else {
                                 $(td).css('vertical-align', 'middle');
                             }
-                            $(td).addClass('text-center');
+                            $(td).addClass('text-center table-cell');
                         },
                     },
                     {
@@ -365,7 +454,7 @@
                                 return `<button type="button" class="btn btn-outline-primary btn-add" data-id="${full.id}" data-month="${col}">+</button>`;
                             }
                             // return `<button type="button" class="btn btn-danger">-</button>`+data;
-                            return data
+                            return data + ` <div class="overlay"></div><button class="delete-btn btn btn-danger" data-id="${full.other_payment[col-1].id}"><i class="fa fa-trash"></i></button>`;
                         },
                     },
                     {
@@ -459,7 +548,7 @@
                 $("#user-modal #action-modal").text('Angsuran baru');
                 $("#user-form")[0].reset();
                 $('#payment_month').val($(this).attr("data-month"));
-                $('#payment_year').val(new Date().getFullYear());
+                $('#payment_year').val(year);
                 $("#user-form").attr('data-userId', id);
                 $('#user-modal').on('shown.bs.modal', function(event) {
                     KTApp.unblock('#user-modal .modal-content');

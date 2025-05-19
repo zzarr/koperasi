@@ -32,9 +32,10 @@ class OtherPaymentController extends Controller
         return view('admin.payment.other.index');
     }
 
-    public function datatables()
+    public function datatables(Request $request)
     {
-        $year = date('Y');
+        $year = $request->year ?? date('Y');
+        
 
         // Memfilter user yang bukan admin berdasarkan role
         $users = User::whereHas('roles', function ($query) {
@@ -47,7 +48,7 @@ class OtherPaymentController extends Controller
 
         return DataTables::of($users)
             ->addColumn('other_total', function ($user) use ($year) {
-                return OtherPayment::where('payment_year', $year)
+                return OtherPayment::where('payment_year', date('Y'))
                     ->where('user_id', $user->id)
                     ->sum('amount') ?? 0;
             })
@@ -177,6 +178,50 @@ class OtherPaymentController extends Controller
 
         // Stream PDF ke browser
         return $pdf->stream('Invoice_' . $data->id . '.pdf');
+    }
+
+    public function destroy($id){
+        try {
+            DB::beginTransaction();
+            $otherPayment = OtherPayment::find($id);
+
+            $userId = $otherPayment->user_id;
+            
+            $otherPayment->update(
+                [
+                    'amount'            => 0,
+                    'paid_at'           => null,
+                ]
+            );
+
+            $otherTotal = OtherPayment::where('user_id', $userId)->sum('amount');
+
+            $wallet = Wallet::where('user_id', $userId)->first();
+            Wallet::updateOrCreate(
+                [
+                    'user_id'   => $userId,
+                ],
+                [
+                    'other'     => $otherTotal,
+                    'total'     => $wallet ? ($otherTotal + $wallet->main + $wallet->monthly) : $otherTotal
+                ]
+            );   
+            DB::commit();
+        } catch (\Exception $e) {
+            DB::rollBack();
+            
+            return response()->json([
+                "status"    => true,
+                "code"      => 200,
+                "message"   => $e->getMessage(),
+            ], 200);
+        }
+
+        return response()->json([
+            "status"    => true,
+            "code"      => 200,
+            "message"   => "Data Pembayaran $id berhasil dihapus!",
+        ], 200);
     }
 
 }
