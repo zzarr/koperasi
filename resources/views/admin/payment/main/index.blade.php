@@ -183,6 +183,7 @@
                                 total = item.config_payment.paid_off_amount;
                             });
                             return formatRupiah(String(total - sum), 'Rp. ');
+                            // return formatRupiah(String(99), 'Rp. ');
                         },
                     },
                     {
@@ -210,7 +211,7 @@
                             data.forEach(function(item) {
                                 sum += item.amount;
                             });
-                            return formatRupiah(String(sum), 'Rp. ');
+                            return formatRupiah(String(sum - 0), 'Rp. ');
                         },
                     },
                     // Tambahan kolom "Aksi"
